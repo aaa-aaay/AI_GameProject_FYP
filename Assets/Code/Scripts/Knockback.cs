@@ -16,7 +16,7 @@ public class Knockback : MonoBehaviour
     {
         if (target == gameObject)
         {
-            Vector3 direction = target.transform.position - hitter.transform.position;
+            Vector3 direction = target.transform.localPosition - hitter.transform.localPosition;
             direction.Normalize();
             rigidbody.AddForce(direction * force, ForceMode.Impulse);
         }

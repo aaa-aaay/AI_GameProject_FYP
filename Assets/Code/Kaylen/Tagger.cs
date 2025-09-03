@@ -13,13 +13,18 @@ public class Tagger : Agent
     [Header("Movement Settings")]
     public float moveSpeed = 1f;
     private Rigidbody rb;
+    public override void Initialize()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.constraints = RigidbodyConstraints.FreezeRotation; // prevent tumbling
+    }
     public override void OnEpisodeBegin()
     {
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
-        transform.position = new Vector3(Random.Range(-20, 0), 0.5f, Random.Range(-20, 0));
-        target.position = new Vector3(Random.Range(0, 20), 0.5f, Random.Range(0, 20));
+        transform.localPosition = new Vector3(Random.Range(-3, 3), 0.5f, Random.Range(-3, 3));
+        target.localPosition = new Vector3(Random.Range(-3, 3), 0.5f, Random.Range(-3, 3));
 
        
     }

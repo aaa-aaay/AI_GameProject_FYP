@@ -80,11 +80,11 @@ public class TurtleAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // The Goal's position
+        // The Goal's localPosition
         float goalPosX_normalized = _goal.localPosition.x / 5f;
         float goalPosZ_normalized = _goal.localPosition.z / 5f;
 
-        // The Turtle's position
+        // The Turtle's localPosition
         float turtlePosX_normalized = transform.localPosition.x / 5f;
         float turtlePosZ_normalized = transform.localPosition.z / 5f;
 
@@ -153,7 +153,7 @@ public class TurtleAgent : Agent
         switch (action)
         {
             case 1: // Move forward
-                transform.position += transform.forward * _moveSpeed * Time.deltaTime;
+                transform.localPosition += transform.forward * _moveSpeed * Time.deltaTime;
                 break;
 
             case 2: // Rotate left

@@ -9,7 +9,7 @@ public class Punch : MonoBehaviour
 
     public void punch()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, range);
+        Collider[] hits = Physics.OverlapSphere(transform.localPosition, range);
 
         List<Transform> hit_targets = new List<Transform>();
 

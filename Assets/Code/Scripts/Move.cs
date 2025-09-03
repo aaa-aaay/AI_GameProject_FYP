@@ -27,7 +27,7 @@ public class Move : MonoBehaviour
             }
             
             transform.forward = Vector3.Lerp(transform.forward, direction, time_passed / rotation_time);
-            transform.position += direction * Time.deltaTime * movespeed;
+            transform.localPosition += direction * Time.deltaTime * movespeed;
         }
     }
 

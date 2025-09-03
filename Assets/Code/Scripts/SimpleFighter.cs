@@ -30,14 +30,14 @@ public class SimpleFighter : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(transform.position);
+        sensor.AddObservation(transform.localPosition);
         sensor.AddObservation(transform.rotation);
 
         for (int i = 0; i < opponents.Count; i++)
         {
             behaviour_parameters.BrainParameters.VectorObservationSize += 7;
 
-            sensor.AddObservation(opponents[i].transform.position);
+            sensor.AddObservation(opponents[i].transform.localPosition);
             sensor.AddObservation(opponents[i].transform.rotation);
         }
     }
@@ -46,7 +46,7 @@ public class SimpleFighter : Agent
     //{
     //    //print(direction);
 
-    //    transform.position += direction * Time.deltaTime * movespeed;
+    //    transform.localPosition += direction * Time.deltaTime * movespeed;
     //    transform.forward = direction;
     //}
 
@@ -56,7 +56,7 @@ public class SimpleFighter : Agent
         direction.z = actions.ContinuousActions[1];
         direction.Normalize();
 
-        transform.position += direction * Time.deltaTime * movespeed;
+        transform.localPosition += direction * Time.deltaTime * movespeed;
         transform.forward = direction;
 
         AddReward(-0.01f);
