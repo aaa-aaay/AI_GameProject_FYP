@@ -178,7 +178,7 @@ public class TurtleAgent : Agent
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            SetReward(-0.5f);
+            SetReward(-2.0f);
             _renderer.material.color = Color.red;
         }
     }
@@ -187,7 +187,7 @@ public class TurtleAgent : Agent
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            SetReward(-0.05f * Time.fixedDeltaTime);
+            SetReward(-0.1f * Time.fixedDeltaTime);
         }
 
 
@@ -196,7 +196,7 @@ public class TurtleAgent : Agent
 
     private void GoalReached()
     {
-        AddReward(5.0f);
+        AddReward(20.0f);
         cumulativeReward = GetCumulativeReward();
 
         EndEpisode();
