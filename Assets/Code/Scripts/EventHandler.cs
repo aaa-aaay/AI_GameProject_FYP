@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class EventHandler
 {
-    public static Action<GameObject, GameObject, int> GotHit;
+    public static Action<GameObject, GameObject, float> GotHit;
     public static Action<GameObject, GameObject> GotKill;
 
-    public static void InvokeGotHit(GameObject hitter, GameObject target, int damage)
+    public static void InvokeGotHit(GameObject hitter, GameObject target, float damage)
     {
         if (GotHit != null)
         {

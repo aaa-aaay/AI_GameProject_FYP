@@ -62,7 +62,7 @@ public class SimpleFighter : Agent
         AddReward(-0.01f);
     }
 
-    public void reward_hit(GameObject hitter, GameObject target, int damage)
+    public void reward_hit(GameObject hitter, GameObject target, float damage)
     {
         if (hitter == gameObject)
         {

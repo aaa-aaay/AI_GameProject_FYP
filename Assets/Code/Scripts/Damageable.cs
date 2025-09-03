@@ -17,11 +17,12 @@ public class Damageable : MonoBehaviour
         EventHandler.GotHit -= take_damage;
     }
 
-    public void take_damage(GameObject hitter, GameObject target, int damage)
+    public void take_damage(GameObject hitter, GameObject target, float damage)
     {
-        if (target == this)
+        if (target == gameObject)
         {
             health -= damage;
+            print(gameObject.name + " took damage");
 
             if (health <= 0)
             {
