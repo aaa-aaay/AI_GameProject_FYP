@@ -1101,7 +1101,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80
@@ -1118,7 +1118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e04fd023c8ab114ea2d6fb119faf811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: 5
+  force: 10
 --- !u!1 &1277246527
 GameObject:
   m_ObjectHideFlags: 0
@@ -1134,6 +1134,7 @@ GameObject:
   - component: {fileID: 1277246533}
   - component: {fileID: 1277246532}
   - component: {fileID: 1277246534}
+  - component: {fileID: 1277246535}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -1405,6 +1406,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   max_health: 5
+--- !u!54 &1277246535
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277246527}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1365112633
 GameObject:
   m_ObjectHideFlags: 0
