@@ -189,6 +189,8 @@ public class TurtleAgent : Agent
         {
             SetReward(-0.01f * Time.fixedDeltaTime);
         }
+
+
     }
 
 
