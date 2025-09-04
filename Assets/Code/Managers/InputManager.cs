@@ -14,10 +14,15 @@ public class InputManager : MonoBehaviour,IGameService
     [SerializeField]
     private InputActionReference _jumpActionReference;
 
+
+    [SerializeField] InputActionReference _clickActionReference;
+
     public event Action<Vector2> OnMove;
     public event Action OnMoveEnd;
 
     public event Action OnJump;
+
+    public event Action OnClick;
 
 
 
@@ -33,6 +38,9 @@ public class InputManager : MonoBehaviour,IGameService
 
         _jumpActionReference.action.Enable();
         _jumpActionReference.action.performed += Jump;
+
+        _clickActionReference.action.Enable();
+        _clickActionReference.action.performed += Click;
 
     }
     private void OnDisable()
@@ -62,9 +70,13 @@ public class InputManager : MonoBehaviour,IGameService
         OnMoveEnd?.Invoke();
     }
 
-
     private void Jump(InputAction.CallbackContext context)
     {
         OnJump?.Invoke();
+    }
+
+    private void Click(InputAction.CallbackContext context)
+    {
+        OnClick?.Invoke();
     }
 }
