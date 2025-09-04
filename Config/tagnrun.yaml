@@ -1,0 +1,49 @@
+behaviors:
+  Tagger:
+    trainer_type: ppo
+    hyperparameters:
+      batch_size: 64
+      buffer_size: 2048
+      learning_rate: 0.0003
+      beta: 0.005
+      epsilon: 0.2
+      lambd: 0.95
+      num_epoch: 3
+    network_settings:
+      normalize: false
+      hidden_units: 128
+      num_layers: 2
+    reward_signals:
+      extrinsic:
+        gamma: 0.99
+        strength: 1.0
+    max_steps: 1000000
+    time_horizon: 64
+    summary_freq: 1000
+  Runner:
+    trainer_type: ppo
+    hyperparameters:
+      batch_size: 64
+      buffer_size: 2048
+      learning_rate: 0.0003
+      beta: 0.005
+      epsilon: 0.2
+      lambd: 0.95
+      num_epoch: 3
+    network_settings:
+      normalize: false
+      hidden_units: 128
+      num_layers: 2
+    reward_signals:
+      extrinsic:
+        gamma: 0.99
+        strength: 1.0
+    max_steps: 1000000
+    time_horizon: 64
+    summary_freq: 1000
+  
+
+
+
+
+    #mlagents-learn config/tagnrun.yaml --run-id=runner_vs_tagger --force
