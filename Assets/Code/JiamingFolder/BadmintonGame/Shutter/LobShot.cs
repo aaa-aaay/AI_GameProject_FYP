@@ -12,17 +12,6 @@ public class LobShot : Shot
 
     [SerializeField]
     private float arcHeight = 3.0f;
-    private void Start()
-    {
-        
-    }
-    public override void ExecuteShot(List<Transform> listOfTargets)
-    {
-        startPos = transform.position;
-        targetPos = CalculateWhichTarget(listOfTargets);
-        elapsedTime = 0f;
-        isFlying = true;
-    }
 
     private void Update()
     {

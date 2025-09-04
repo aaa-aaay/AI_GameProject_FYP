@@ -29,12 +29,35 @@ public class RacketSwing : MonoBehaviour
         InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
 
         inputManager.OnClick += HandleClick;
+        inputManager.onRightClick += HandleRightClick;
+        inputManager.onMiddleClick += HandleMiddleClick;
     }
 
     private void HandleClick()
     {
-        if(_racketSwinging) return;
 
+        if(_racketSwinging) return;
+        _racket.AssignType(Racket.ShotType.Lob);
+        StartSwing();
+    }
+
+    private void HandleRightClick()
+    {
+
+        if (_racketSwinging) return;
+        _racket.AssignType(Racket.ShotType.Drop);
+        StartSwing();
+    }
+
+    private void HandleMiddleClick()
+    {
+               if (_racketSwinging) return;
+        _racket.AssignType(Racket.ShotType.Smash);
+        StartSwing();
+    }
+
+    private void StartSwing()
+    {
         _racketSwinging = true;
         _racket.ActivateCollider();
 

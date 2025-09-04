@@ -4,8 +4,6 @@ using UnityEngine;
 
 public abstract class Shot : MonoBehaviour
 {
-    [SerializeField]
-    protected List<Transform> targetPoints;
 
 
     protected Vector3 startPos;
@@ -25,5 +23,24 @@ public abstract class Shot : MonoBehaviour
     }
 
 
-    public abstract void ExecuteShot(List<Transform> listOfTargets);
+
+    public virtual void Cancel()
+    {
+        isFlying = false;
+    }
+
+
+    public void ExecuteShot(List<Transform> listOfTargets)
+    {
+        startPos = transform.position;
+        targetPos = CalculateWhichTarget(listOfTargets);
+
+        elapsedTime = 0f;
+        isFlying = true;
+
+
+        // Stop any other shot updates on this object
+        foreach (var s in GetComponents<Shot>())
+            if (s != this) s.Cancel();
+    }
 }

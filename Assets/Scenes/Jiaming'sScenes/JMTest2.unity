@@ -663,6 +663,8 @@ GameObject:
   - component: {fileID: 412716683}
   - component: {fileID: 412716682}
   - component: {fileID: 412716686}
+  - component: {fileID: 412716687}
+  - component: {fileID: 412716688}
   m_Layer: 0
   m_Name: Shutter
   m_TagString: Shutter
@@ -771,11 +773,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f37b99c45cfa9b478226c7ad0bf913e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetPoints:
-  - {fileID: 1306930484}
-  - {fileID: 989748161}
-  travelTime: 3
+  travelTime: 2.5
+  arcHeight: 5
+--- !u!114 &412716687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412716680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d54bedd2bdd7ee4aa03a8b399a95a6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  travelTime: 2
   arcHeight: 4
+--- !u!114 &412716688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412716680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3f1bd7daeb82394fb777e7a90e0e211, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  travelTime: 1.5
+  arcHeight: 3
+  downBias: 2
+  skewPower: 0.35
+  faceVelocity: 1
 --- !u!1 &496564776
 GameObject:
   m_ObjectHideFlags: 0
@@ -804,8 +834,8 @@ Transform:
   m_GameObject: {fileID: 496564776}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
-  m_LocalScale: {x: 10, y: 2.5044405, z: 0.3}
+  m_LocalPosition: {x: 0, y: 1.62, z: 0}
+  m_LocalScale: {x: 10, y: 1.5260291, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1151726074}
@@ -1500,7 +1530,9 @@ MonoBehaviour:
   backTargetsRed:
   - {fileID: 1306930484}
   - {fileID: 989748161}
-  frontTargetsRed: []
+  frontTargetsRed:
+  - {fileID: 1033937264}
+  - {fileID: 820621238}
   backTargetsBlue:
   - {fileID: 69087349}
   - {fileID: 1886985082}
@@ -1674,6 +1706,8 @@ MonoBehaviour:
   _moveActionReference: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _jumpActionReference: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _clickActionReference: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _rightClickActionReference: {fileID: -4090225696740746782, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _middleClickReference: {fileID: -4894369177565079851, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1 &1564858943
 GameObject:
   m_ObjectHideFlags: 0

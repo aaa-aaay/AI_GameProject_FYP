@@ -15,7 +15,17 @@ public class InputManager : MonoBehaviour,IGameService
     private InputActionReference _jumpActionReference;
 
 
-    [SerializeField] InputActionReference _clickActionReference;
+    [SerializeField] 
+    InputActionReference _clickActionReference;
+
+
+    [SerializeField]
+    InputActionReference _rightClickActionReference;
+
+
+    [SerializeField]
+    private InputActionReference _middleClickReference;
+
 
     public event Action<Vector2> OnMove;
     public event Action OnMoveEnd;
@@ -23,6 +33,9 @@ public class InputManager : MonoBehaviour,IGameService
     public event Action OnJump;
 
     public event Action OnClick;
+
+    public event Action onRightClick;
+    public event Action onMiddleClick;
 
 
 
@@ -41,6 +54,12 @@ public class InputManager : MonoBehaviour,IGameService
 
         _clickActionReference.action.Enable();
         _clickActionReference.action.performed += Click;
+
+        _rightClickActionReference.action.Enable();
+        _rightClickActionReference.action.performed += RightClick;
+
+        _middleClickReference.action.Enable();
+        _middleClickReference.action.performed += MiddleClick;
 
     }
     private void OnDisable()
@@ -78,5 +97,15 @@ public class InputManager : MonoBehaviour,IGameService
     private void Click(InputAction.CallbackContext context)
     {
         OnClick?.Invoke();
+    }
+
+    private void RightClick(InputAction.CallbackContext context)
+    {
+        onRightClick?.Invoke();
+    }
+
+    private void MiddleClick(InputAction.CallbackContext context)
+    {
+        onMiddleClick?.Invoke();
     }
 }
