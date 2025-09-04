@@ -1,9 +1,15 @@
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Racket : MonoBehaviour
 {
 
     private Collider _collider;
+
+    [SerializeField]
+    private BadmintonCourtTargets _targets;
 
 
     private void Start()
@@ -27,7 +33,11 @@ public class Racket : MonoBehaviour
 
         if (other.CompareTag("Shutter"))
         {
-            Destroy(other.gameObject);
+
+            Shot shot = other.GetComponent<Shot>();
+            shot.ExecuteShot(_targets.backTargetsRed);
+
+            DeactivateCollider();
         }
 
         //add force to shuttercock here
