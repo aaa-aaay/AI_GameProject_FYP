@@ -12,6 +12,8 @@ public class Racket : MonoBehaviour
     [SerializeField]
     private BadmintonCourtTargets _targets;
 
+    [SerializeField] private bool _isOpponent;
+
 
     public enum ShotType
     {
@@ -36,8 +38,6 @@ public class Racket : MonoBehaviour
     {
        _collider.enabled = false;
     }
-
-
     public void AssignType(ShotType type)
     {
         _currentShotType = type;
@@ -62,29 +62,38 @@ public class Racket : MonoBehaviour
     {
 
         Shot shot;
+        List<Transform> FinalShotTarget = new List<Transform>();
 
         switch (_currentShotType)
         {
+
             case ShotType.Lob:
                 shot = other.GetComponent<LobShot>();
-                shot.ExecuteShot(_targets.backTargetsRed);
+                FinalShotTarget = _isOpponent ? _targets.backTargetsBlue : _targets.backTargetsRed;
                 break;
+
 
             case ShotType.Drop:
                 shot = other.GetComponent<DropShot>();
-                shot.ExecuteShot(_targets.frontTargetsRed);
+                FinalShotTarget = _isOpponent ? _targets.frontTargetsBlue : _targets.frontTargetsRed;
                 break;
+
 
             case ShotType.Smash:
                 shot = other.GetComponent<SmashShot>();
-                shot.ExecuteShot(_targets.backTargetsRed);
+                FinalShotTarget = _isOpponent ? _targets.backTargetsBlue : _targets.backTargetsRed;
                 break;
 
             default:
                 shot = other.GetComponent<LobShot>();
-                shot.ExecuteShot(_targets.backTargetsRed);
+                FinalShotTarget = _isOpponent ? _targets.backTargetsBlue : _targets.backTargetsRed;
                 break;
 
         }
+
+        shot.ExecuteShot(FinalShotTarget);
+
+
+
     }
 }

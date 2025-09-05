@@ -22,13 +22,10 @@ public abstract class Shot : MonoBehaviour
         return listOfTargets[randomIndex].position;
     }
 
-
-
     public virtual void Cancel()
     {
         isFlying = false;
     }
-
 
     public void ExecuteShot(List<Transform> listOfTargets)
     {

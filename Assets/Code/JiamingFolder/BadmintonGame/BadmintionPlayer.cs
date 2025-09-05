@@ -4,6 +4,7 @@ public class BadmintionPlayer : MonoBehaviour
 {
 
     [SerializeField] private float _moveSpeed = 5f;
+    private RacketSwing _racketSwing;
 
 
 
@@ -14,13 +15,23 @@ public class BadmintionPlayer : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
+        _racketSwing = GetComponent<RacketSwing>();
 
 
         InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
 
+
+        //Movements
         inputManager.OnMove += HandleMove;
         inputManager.OnMoveEnd += HandleMoveEnd;
         inputManager.OnJump += HandleJump;
+
+        //racket "Attacks"
+        inputManager.OnClick += HandleClick;
+        inputManager.onRightClick += HandleRightClick;
+        inputManager.onMiddleClick += HandleMiddleClick;
+
+
     }
 
 
@@ -43,6 +54,25 @@ public class BadmintionPlayer : MonoBehaviour
             _rb.AddForce(Vector3.up, ForceMode.Impulse);
         }
     }
+
+
+    private void HandleClick()
+    {
+        if (_racketSwing.racketSwinging) return;
+        _racketSwing.StartSwing(Racket.ShotType.Lob);
+    }
+    private void HandleRightClick()
+    {
+        if (_racketSwing.racketSwinging) return;
+        _racketSwing.StartSwing(Racket.ShotType.Drop);
+    }
+    private void HandleMiddleClick()
+    {
+        if (_racketSwing.racketSwinging) return;
+        _racketSwing.StartSwing(Racket.ShotType.Smash);
+    }
+
+
 
     private void FixedUpdate()
     {

@@ -13,8 +13,7 @@ public class RacketSwing : MonoBehaviour
     private Vector3 _origPos;
     private Quaternion _origRot;
 
-    private bool _racketSwinging = false;
-    private bool _finishedSwiping = false;
+    public bool racketSwinging = false;
 
     [SerializeField] private Racket _racket;
 
@@ -28,37 +27,14 @@ public class RacketSwing : MonoBehaviour
 
         InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
 
-        inputManager.OnClick += HandleClick;
-        inputManager.onRightClick += HandleRightClick;
-        inputManager.onMiddleClick += HandleMiddleClick;
     }
 
-    private void HandleClick()
+
+    public void StartSwing(Racket.ShotType shotType)
     {
 
-        if(_racketSwinging) return;
-        _racket.AssignType(Racket.ShotType.Lob);
-        StartSwing();
-    }
-
-    private void HandleRightClick()
-    {
-
-        if (_racketSwinging) return;
-        _racket.AssignType(Racket.ShotType.Drop);
-        StartSwing();
-    }
-
-    private void HandleMiddleClick()
-    {
-               if (_racketSwinging) return;
-        _racket.AssignType(Racket.ShotType.Smash);
-        StartSwing();
-    }
-
-    private void StartSwing()
-    {
-        _racketSwinging = true;
+        racketSwinging = true;
+        _racket.AssignType(shotType);
         _racket.ActivateCollider();
 
         StartCoroutine(LerpRacket(_lerpTransform, 0.2f));
@@ -96,7 +72,7 @@ public class RacketSwing : MonoBehaviour
         }
         _racketGO.transform.localPosition = _origPos;
         _racketGO.transform.localRotation = _origRot;
-        _racketSwinging = false;
+        racketSwinging = false;
     }
 
 
