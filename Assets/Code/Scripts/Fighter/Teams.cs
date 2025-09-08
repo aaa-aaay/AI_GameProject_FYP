@@ -1,0 +1,37 @@
+using System;
+using UnityEngine;
+
+[Serializable]
+public struct TeamData
+{
+    [SerializeField] private GameObject player;
+    [SerializeField] private Teams team;
+
+    public TeamData(GameObject new_player, Teams new_team)
+    {
+        player = new_player;
+        team = new_team;
+    }
+
+    public GameObject get_player()
+    {
+        return player;
+    }
+
+    public Teams get_team()
+    {
+        return team;
+    }
+
+    public void set_team(Teams new_team)
+    {
+        team = new_team;
+    }
+}
+
+public enum Teams
+{
+    Player = 0,
+    Enemy,
+    None
+}
