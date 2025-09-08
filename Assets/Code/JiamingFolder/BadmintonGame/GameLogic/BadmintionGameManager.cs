@@ -18,7 +18,7 @@ public class BadmintionGameManager : MonoBehaviour
     [SerializeField] private Transform shutterSpawnPoint2;
 
 
-
+    [SerializeField] private BadmintonAgent trainAgent;
 
     private void Start()
     {
@@ -63,10 +63,15 @@ public class BadmintionGameManager : MonoBehaviour
         }
     }
 
-    private void ResetGame()
+    public void ResetGame()
     {
         player1Score = player2Score = 0;
         _P2ScoreDisplay.text = player2Score.ToString();
         _P1ScoreDisplay.text = player1Score.ToString();
+
+        if(trainAgent != null)
+        {
+            trainAgent.EndEpisode();
+        }
     }
 }
