@@ -8,7 +8,7 @@ public class Knockback : MonoBehaviour
 
     private void Start()
     {
-        EventHandler.GotHit += inflict_knockback;
+        EventHandler.TookDamage += inflict_knockback;
         rigidbody = GetComponent<Rigidbody>();
     }
 

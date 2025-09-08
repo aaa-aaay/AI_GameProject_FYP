@@ -4,28 +4,33 @@ using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
+using UnityEngine.Events;
 
-public class SimpleFighter : Agent
+public class SimpleFighter : AgentDLC
 {
     [SerializeField] private List<GameObject> opponents;
 
-    private float movespeed = 1;
-
-    private Vector3 direction = Vector3.zero;
-
-    private BehaviorParameters behaviour_parameters;
+    [SerializeField] UnityEvent<Vector2> Move;
+    [SerializeField] UnityEvent Dash;
+    [SerializeField] UnityEvent LeftPunch;
+    [SerializeField] UnityEvent RightPunch;
 
     private void Start()
     {
-        behaviour_parameters = GetComponent<BehaviorParameters>();
-        EventHandler.GotHit += reward_hit;
+        base_start();
+        EventHandler.TookDamage += reward_hit;
         EventHandler.GotKill += reward_kill;
     }
 
     private void OnDestroy()
     {
-        EventHandler.GotHit -= reward_hit;
+        EventHandler.TookDamage -= reward_hit;
         EventHandler.GotKill -= reward_kill;
+    }
+
+    public override void OnEpisodeBegin()
+    {
+        transform.localPosition = new Vector3(Random.Range(-10, 11), -0.5f, Random.Range(-10, 11));
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -35,38 +40,50 @@ public class SimpleFighter : Agent
 
         for (int i = 0; i < opponents.Count; i++)
         {
-            behaviour_parameters.BrainParameters.VectorObservationSize += 7;
-
             sensor.AddObservation(opponents[i].transform.position);
             sensor.AddObservation(opponents[i].transform.rotation);
         }
     }
 
-    //private void Update()
-    //{
-    //    //print(direction);
-
-    //    transform.position += direction * Time.deltaTime * movespeed;
-    //    transform.forward = direction;
-    //}
-
     public override void OnActionReceived(ActionBuffers actions)
     {
-        direction.x = actions.ContinuousActions[0];
-        direction.z = actions.ContinuousActions[1];
-        direction.Normalize();
+        Vector2 direction = new Vector2(actions.ContinuousActions[0], actions.ContinuousActions[1]);
 
-        transform.position += direction * Time.deltaTime * movespeed;
-        transform.forward = direction;
+        Move.Invoke(direction);
 
-        AddReward(-0.01f);
+        if (direction != Vector2.zero)
+        {
+            for (int i = 0; i < opponents.Count; i++)
+            {
+                if (Vector3.Angle(transform.forward, opponents[i].transform.position - transform.position) < 10)
+                {
+                    AddReward(0.02f);
+                    break;
+                }
+            }
+        }
+
+        switch (actions.DiscreteActions[0])
+        {
+            case 0:
+                Dash.Invoke();
+                break;
+            case 1:
+                LeftPunch.Invoke();
+                break;
+            case 2:
+                RightPunch.Invoke();
+                break;
+            default:
+                break;
+        }
     }
 
     public void reward_hit(GameObject hitter, GameObject target, float damage)
     {
-        if (hitter == gameObject)
+        if (hitter.transform.root.gameObject == gameObject)
         {
-            AddReward(1f);
+            AddReward(2f);
         }
         else if (target == gameObject)
         {
@@ -78,11 +95,27 @@ public class SimpleFighter : Agent
     {
         if (killer == gameObject)
         {
-            AddReward(5);
+            AddReward(10);
         }
         else if (target == gameObject)
         {
             AddReward(-5f);
+            EndEpisode();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (opponents.Contains(collision.gameObject))
+        {
+            if (Vector3.Angle(transform.forward, collision.transform.position - transform.position) < 10)
+            {
+                AddReward(0.5f);
+            }
+            else
+            {
+                AddReward(0.05f);
+            }
         }
     }
 }
