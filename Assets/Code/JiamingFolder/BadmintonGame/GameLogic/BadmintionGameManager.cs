@@ -20,13 +20,16 @@ public class BadmintionGameManager : MonoBehaviour
 
     [SerializeField] private BadmintonAgent trainAgent;
 
+    public bool InRedCourt { get; set; } = true;
+
+
     private void Start()
     {
         _P1ScoreDisplay.text = 0.ToString();
         _P2ScoreDisplay.text = 0.ToString();
 
-
         shutter.transform.position = shutterSpawnPoint1.position;
+        InRedCourt = true;
     }
     public void PlayerScores(int playerNo)
     {
@@ -35,18 +38,27 @@ public class BadmintionGameManager : MonoBehaviour
         {
             player1Score++;
             _P1ScoreDisplay.text = player1Score.ToString();
+
+            shutter.transform.position = shutterSpawnPoint1.position;
+            InRedCourt = false;
+
+            Debug.Log("Set to red Court");
         }
         else if(playerNo == 2)
         {
             player2Score++;
             _P2ScoreDisplay.text = player2Score.ToString();
+
+            shutter.transform.position = shutterSpawnPoint2.position;
+            InRedCourt = true;
+
+            Debug.Log("Set to red Court");
         }
 
         foreach(Shot s in shutter.GetComponents<Shot>())
         {
             s.Cancel();
         }
-        shutter.transform.position = playerNo == 1 ? shutterSpawnPoint1.position : shutterSpawnPoint2.position;
 
         CheckForWin();
     }
@@ -69,7 +81,7 @@ public class BadmintionGameManager : MonoBehaviour
         _P2ScoreDisplay.text = player2Score.ToString();
         _P1ScoreDisplay.text = player1Score.ToString();
 
-        if(trainAgent != null)
+        if (trainAgent != null)
         {
             trainAgent.EndEpisode();
         }

@@ -13,6 +13,7 @@ public class Racket : MonoBehaviour
     private BadmintonCourtTargets _targets;
 
     [SerializeField] private bool _isOpponent;
+    [SerializeField] private BadmintionGameManager _gameManager;
 
 
     public enum ShotType

@@ -18,8 +18,6 @@ public class BasicBadmintonAI : MonoBehaviour
     [SerializeField] private RacketSwing _racketSwing;
 
 
-
-
     void Update()
     {
         if (_shuttle == null || _net == null) return;
@@ -62,7 +60,7 @@ public class BasicBadmintonAI : MonoBehaviour
         if (_racketSwing.racketSwinging) return;
 
 
-        int choice = Random.Range(0, 3);
+        int choice = Random.Range(2, 3);
 
 
         if(choice == 0)
