@@ -15,37 +15,28 @@ public class BadmintonAgent : Agent
 
     [Header("Stats")]
     [SerializeField] private float _moveSpeed = 5.0f;
-    //[SerializeField] private float _offsetFromShuttle = 1.2f;
     [SerializeField] private float _hitRange = 2.0f;
-    //[SerializeField] private float minHeight = 0.3f;
-    //[SerializeField] private float maxHeight = 5.0f;
+
+    [SerializeField] private float offsetFromShuttle = 1.6f;
+    [SerializeField] private float minHeight = 0.5f;
+    [SerializeField] private float maxHeight = 3.0f;
 
 
     [Header("Other References")]
-    //[SerializeField] private RacketSwing _racketSwing;
     [SerializeField] private BadmintionGameManager _gameManager;
+    [SerializeField] private RacketSwing _racketSwing;
 
 
 
     private Vector3 startPosition;
     private float _prevDistToShuttle;
 
-    private DecisionRequester _dr;
-    private bool _wasInRedCourt;
 
 
     public override void Initialize()
     {
-        _dr = GetComponent<DecisionRequester>();
         startPosition = transform.localPosition;
 
-
-
-        bool allowDecisions = !_gameManager.InRedCourt;
-        _dr.enabled = allowDecisions;
-        _wasInRedCourt = _gameManager.InRedCourt;
-
-        if (allowDecisions) RequestDecision();
     }
 
     public override void OnEpisodeBegin()
@@ -59,46 +50,23 @@ public class BadmintonAgent : Agent
 
     private void Update()
     {
-        // Toggle the requester only when the gate changes
-        bool inRed = _gameManager.InRedCourt;
-        if (inRed != _wasInRedCourt)
-        {
-            bool allowDecisions = !inRed;
-            _dr.enabled = allowDecisions;
-
-            // If we just enabled decisions, ask for one right away
-            if (allowDecisions) RequestDecision();
-
-            _wasInRedCourt = inRed;
-        }
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(transform.localPosition);
         sensor.AddObservation(_shuttle.transform.localPosition);
-       // sensor.AddObservation(_net.localPosition);
-        sensor.AddObservation(_shuttle.localPosition - transform.localPosition); // relative pos to shuttle
-        //sensor.AddObservation(_net.localPosition - transform.localPosition);   // relative pos to net
+        sensor.AddObservation(_shuttle.localPosition - transform.localPosition);
 
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        int shotType = actions.DiscreteActions[0];
-
         MoveAgent(actions.DiscreteActions);
-        Swinging();
+        Swinging(actions.DiscreteActions);
 
 
-        // Distance reward
-        float currentDist = Vector3.Distance(transform.position, _shuttle.position);
-        float distChange = _prevDistToShuttle - currentDist;
 
-        // Reward for moving closer, penalty for moving away
-        AddReward(distChange * 0.1f); // scale factor so it's not too strong
-
-        _prevDistToShuttle = currentDist;
 
         AddReward(-0.001f); // small time penalty to avoid stalling
 
@@ -109,9 +77,37 @@ public class BadmintonAgent : Agent
     {
         var action = act[0];
 
+
+
+        Vector3 dirToNet = (_net.position - _shuttle.position).normalized;
+        Vector3 desiredPos = _shuttle.position - dirToNet * offsetFromShuttle;
+
+
+
+
+        // Distance reward
+        float currentDist = Vector3.Distance(transform.localPosition, desiredPos);
+        float distChange = _prevDistToShuttle - currentDist;
+
+        // Reward for moving closer, penalty for moving away
+        if (currentDist > _prevDistToShuttle)
+        {
+            AddReward(-distChange * 0.1f);
+        }
+        else
+        {
+            AddReward(distChange * 0.1f);
+
+        }
+
+        _prevDistToShuttle = currentDist;
+
+
+
+
         //movement
         Vector3 movement = Vector3.zero;
-        Vector3 dirToNet = (_net.position - _shuttle.position).normalized;
+        //Vector3 dirToNet = (_net.position - _shuttle.position).normalized;
 
         switch (action)
         {
@@ -142,26 +138,46 @@ public class BadmintonAgent : Agent
     }
 
 
-    public void Swinging()
+    public void Swinging(ActionSegment<int> act)
     {
 
-        float distToIdeal = Vector3.Distance(transform.position, _shuttle.transform.position);
+        //float distToIdeal = Vector3.Distance(transform.position, _shuttle.transform.position);
        
         bool inRange = Vector3.Distance(transform.position, _shuttle.position) < _hitRange;
+        bool inHeight = _shuttle.position.y > minHeight && _shuttle.position.y < maxHeight;
 
 
-        if (inRange)
+        if (inRange && inHeight)
         {
+
+            var swingingAction = act[1];
             Debug.Log("In Range");
+            SwingRacket(swingingAction);
             AddReward(1.0f);
         }
+        //else
+        //{
+        //    AddReward(0.01f * -distToIdeal);
+        //}
+
+        
+
+
+
+    }
+
+
+    private void SwingRacket(int choice)
+    {
+        if (_racketSwing.racketSwinging) return;
+
+
+        if (choice == 0)
+            _racketSwing.StartSwing(Racket.ShotType.Smash);
+        else if (choice == 1)
+            _racketSwing.StartSwing(Racket.ShotType.Drop);
         else
-        {
-            AddReward(0.01f * -distToIdeal);
-        }
-
-
-
+            _racketSwing.StartSwing(Racket.ShotType.Lob);
     }
 
 

@@ -60,7 +60,7 @@ public class BasicBadmintonAI : MonoBehaviour
         if (_racketSwing.racketSwinging) return;
 
 
-        int choice = Random.Range(2, 3);
+        int choice = Random.Range(0, 3);
 
 
         if(choice == 0)
