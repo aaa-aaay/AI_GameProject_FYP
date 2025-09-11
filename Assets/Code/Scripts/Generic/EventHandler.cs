@@ -12,6 +12,8 @@ public class EventHandler
     public static Action<GameObject, float> Punish;
 
     public static Action<GameObject, bool> StartTurn;
+    public static Action<GameObject> OutOfBounds;
+    public static Action<GameObject> Scored;
 
     public static void InvokeEndScenario()
     {
@@ -58,6 +60,22 @@ public class EventHandler
         if (StartTurn != null)
         {
             StartTurn.Invoke(player, set_position);
+        }
+    }
+
+    public static void InvokeOutOfBounds(GameObject game_object)
+    {
+        if (OutOfBounds != null)
+        {
+            OutOfBounds.Invoke(game_object);
+        }
+    }
+
+    public static void InvokeScored(GameObject game_object)
+    {
+        if (Scored != null)
+        {
+            Scored.Invoke(game_object);
         }
     }
 }

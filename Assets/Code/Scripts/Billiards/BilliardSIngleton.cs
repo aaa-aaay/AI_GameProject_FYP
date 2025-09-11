@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BilliardSIngleton : MonoBehaviour
+public class BilliardSingleton : MonoBehaviour
 {
     [SerializeField] private float min_magnitude;
     [SerializeField] private float max_force;
     [SerializeField] private List<GameObject> players;
 
-    public static BilliardSIngleton instance;
+    public static BilliardSingleton instance;
 
     private BallData cue_ball;
     private List<BallData> balls;
@@ -16,6 +16,7 @@ public class BilliardSIngleton : MonoBehaviour
     private bool scored;
     private bool penalty;
     private int current_player;
+    private int scored_balls;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -29,11 +30,28 @@ public class BilliardSIngleton : MonoBehaviour
             scored = false;
             penalty = false;
             current_player = 0;
+            scored_balls = 0;
+
+            EventHandler.Scored += when_scored;
+            EventHandler.OutOfBounds += when_out_of_bounds;
+            EventHandler.EndScenario += restart_game;
         }
         else
         {
             Destroy(this);
         }
+    }
+
+    private void Start()
+    {
+        EventHandler.InvokeStartTurn(players[current_player], false);
+    }
+
+    private void OnDestroy()
+    {
+        EventHandler.Scored -= when_scored;
+        EventHandler.OutOfBounds -= when_out_of_bounds;
+        EventHandler.EndScenario -= restart_game;
     }
 
     public void set_cue_ball(GameObject new_cue_ball, Rigidbody rigidbody)
@@ -51,7 +69,7 @@ public class BilliardSIngleton : MonoBehaviour
         }
     }
 
-    private BallData get_ball_data(GameObject game_object)
+    public BallData get_ball_data(GameObject game_object)
     {
         BallData temp;
         for (int i = 0; i < balls.Count; i++)
@@ -67,7 +85,7 @@ public class BilliardSIngleton : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (ball_shot)
         {
@@ -101,6 +119,7 @@ public class BilliardSIngleton : MonoBehaviour
 
             if (finished && ball_shot)
             {
+                print("Turn over");
                 next_turn();
             }
         }
@@ -111,26 +130,40 @@ public class BilliardSIngleton : MonoBehaviour
         return cue_ball;
     }
 
-    public List<BallData> get_ball_data()
+    public List<BallData> get_balls()
     {
         return balls;
     }
 
     public void shoot_ball(Vector2 direction, float force_percentage)
     {
-        cue_ball.get_rigidbody().AddForce(new Vector3(direction.x, 0, direction.y) * force_percentage * max_force);
+        direction.Normalize();
+        Rigidbody temp = cue_ball.get_rigidbody();
+        temp.isKinematic = false;
+        temp.AddForce(new Vector3(direction.x, 0, direction.y) * force_percentage * max_force, ForceMode.Impulse);
         ball_shot = true;
     }
 
     public void shoot_ball(Vector3 direction, float force_percentage)
     {
-        cue_ball.get_rigidbody().AddForce(direction * force_percentage * max_force);
+        direction.y = 0;
+        direction.Normalize();
+        Rigidbody temp = cue_ball.get_rigidbody();
+        temp.isKinematic = false;
+        temp.AddForce(direction * force_percentage * max_force, ForceMode.Impulse);
         ball_shot = true;
+        print("Shot ball");
     }
 
     public void set_cue_ball_position(Vector2 position)
     {
-        cue_ball.get_ball().transform.position = new Vector3(position.x, 0, position.y);
+        cue_ball.get_ball().transform.localPosition = new Vector3(position.x, 0, position.y);
+    }
+
+    public void set_cue_ball_position(Vector3 position)
+    {
+        position.y = 0;
+        cue_ball.get_ball().transform.localPosition = position;
     }
 
     private void next_turn()
@@ -164,5 +197,66 @@ public class BilliardSIngleton : MonoBehaviour
 
             EventHandler.InvokeStartTurn(players[current_player], true);
         }
+
+        penalty = false;
+        ball_shot = false;
+        scored = false;
+        print("Turn over");
+    }
+
+    public void when_scored(GameObject game_object)
+    {
+        if (is_cue_ball(game_object))
+        {
+            penalty = true;
+            EventHandler.InvokePunish(players[current_player], -5f);
+        }
+        else if (is_ball(game_object))
+        {
+            scored = true;
+            EventHandler.InvokePunish(players[current_player], 5f);
+
+            scored_balls++;
+            print("Score is " + scored_balls);
+            if (scored_balls >= balls.Count)
+            {
+                EventHandler.InvokeEndScenario();
+            }
+        }
+    }
+
+    public void when_out_of_bounds(GameObject game_object)
+    {
+        if (is_cue_ball(game_object) || is_ball(game_object))
+        {
+            penalty = true;
+            EventHandler.InvokePunish(players[current_player], -5f);
+        }
+    }
+
+    public bool is_cue_ball(GameObject game_object)
+    {
+        return cue_ball.get_ball() == game_object;
+    }
+
+    public bool is_ball(GameObject game_object)
+    {
+        return get_ball_data(game_object).get_rigidbody() != null;
+    }
+
+    public void restart_game()
+    {
+        ball_shot = false;
+        print("Game restarted");
+        scored = false;
+        penalty = false;
+        current_player = 0;
+        scored_balls = 0;
+        EventHandler.InvokeStartTurn(players[current_player], false);
+    }
+
+    public void reward_player(float value)
+    {
+        EventHandler.InvokePunish(players[current_player], value);
     }
 }

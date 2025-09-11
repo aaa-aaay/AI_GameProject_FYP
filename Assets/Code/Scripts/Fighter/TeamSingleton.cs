@@ -29,7 +29,7 @@ public class TeamSingleton : MonoBehaviour
 
     public void join_team(GameObject game_object, Teams team)
     {
-        teams.Add(new TeamData(game_object, team));
+        teams.Add(new TeamData(game_object, team, gameObject.GetComponent<Damageable>()));
     }
 
     public void change_team(GameObject game_object, Teams team, bool check_win = true)
@@ -71,6 +71,21 @@ public class TeamSingleton : MonoBehaviour
         return teams[index].get_team();
     }
 
+    public Damageable get_damageable(GameObject game_object)
+    {
+        return get_team_data(game_object).get_damageable();
+    }
+
+    public float get_health(GameObject game_object)
+    {
+        Damageable temp = get_damageable(game_object);
+        if (temp == null) 
+        {
+            return 0;
+        }
+        return temp.get_health();
+    }
+
     public TeamData get_team_data(GameObject game_object)
     {
         TeamData temp;
@@ -84,7 +99,7 @@ public class TeamSingleton : MonoBehaviour
         }
 
         print("Couldn't find");
-        temp = new TeamData(gameObject, Teams.None);
+        temp = new TeamData(gameObject, Teams.None, gameObject.GetComponent<Damageable>());
         return temp;
     }
 
@@ -99,6 +114,10 @@ public class TeamSingleton : MonoBehaviour
             }
         }
         print("Won game");
+        for (int i = 0; i < teams.Count; i++)
+        {
+            EventHandler.InvokePunish(teams[i].get_player(), 15);
+        }
         EventHandler.InvokeEndScenario();
     }
 }
