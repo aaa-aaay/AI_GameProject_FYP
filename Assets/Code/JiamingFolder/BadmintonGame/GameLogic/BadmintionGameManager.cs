@@ -17,8 +17,7 @@ public class BadmintionGameManager : MonoBehaviour
     [SerializeField] private Transform shutterSpawnPoint1;
     [SerializeField] private Transform shutterSpawnPoint2;
 
-
-    [SerializeField] private BadmintonAgent trainAgent;
+    public event Action OnGameOver;
 
     public bool InRedCourt { get; set; } = true;
 
@@ -80,10 +79,6 @@ public class BadmintionGameManager : MonoBehaviour
         player1Score = player2Score = 0;
         _P2ScoreDisplay.text = player2Score.ToString();
         _P1ScoreDisplay.text = player1Score.ToString();
-
-        if (trainAgent != null)
-        {
-            trainAgent.EndEpisode();
-        }
+        OnGameOver?.Invoke();
     }
 }

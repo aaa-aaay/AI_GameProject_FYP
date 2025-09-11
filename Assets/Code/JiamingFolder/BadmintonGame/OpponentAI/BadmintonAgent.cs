@@ -18,24 +18,27 @@ public class BadmintonAgent : Agent
     [SerializeField] private float _hitRange = 2.0f;
 
     [SerializeField] private float offsetFromShuttle = 1.6f;
-    [SerializeField] private float minHeight = 0.5f;
-    [SerializeField] private float maxHeight = 3.0f;
+    [SerializeField] private float _minHeight = 0.5f;
+    [SerializeField] private float _maxHeight = 3.0f;
 
 
     [Header("Other References")]
     [SerializeField] private BadmintionGameManager _gameManager;
     [SerializeField] private RacketSwing _racketSwing;
+    [SerializeField] private Racket _racket;
 
 
 
-    private Vector3 startPosition;
+    private Vector3 _startPosition;
     private float _prevDistToShuttle;
 
 
 
     public override void Initialize()
     {
-        startPosition = transform.localPosition;
+        _startPosition = transform.localPosition;
+        _racket.OnHitShutter += RewardForHiting;
+        _gameManager.OnGameOver += HandleGameOver;
 
     }
 
@@ -43,20 +46,18 @@ public class BadmintonAgent : Agent
     {
         
 
-        transform.localPosition = startPosition + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
+        transform.localPosition = _startPosition + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
 
 
     }
-
-    private void Update()
+    private void RewardForHiting()
     {
+       AddReward(1.0f);
+    }
 
-
-        if(_racketSwing.racketSwinging)
-        {
-
-        }
-
+    private void HandleGameOver()
+    {
+        EndEpisode();
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -151,7 +152,7 @@ public class BadmintonAgent : Agent
         //float distToIdeal = Vector3.Distance(transform.position, _shuttle.transform.position);
        
         bool inRange = Vector3.Distance(transform.position, _shuttle.position) < _hitRange;
-        bool inHeight = _shuttle.position.y > minHeight && _shuttle.position.y < maxHeight;
+        bool inHeight = _shuttle.position.y > _minHeight && _shuttle.position.y < _maxHeight;
 
 
         if (inRange && inHeight)
