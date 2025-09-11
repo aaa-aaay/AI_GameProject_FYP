@@ -50,6 +50,13 @@ public class BadmintonAgent : Agent
 
     private void Update()
     {
+
+
+        if(_racketSwing.racketSwinging)
+        {
+
+        }
+
     }
 
     public override void CollectObservations(VectorSensor sensor)

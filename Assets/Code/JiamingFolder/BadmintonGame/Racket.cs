@@ -1,7 +1,6 @@
-using JetBrains.Annotations;
-using NUnit.Framework;
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Racket : MonoBehaviour
@@ -14,6 +13,9 @@ public class Racket : MonoBehaviour
 
     [SerializeField] private bool _isOpponent;
     [SerializeField] private BadmintionGameManager _gameManager;
+
+
+    public event Action OnHitShutter;
 
 
     public enum ShotType
@@ -51,6 +53,7 @@ public class Racket : MonoBehaviour
         if (other.CompareTag("Shutter"))
         {
             ShootWithTechnique(other);
+            OnHitShutter?.Invoke();
             DeactivateCollider();
         }
 
