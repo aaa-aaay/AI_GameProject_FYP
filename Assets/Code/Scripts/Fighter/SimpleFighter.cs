@@ -40,12 +40,14 @@ public class SimpleFighter : AgentDLC
         sensor.AddObservation(transform.position);
         sensor.AddObservation(transform.rotation);
         sensor.AddObservation((int) TeamSingleton.instance.get_team(gameObject));
+        sensor.AddObservation(TeamSingleton.instance.get_health(gameObject));
 
         for (int i = 0; i < opponents.Count; i++)
         {
             sensor.AddObservation(opponents[i].transform.position);
             sensor.AddObservation(opponents[i].transform.rotation);
-            sensor.AddObservation((int)TeamSingleton.instance.get_team(opponents[i]));
+            sensor.AddObservation((int) TeamSingleton.instance.get_team(opponents[i]));
+            sensor.AddObservation(TeamSingleton.instance.get_health(opponents[i]));
         }
     }
 
@@ -54,6 +56,8 @@ public class SimpleFighter : AgentDLC
         Vector2 direction = new Vector2(actions.ContinuousActions[0], actions.ContinuousActions[1]);
 
         Move.Invoke(direction);
+
+        AddReward(-0.01f);
 
         if (direction != Vector2.zero)
         {
@@ -106,8 +110,9 @@ public class SimpleFighter : AgentDLC
         }
         else if (target == gameObject)
         {
+            //transform.localPosition = new Vector3(Random.Range(-10, 11), -0.5f, Random.Range(-10, 11));
             AddReward(-5f);
-            //EndEpisode();
+            EndEpisode();
         }
     }
 

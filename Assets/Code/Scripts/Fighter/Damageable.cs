@@ -93,7 +93,10 @@ public class Damageable : MonoBehaviour
         }
         if (target == gameObject)
         {
-            health = max_health;
+            if (TeamSingleton.instance.get_team(killer) != Teams.None)
+            {
+                health = max_health;
+            }
         }
     }
 
