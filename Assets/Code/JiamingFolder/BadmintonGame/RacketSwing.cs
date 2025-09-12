@@ -25,8 +25,6 @@ public class RacketSwing : MonoBehaviour
         _origPos = _racketGO.transform.localPosition;
         _racket.DeactivateCollider();
 
-        InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
-
     }
 
 
