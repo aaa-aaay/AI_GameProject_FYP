@@ -39,7 +39,7 @@ behaviors:
     keep_checkpoints: 5
     even_checkpoints: false
     max_steps: 2000000
-    time_horizon: 100
+    time_horizon: 64
     summary_freq: 1000
     threaded: false
     self_play: null
@@ -59,7 +59,7 @@ engine_settings:
   width: 84
   height: 84
   quality_level: 5
-  time_scale: 20
+  time_scale: 10.0
   target_frame_rate: -1
   capture_frame_rate: 60
   no_graphics: false

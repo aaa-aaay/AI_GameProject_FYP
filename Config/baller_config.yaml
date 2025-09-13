@@ -2,5 +2,6 @@ behaviors:
   Baller:
     trainer_type: ppo
     max_steps: 2000000
-    time_horizon: 100
     summary_freq: 1000
+engine_settings:
+  time_scale: 10    

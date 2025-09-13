@@ -13,6 +13,11 @@ public abstract class AgentDLC : Agent
         EventHandler.Punish += punish;
     }
 
+    public void base_destroy()
+    {
+        EventHandler.Punish -= punish;
+    }
+
     public void punish(GameObject target, float punishment)
     {
         if (target == gameObject)

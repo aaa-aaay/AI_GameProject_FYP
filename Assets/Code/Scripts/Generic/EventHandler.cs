@@ -14,6 +14,7 @@ public class EventHandler
     public static Action<GameObject, bool> StartTurn;
     public static Action<GameObject> OutOfBounds;
     public static Action<GameObject> Scored;
+    public static Action<GameObject> RestartGame;
 
     public static void InvokeEndScenario()
     {
@@ -76,6 +77,14 @@ public class EventHandler
         if (Scored != null)
         {
             Scored.Invoke(game_object);
+        }
+    }
+
+    public static void InvokeRestartGame(GameObject game_object)
+    {
+        if (RestartGame != null)
+        {
+            RestartGame.Invoke(game_object);
         }
     }
 }

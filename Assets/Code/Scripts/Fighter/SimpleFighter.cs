@@ -25,6 +25,7 @@ public class SimpleFighter : AgentDLC
 
     private void OnDestroy()
     {
+        base_destroy();
         EventHandler.TookDamage -= reward_hit;
         EventHandler.GotKill -= reward_kill;
         EventHandler.EndScenario -= OnEpisodeBegin;
