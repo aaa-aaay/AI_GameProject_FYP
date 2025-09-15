@@ -48,7 +48,6 @@ public class InputManager : MonoBehaviour,IGameService
     {
         ServiceLocator.Instance.AddService(this, false);
 
-
         _inputActionAsset.Enable();
         _moveActionReference.action.Enable();
         _moveActionReference.action.performed += Move;
@@ -134,7 +133,7 @@ public class InputManager : MonoBehaviour,IGameService
 
     private void Interact(InputAction.CallbackContext context)
     {
-
+        
         Debug.Log("Interact action fired: " + context.phase);
         onInteract?.Invoke();
     }

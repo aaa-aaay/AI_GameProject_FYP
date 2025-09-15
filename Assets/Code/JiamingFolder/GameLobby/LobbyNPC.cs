@@ -7,11 +7,15 @@ public class LobbyNPC : MonoBehaviour
 
     private bool dialougeStarted;
 
+    private DialogueManager dialogueManager;
+
     private void Start()
     {
         InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
 
         inputManager.OnClick += HandleClick;
+
+        dialogueManager = ServiceLocator.Instance.GetService<DialogueManager>();
 
     }
     private void OnTriggerEnter(Collider other)
@@ -20,7 +24,7 @@ public class LobbyNPC : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            DialogueManager.Instance.StartDialogue(dialouge);
+            dialogueManager.StartDialogue(dialouge);
             dialougeStarted = true;
         }
     }
@@ -29,9 +33,9 @@ public class LobbyNPC : MonoBehaviour
     {
         if (!dialougeStarted) return;
 
-        if (DialogueManager.Instance.StillHaveDialogue())
+        if (dialogueManager.StillHaveDialogue())
         {
-            DialogueManager.Instance.DisplayNextSentence();
+            dialogueManager.DisplayNextSentence();
         }
         else
         {

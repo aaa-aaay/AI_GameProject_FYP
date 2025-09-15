@@ -14,7 +14,6 @@ public class WorldSelect : MonoBehaviour
 
     private bool playerInRange = false;
 
-
     private void Start()
     {
 

@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class DialogueManager : MonoBehaviour
+public class DialogueManager : MonoBehaviour, IGameService
 {
     public static DialogueManager Instance { get; private set; }
 
@@ -13,26 +14,24 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private TMP_Text sentenceText;
     [SerializeField] private GameObject canvas;
     [SerializeField] private Animator animator;
+
+    [SerializeField] private Image pfpImage;
+
     private bool haveDialouge;
 
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject); // Optional: keep across scenes
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
-    private void Start()
+    private void OnEnable()
     {
+        ServiceLocator.Instance.AddService(this, false);
         sentences = new Queue<string>();
         canvas.SetActive(false);
     }
+
+    private void OnDisable()
+    {
+        ServiceLocator.Instance.RemoveService<InputManager>(false);
+    }
+
 
     public void StartDialogue(Dialogue dialouge)
     {
@@ -41,6 +40,7 @@ public class DialogueManager : MonoBehaviour
         animator.SetBool("isOpen", true);
         haveDialouge = true;
         nameText.text = dialouge.name;
+        pfpImage.sprite = dialouge.pfpSprite;
 
         foreach (string sentence in dialouge.sentences) { 
             sentences.Enqueue(sentence);
