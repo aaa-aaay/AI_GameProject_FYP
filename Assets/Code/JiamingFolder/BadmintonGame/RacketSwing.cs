@@ -28,11 +28,11 @@ public class RacketSwing : MonoBehaviour
     }
 
 
-    public void StartSwing(Racket.ShotType shotType)
+    public void StartSwing(Racket.ShotType shotType,int direction = 3)
     {
 
         racketSwinging = true;
-        _racket.AssignType(shotType);
+        _racket.AssignShot(shotType, direction);
         _racket.ActivateCollider();
 
         StartCoroutine(LerpRacket(_lerpTransform, 0.2f));

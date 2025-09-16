@@ -16,6 +16,7 @@ public class Racket : MonoBehaviour
 
 
     public event Action OnHitShutter;
+    private int _shotDirection;
 
 
     public enum ShotType
@@ -41,9 +42,10 @@ public class Racket : MonoBehaviour
     {
        _collider.enabled = false;
     }
-    public void AssignType(ShotType type)
+    public void AssignShot(ShotType type, int shotDirection)
     {
         _currentShotType = type;
+        _shotDirection = shotDirection;
     }
 
 
@@ -95,7 +97,11 @@ public class Racket : MonoBehaviour
 
         }
 
-        shot.ExecuteShot(FinalShotTarget);
+        //add in the direction set here?
+        //1 for left
+        //2 for right
+        //3 for random or closest???
+        shot.ExecuteShot(FinalShotTarget, _shotDirection);
 
 
 

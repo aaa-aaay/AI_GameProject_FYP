@@ -22,7 +22,7 @@ public class ShootBack : MonoBehaviour
 
 
             Shot shot = other.GetComponent<Shot>();
-            shot.ExecuteShot(targets.backTargetsBlue);
+            shot.ExecuteShot(targets.backTargetsBlue, 3);
         }
     }
 
@@ -36,7 +36,7 @@ public class ShootBack : MonoBehaviour
             shotBack = false;
 
             Shot shot = other.GetComponent<Shot>();
-            shot.ExecuteShot(targets.backTargetsBlue);
+            shot.ExecuteShot(targets.backTargetsBlue,3);
         }
 
     }

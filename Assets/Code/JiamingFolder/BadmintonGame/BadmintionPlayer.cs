@@ -6,7 +6,7 @@ public class BadmintionPlayer : MonoBehaviour
     [SerializeField] private float _moveSpeed = 5f;
     private RacketSwing _racketSwing;
 
-
+    private int _shootingDirection;
 
     private Rigidbody _rb;  
     private Vector2 _moveInput;
@@ -39,11 +39,21 @@ public class BadmintionPlayer : MonoBehaviour
     {
         // Store input from InputManager
         _moveInput = direction;
+
+        if (_moveInput.x < 0)
+        {
+            _shootingDirection = 1;
+        }
+        else if (_moveInput.x > 0)
+        {
+            _shootingDirection = 2;
+        }
     }
 
     private void HandleMoveEnd()
     {
         _moveInput = Vector2.zero;
+
     }
 
     private void HandleJump()
@@ -59,17 +69,17 @@ public class BadmintionPlayer : MonoBehaviour
     private void HandleClick()
     {
         if (_racketSwing.racketSwinging) return;
-        _racketSwing.StartSwing(Racket.ShotType.Lob);
+        _racketSwing.StartSwing(Racket.ShotType.Lob, _shootingDirection);
     }
     private void HandleRightClick()
     {
         if (_racketSwing.racketSwinging) return;
-        _racketSwing.StartSwing(Racket.ShotType.Drop);
+        _racketSwing.StartSwing(Racket.ShotType.Drop, _shootingDirection);
     }
     private void HandleMiddleClick()
     {
         if (_racketSwing.racketSwinging) return;
-        _racketSwing.StartSwing(Racket.ShotType.Smash);
+        _racketSwing.StartSwing(Racket.ShotType.Smash, _shootingDirection);
     }
 
 

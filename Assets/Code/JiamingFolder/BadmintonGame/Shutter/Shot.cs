@@ -13,13 +13,27 @@ public abstract class Shot : MonoBehaviour
 
     protected bool isFlying = false;
 
-    protected Vector3 CalculateWhichTarget(List<Transform> listOfTargets)
+    protected Vector3 CalculateWhichTarget(List<Transform> listOfTargets, int direction)
     {
-        if (listOfTargets == null || listOfTargets.Count == 0)
-            return Vector3.zero; 
 
-        int randomIndex = Random.Range(0, listOfTargets.Count);
-        return listOfTargets[randomIndex].position;
+        Debug.Log(direction);
+        if (listOfTargets == null || listOfTargets.Count == 0)
+            return Vector3.zero;
+
+        if (direction == 1 )
+        {
+            return listOfTargets[0].position;
+        }
+        else if(direction == 2)
+        {
+            return listOfTargets[1].position;
+        }
+        else
+        {
+            int randomIndex = Random.Range(0, listOfTargets.Count);
+            return listOfTargets[randomIndex].position;
+        }
+
     }
 
     public virtual void Cancel()
@@ -27,10 +41,10 @@ public abstract class Shot : MonoBehaviour
         isFlying = false;
     }
 
-    public void ExecuteShot(List<Transform> listOfTargets)
+    public void ExecuteShot(List<Transform> listOfTargets, int shotDirection)
     {
         startPos = transform.position;
-        targetPos = CalculateWhichTarget(listOfTargets);
+        targetPos = CalculateWhichTarget(listOfTargets, shotDirection);
 
         elapsedTime = 0f;
         isFlying = true;
