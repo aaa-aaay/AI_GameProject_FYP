@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class BasicBadmintonAI : MonoBehaviour
@@ -16,6 +17,8 @@ public class BasicBadmintonAI : MonoBehaviour
     [SerializeField] private Transform _shuttle;
     [SerializeField] private Transform _net;
     [SerializeField] private RacketSwing _racketSwing;
+
+    private bool isWaitingForSwing = false;
 
 
     void Update()
@@ -43,7 +46,7 @@ public class BasicBadmintonAI : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, desiredPos, moveSpeed * Time.deltaTime);
 
 
-
+        if (isWaitingForSwing || _racketSwing.racketSwinging) return;
         // --- Step 2: Check if AI can hit ---
         bool inRange = Vector3.Distance(transform.position, _shuttle.position) < hitRange;
         bool inHeight = _shuttle.position.y > minHeight && _shuttle.position.y < maxHeight;
@@ -69,5 +72,16 @@ public class BasicBadmintonAI : MonoBehaviour
             _racketSwing.StartSwing(Racket.ShotType.Drop);
         else
             _racketSwing.StartSwing(Racket.ShotType.Lob);
+
+
+        StartCoroutine(SwingLock());
+    }
+
+    private IEnumerator SwingLock()
+    {
+        isWaitingForSwing = true;
+        while (_racketSwing.racketSwinging)
+            yield return null;
+        isWaitingForSwing = false;
     }
 }

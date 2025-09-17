@@ -1,38 +1,56 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
 public abstract class Shot : MonoBehaviour
 {
-
-
     protected Vector3 startPos;
     protected Vector3 targetPos;
 
     protected float elapsedTime;
 
     protected bool isFlying = false;
+        
+    [SerializeField] protected float shotSpreadRange;
+
+    [SerializeField] private GameObject shotLocationMaker;
 
     protected Vector3 CalculateWhichTarget(List<Transform> listOfTargets, int direction)
     {
 
-        Debug.Log(direction);
         if (listOfTargets == null || listOfTargets.Count == 0)
             return Vector3.zero;
 
+        Vector3 initialTarget = Vector3.zero;
+
+        //set intial Target
         if (direction == 1 )
         {
-            return listOfTargets[0].position;
+            initialTarget = listOfTargets[0].position;
         }
         else if(direction == 2)
         {
-            return listOfTargets[1].position;
+            initialTarget =  listOfTargets[1].position;
         }
         else
         {
             int randomIndex = Random.Range(0, listOfTargets.Count);
-            return listOfTargets[randomIndex].position;
+            initialTarget =  listOfTargets[randomIndex].position;
         }
+
+
+        //calculate final targetPos 
+        // a random spread drawn ard the inital position (left and right spread only)
+        Vector2 randomOffset = Random.insideUnitCircle * shotSpreadRange;
+        Vector3 finalTarget = new Vector3(
+            initialTarget.x + randomOffset.x,
+            initialTarget.y,
+            initialTarget.z + randomOffset.y
+        );
+
+        return finalTarget;
 
     }
 
@@ -45,7 +63,7 @@ public abstract class Shot : MonoBehaviour
     {
         startPos = transform.position;
         targetPos = CalculateWhichTarget(listOfTargets, shotDirection);
-
+        SetLocationMarker(targetPos);
         elapsedTime = 0f;
         isFlying = true;
 
@@ -53,5 +71,13 @@ public abstract class Shot : MonoBehaviour
         // Stop any other shot updates on this object
         foreach (var s in GetComponents<Shot>())
             if (s != this) s.Cancel();
+    }
+
+
+    public void SetLocationMarker(Vector3 targetPosition, bool reset = false)
+    {
+
+        shotLocationMaker.gameObject.SetActive(!reset);
+        shotLocationMaker.transform.position = targetPosition;
     }
 }

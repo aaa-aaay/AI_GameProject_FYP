@@ -9,6 +9,12 @@ public class BadmintonCourt : MonoBehaviour
     {
         if (other.CompareTag("Shutter"))
         {
+            
+            foreach(var shot in other.gameObject.GetComponents<Shot>())
+            {
+                shot.SetLocationMarker(Vector3.zero, true);
+            }
+
             if (!_isOpponentSide)
             {
                _gameManager.PlayerScores(2); //oppoent scores

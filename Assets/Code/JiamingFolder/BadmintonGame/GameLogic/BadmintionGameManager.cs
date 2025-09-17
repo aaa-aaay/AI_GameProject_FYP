@@ -5,8 +5,8 @@ using UnityEngine;
 public class BadmintionGameManager : MonoBehaviour
 {
     [SerializeField] private int ScoreToWin = 21;
-    private int player1Score = 0;
-    private int player2Score = 0;
+    public int player1Score = 0;
+    public int player2Score = 0;
 
     [SerializeField] private GameObject shutter;
 
@@ -18,6 +18,9 @@ public class BadmintionGameManager : MonoBehaviour
     [SerializeField] private Transform shutterSpawnPoint2;
 
     public event Action OnGameOver;
+
+    public event Action OnPlayer1Score;
+    public event Action OnPlayer2Score;
 
     public bool InRedCourt { get; set; } = true;
 
@@ -41,7 +44,8 @@ public class BadmintionGameManager : MonoBehaviour
             shutter.transform.position = shutterSpawnPoint1.position;
             InRedCourt = false;
 
-            Debug.Log("Set to red Court");
+            OnPlayer1Score?.Invoke();
+
         }
         else if(playerNo == 2)
         {
@@ -51,7 +55,7 @@ public class BadmintionGameManager : MonoBehaviour
             shutter.transform.position = shutterSpawnPoint2.position;
             InRedCourt = true;
 
-            Debug.Log("Set to red Court");
+            OnPlayer2Score?.Invoke();
         }
 
         foreach(Shot s in shutter.GetComponents<Shot>())

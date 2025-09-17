@@ -14,8 +14,11 @@ public class Racket : MonoBehaviour
     [SerializeField] private bool _isOpponent;
     [SerializeField] private BadmintionGameManager _gameManager;
 
+    private bool hitShutter;
+
 
     public event Action OnHitShutter;
+    public event Action OnMissShutter;
     private int _shotDirection;
 
 
@@ -36,11 +39,22 @@ public class Racket : MonoBehaviour
     public void ActivateCollider()
     {
         _collider.enabled = true;
+        hitShutter = false;
     }
 
     public void DeactivateCollider()
     {
        _collider.enabled = false;
+        if (hitShutter)
+        {
+            OnHitShutter?.Invoke();
+        }
+        else
+        {
+            OnMissShutter?.Invoke();
+        }
+        hitShutter = false;
+
     }
     public void AssignShot(ShotType type, int shotDirection)
     {
@@ -55,8 +69,10 @@ public class Racket : MonoBehaviour
         if (other.CompareTag("Shutter"))
         {
             ShootWithTechnique(other);
-            OnHitShutter?.Invoke();
+            hitShutter = true;
             DeactivateCollider();
+
+
         }
 
         //add force to shuttercock here
@@ -87,7 +103,7 @@ public class Racket : MonoBehaviour
 
             case ShotType.Smash:
                 shot = other.GetComponent<SmashShot>();
-                FinalShotTarget = _isOpponent ? _targets.backTargetsBlue : _targets.backTargetsRed;
+                FinalShotTarget = _isOpponent ? _targets.middleTargetsBlue : _targets.middleTargetsRed;
                 break;
 
             default:

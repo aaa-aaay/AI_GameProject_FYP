@@ -3,7 +3,6 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Integrations.Match3;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
-using static Racket;
 
 public class BadmintonAgent : Agent
 {
@@ -31,6 +30,8 @@ public class BadmintonAgent : Agent
 
     private Vector3 _startPosition;
     private float _prevDistToShuttle;
+    private GameObject racketGO;
+    private Rigidbody _rb;
 
 
 
@@ -38,26 +39,19 @@ public class BadmintonAgent : Agent
     {
         _startPosition = transform.localPosition;
         _racket.OnHitShutter += RewardForHiting;
+        _racket.OnMissShutter += PunishForMissing;
         _gameManager.OnGameOver += HandleGameOver;
+        _gameManager.OnPlayer1Score += AIScores;
+        _gameManager.OnPlayer2Score += EnemyScores;
+
+        racketGO = _racket.gameObject;
+        _rb = GetComponent<Rigidbody>();
 
     }
 
     public override void OnEpisodeBegin()
     {
-        
-
         transform.localPosition = _startPosition + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
-
-
-    }
-    private void RewardForHiting()
-    {
-       AddReward(1.0f);
-    }
-
-    private void HandleGameOver()
-    {
-        EndEpisode();
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -65,14 +59,17 @@ public class BadmintonAgent : Agent
         sensor.AddObservation(transform.localPosition);
         sensor.AddObservation(_shuttle.transform.localPosition);
         sensor.AddObservation(_shuttle.localPosition - transform.localPosition);
-
+        sensor.AddObservation(_gameManager.player1Score);
+        sensor.AddObservation(_gameManager.player2Score);
+        sensor.AddObservation(_opponetTransform.localPosition);
+        sensor.AddObservation(racketGO.transform.localPosition);
+        sensor.AddObservation(racketGO.transform.localRotation);
+        
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
         MoveAgent(actions.DiscreteActions);
-        Swinging(actions.DiscreteActions);
-
 
 
 
@@ -84,38 +81,22 @@ public class BadmintonAgent : Agent
     public void MoveAgent(ActionSegment<int> act)
     {
         var action = act[0];
-
+        var swingingAction = act[1];
 
 
         Vector3 dirToNet = (_net.position - _shuttle.position).normalized;
         Vector3 desiredPos = _shuttle.position - dirToNet * offsetFromShuttle;
 
 
-
-
         // Distance reward
         float currentDist = Vector3.Distance(transform.localPosition, desiredPos);
+
         float distChange = _prevDistToShuttle - currentDist;
-
-        // Reward for moving closer, penalty for moving away
-        if (currentDist > _prevDistToShuttle)
-        {
-            AddReward(-distChange * 0.1f);
-        }
-        else
-        {
-            AddReward(distChange * 0.1f);
-
-        }
-
+        AddReward(distChange * 0.1f);
         _prevDistToShuttle = currentDist;
-
-
-
 
         //movement
         Vector3 movement = Vector3.zero;
-        //Vector3 dirToNet = (_net.position - _shuttle.position).normalized;
 
         switch (action)
         {
@@ -123,56 +104,27 @@ public class BadmintonAgent : Agent
             case 1: movement = Vector3.left; break;          // move left
             case 2: movement = Vector3.right; break;         // move right
             case 3: movement = Vector3.forward; break;       // move forward
-            case 4: movement = Vector3.back; break;          // move backward
+            case 4: movement = Vector3.back; break;
+            case 5: SwingRacket(swingingAction); break;// move backward
         }
 
-        transform.position += movement * _moveSpeed * Time.deltaTime;
+        //transform.position += movement * _moveSpeed * Time.deltaTime;
 
+        _rb.MovePosition(transform.position + movement * _moveSpeed * Time.fixedDeltaTime);
 
+        
 
         // Prevent crossing the net
         if (transform.position.z > _net.position.z)
         {
-            transform.position = new Vector3(transform.position.x,
-            transform.position.y, Mathf.Max(transform.position.z, _net.position.z + 0.2f));
+            Vector3 corrected = transform.position;
+            corrected.z = _net.position.z - 0.2f; // stay just before the net
+            _rb.MovePosition(corrected);
         }
-        else
-        {
-            transform.position = new Vector3(transform.position.x,
-               transform.position.y, Mathf.Min(transform.position.z, _net.position.z - 0.2f));
-        }
-           
+
 
     }
 
-
-    public void Swinging(ActionSegment<int> act)
-    {
-
-        //float distToIdeal = Vector3.Distance(transform.position, _shuttle.transform.position);
-       
-        bool inRange = Vector3.Distance(transform.position, _shuttle.position) < _hitRange;
-        bool inHeight = _shuttle.position.y > _minHeight && _shuttle.position.y < _maxHeight;
-
-
-        if (inRange && inHeight)
-        {
-
-            var swingingAction = act[1];
-            Debug.Log("In Range");
-            SwingRacket(swingingAction);
-            AddReward(1.0f);
-        }
-        //else
-        //{
-        //    AddReward(0.01f * -distToIdeal);
-        //}
-
-        
-
-
-
-    }
 
 
     private void SwingRacket(int choice)
@@ -187,6 +139,35 @@ public class BadmintonAgent : Agent
         else
             _racketSwing.StartSwing(Racket.ShotType.Lob);
     }
+
+
+    private void RewardForHiting()
+    {
+        AddReward(1.0f);
+        Debug.Log("Scored the ball");
+    }
+    private void PunishForMissing()
+    {
+        AddReward(-1.0f);
+        Debug.Log("missed the ball");
+    }
+    private void AIScores()
+    {
+        AddReward(1.0f);
+        Debug.Log("Rewarded for scoring");
+    }
+
+    private void EnemyScores()
+    {
+        AddReward(-1.0f);
+        Debug.Log("Punished for missing");
+    }
+
+    private void HandleGameOver()
+    {
+        EndEpisode();
+    }
+
 
 
     public override void Heuristic(in ActionBuffers actionsOut)

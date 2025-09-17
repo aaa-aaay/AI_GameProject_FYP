@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -15,6 +16,9 @@ public class RacketSwing : MonoBehaviour
 
     public bool racketSwinging = false;
 
+
+
+
     [SerializeField] private Racket _racket;
 
 
@@ -30,7 +34,7 @@ public class RacketSwing : MonoBehaviour
 
     public void StartSwing(Racket.ShotType shotType,int direction = 3)
     {
-
+        if(racketSwinging) return;
         racketSwinging = true;
         _racket.AssignShot(shotType, direction);
         _racket.ActivateCollider();

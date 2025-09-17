@@ -32,14 +32,14 @@ public class SmashShot : Shot
         // Base horizontal lerp
         Vector3 pos = Vector3.Lerp(startPos, targetPos, t);
 
-        // Small early "pop" upward (parabola peaked by skew)
+        // Early "pop" upward
         float bump = 4f * ts * (1f - ts) * arcHeight;
 
         // Extra downward pull as time progresses (slam feel)
         float slam = -downBias * t * t;
 
         // Final height
-        pos.y = Mathf.Lerp(startPos.y, targetPos.y, t) + bump + slam;
+        pos.y = Mathf.Lerp(startPos.y, targetPos.y, t) + bump /*+ slam*/;
 
         if (faceVelocity && t < 1f)
         {
