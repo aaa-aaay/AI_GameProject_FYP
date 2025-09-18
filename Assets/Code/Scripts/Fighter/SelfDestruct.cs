@@ -14,14 +14,14 @@ public class SelfDestruct : MonoBehaviour
     }
 
     // Update is called once per frame
-    //void Update()
-    //{
-    //    time_passed += Time.deltaTime;
-    //    if (time_passed > lifespan)
-    //    {
-    //        EventHandler.InvokeGotKill(Camera.main.gameObject, gameObject);
-    //    }
-    //}
+    void Update()
+    {
+        time_passed += Time.deltaTime;
+        if (time_passed > lifespan)
+        {
+            EventHandler.InvokeGotKill(Camera.main.gameObject, gameObject);
+        }
+    }
 
     public void ResetTimer(GameObject killer, GameObject target)
     {

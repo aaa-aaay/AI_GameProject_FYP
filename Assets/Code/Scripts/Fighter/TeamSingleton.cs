@@ -29,7 +29,7 @@ public class TeamSingleton : MonoBehaviour
 
     public void join_team(GameObject game_object, Teams team)
     {
-        teams.Add(new TeamData(game_object, team, gameObject.GetComponent<Damageable>()));
+        teams.Add(new TeamData(game_object, team, game_object.GetComponent<Damageable>()));
     }
 
     public void change_team(GameObject game_object, Teams team, bool check_win = true)
@@ -39,9 +39,7 @@ public class TeamSingleton : MonoBehaviour
             TeamData temp = get_team_data(game_object);
             if (teams.Contains(temp))
             {
-                teams.Remove(temp);
                 temp.set_team(team);
-                teams.Add(temp);
 
                 if (check_win)
                 {
@@ -99,7 +97,7 @@ public class TeamSingleton : MonoBehaviour
         }
 
         print("Couldn't find");
-        temp = new TeamData(gameObject, Teams.None, gameObject.GetComponent<Damageable>());
+        temp = new TeamData(game_object, Teams.None, game_object.GetComponent<Damageable>());
         return temp;
     }
 

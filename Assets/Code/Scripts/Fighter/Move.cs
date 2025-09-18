@@ -1,15 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Move : MonoBehaviour
+public class Move : SimpleMove
 {
-    [SerializeField] private float movespeed;
     [SerializeField] private float dash_force;
     [SerializeField] private float rotation_time;
     [SerializeField] private float dash_cooldown;
 
-    private Rigidbody rigidbody;
-    private Vector3 direction;
     private Vector3 last_direction;
     private float time_passed;
     private float dash_time_passed;
@@ -30,14 +27,14 @@ public class Move : MonoBehaviour
         if (direction != Vector3.zero)
         {
             last_direction = direction;
-            transform.position += transform.forward * Time.deltaTime * movespeed;
+            rigidbody.linearVelocity = transform.forward * movespeed;
         }
         else
         {
             EventHandler.InvokePunish(gameObject, 0.01f);
         }
 
-            time_passed += Time.deltaTime;
+        time_passed += Time.deltaTime;
 
         if (time_passed > rotation_time)
         {
@@ -57,7 +54,7 @@ public class Move : MonoBehaviour
         }
     }
 
-    public void set_direction(InputAction.CallbackContext context)
+    public override void set_direction(InputAction.CallbackContext context)
     {
         Vector3 new_direction = Vector3.zero;
         new_direction.x = context.ReadValue<Vector2>().x;
@@ -71,7 +68,7 @@ public class Move : MonoBehaviour
         }
     }
 
-    public void set_direction(Vector2 new_direction)
+    public override void set_direction(Vector2 new_direction)
     {
         Vector3 temp_direction = Vector3.zero;
         temp_direction.x = new_direction.x;

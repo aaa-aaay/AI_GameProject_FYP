@@ -72,17 +72,20 @@ public class BilliardAgent : AgentDLC
         {
             BilliardSingleton.instance.set_position(gameObject, actions.ContinuousActions[3] * table_length * 0.5f, actions.ContinuousActions[4] * table_width * 0.5f);
         }
-
         turn_started = false;
+
+        //print(gameObject.name + " shot ball");
     }
 
     public void turn_start(GameObject game_object, bool new_set_position)
     {
         if (gameObject == game_object)
         {
+            //print(game_object.name + " started turn");
             time_passed = 0;
             turn_started = true;
             set_position = new_set_position;
+            AddReward(-0.1f);
         }
     }
 
