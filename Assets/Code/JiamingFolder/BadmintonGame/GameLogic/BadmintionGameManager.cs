@@ -22,6 +22,7 @@ public class BadmintionGameManager : MonoBehaviour
     public event Action OnPlayer1Score;
     public event Action OnPlayer2Score;
 
+
     public bool InRedCourt { get; set; } = true;
 
 

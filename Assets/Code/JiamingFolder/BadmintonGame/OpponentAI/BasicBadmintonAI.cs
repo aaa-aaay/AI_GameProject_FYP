@@ -14,12 +14,19 @@ public class BasicBadmintonAI : MonoBehaviour
     [SerializeField] private float maxHeight = 3.0f;
 
     [Header("References")]
+    [SerializeField] private BadmintionGameManager _gameManager;
     [SerializeField] private Transform _shuttle;
     [SerializeField] private Transform _net;
     [SerializeField] private RacketSwing _racketSwing;
 
-    private bool isWaitingForSwing = false;
 
+    private Vector3 _startPos;
+    private bool isWaitingForSwing = false;
+    private void Start()
+    {
+        _startPos = transform.position;
+        _gameManager.OnGameOver += HandleGameOver;
+    }
 
     void Update()
     {
@@ -83,5 +90,10 @@ public class BasicBadmintonAI : MonoBehaviour
         while (_racketSwing.racketSwinging)
             yield return null;
         isWaitingForSwing = false;
+    }
+
+    private void HandleGameOver()
+    {
+        transform.position = _startPos;
     }
 }
