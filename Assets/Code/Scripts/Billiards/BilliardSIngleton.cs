@@ -1,40 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class BilliardSingleton : MonoBehaviour
 {
-    [SerializeField] private float min_magnitude;
-    [SerializeField] private float max_force;
-    [SerializeField] private List<GameObject> players;
-
     public static BilliardSingleton instance;
 
-    private BallData cue_ball;
-    private List<BallData> balls;
+    [SerializeField] private float max_force;
+    [SerializeField] private List<BilliardData> data;
 
-    private bool ball_shot;
-    private bool scored;
-    private bool penalty;
-    private int current_player;
-    private int scored_balls;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    private void Awake()
     {
         if (instance == null)
         {
             instance = this;
-            balls = new List<BallData>();
-
-            ball_shot = false;
-            scored = false;
-            penalty = false;
-            current_player = 0;
-            scored_balls = 0;
-
-            EventHandler.Scored += when_scored;
-            EventHandler.OutOfBounds += when_out_of_bounds;
-            EventHandler.EndScenario += restart_game;
         }
         else
         {
@@ -42,221 +21,110 @@ public class BilliardSingleton : MonoBehaviour
         }
     }
 
-    private void Start()
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
     {
-        EventHandler.InvokeStartTurn(players[current_player], false);
+        for (int i = 0; i < data.Count; i++)
+        {
+            data[i].start();
+        }
     }
 
     private void OnDestroy()
     {
-        EventHandler.Scored -= when_scored;
-        EventHandler.OutOfBounds -= when_out_of_bounds;
-        EventHandler.EndScenario -= restart_game;
-    }
-
-    public void set_cue_ball(GameObject new_cue_ball, Rigidbody rigidbody)
-    {
-        cue_ball = new BallData(new_cue_ball, rigidbody);
-    }
-
-    public void set_new_ball(GameObject new_ball, Rigidbody rigidbody)
-    {
-        BallData temp = get_ball_data(new_ball);
-        if (temp.get_rigidbody() == null)
+        for (int i = 0; i < data.Count; i++)
         {
-            temp.set_rigidbody(rigidbody);
-            balls.Add(temp);
+            data[i].on_destroy();
         }
-    }
-
-    public BallData get_ball_data(GameObject game_object)
-    {
-        BallData temp;
-        for (int i = 0; i < balls.Count; i++)
-        {
-            temp = balls[i];
-            if (temp.get_ball() == game_object)
-            {
-                return temp;
-            }
-        }
-        temp = new BallData(game_object, null);
-        return temp;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (ball_shot)
+        for (int i = 0; i < data.Count; i++)
         {
-            Rigidbody temp;
-            bool finished = true;
+            data[i].fixed_update();
+        }
+    }
 
-            temp = cue_ball.get_rigidbody();
-
-            if (temp.linearVelocity.magnitude <= min_magnitude)
+    public void shoot_ball(GameObject player, float x, float z, float force_percentage)
+    {
+        Vector2 temp = new Vector2(x, z);
+        temp.Normalize();
+        for (int i = 0; i < data.Count; i++)
+        {
+            if (data[i].is_player(player))
             {
-                temp.linearVelocity = Vector3.zero;
-            }
-            else
-            {
-                finished = false;
-            }
-
-            for (int i = 0; i < balls.Count; i++)
-            {
-                temp = balls[i].get_rigidbody();
-
-                if (temp.linearVelocity.magnitude <= min_magnitude)
-                {
-                    temp.linearVelocity = Vector3.zero;
-                }
-                else
-                {
-                    finished = false;
-                }
-            }
-
-            if (finished && ball_shot)
-            {
-                print("Turn over");
-                next_turn();
+                data[i].shoot_ball(temp.x * max_force * force_percentage, temp.y * max_force * force_percentage);
             }
         }
     }
 
-    public BallData get_cue_ball()
+    public void shoot_ball(GameObject player, Vector3 dir, float force_percentage)
     {
-        return cue_ball;
+        shoot_ball(player, dir.x, dir.z, force_percentage);
     }
 
-    public List<BallData> get_balls()
+    public void set_position(GameObject player, float x, float z)
     {
-        return balls;
+        set_position(player, new Vector3(x, 0, z));
     }
 
-    public void shoot_ball(Vector2 direction, float force_percentage)
+    public void set_position(GameObject player, Vector3 new_position)
     {
-        direction.Normalize();
-        Rigidbody temp = cue_ball.get_rigidbody();
-        temp.isKinematic = false;
-        temp.AddForce(new Vector3(direction.x, 0, direction.y) * force_percentage * max_force, ForceMode.Impulse);
-        ball_shot = true;
-    }
-
-    public void shoot_ball(Vector3 direction, float force_percentage)
-    {
-        direction.y = 0;
-        direction.Normalize();
-        Rigidbody temp = cue_ball.get_rigidbody();
-        temp.isKinematic = false;
-        temp.AddForce(direction * force_percentage * max_force, ForceMode.Impulse);
-        ball_shot = true;
-        print("Shot ball");
-    }
-
-    public void set_cue_ball_position(Vector2 position)
-    {
-        cue_ball.get_ball().transform.localPosition = new Vector3(position.x, 0, position.y);
-    }
-
-    public void set_cue_ball_position(Vector3 position)
-    {
-        position.y = 0;
-        cue_ball.get_ball().transform.localPosition = position;
-    }
-
-    private void next_turn()
-    {
-        if (!penalty)
+        for (int i = 0; i < data.Count; i++)
         {
-            if (scored)
+            if (data[i].is_player(player))
             {
-                EventHandler.InvokeStartTurn(players[current_player], false);
-            }
-            else
-            {
-                current_player++;
-
-                if (current_player >= players.Count)
-                {
-                    current_player = 0;
-                }
-
-                EventHandler.InvokeStartTurn(players[current_player], false);
-            }
-        }
-        else
-        {
-            current_player++;
-
-            if (current_player >= players.Count)
-            {
-                current_player = 0;
-            }
-
-            EventHandler.InvokeStartTurn(players[current_player], true);
-        }
-
-        penalty = false;
-        ball_shot = false;
-        scored = false;
-        print("Turn over");
-    }
-
-    public void when_scored(GameObject game_object)
-    {
-        if (is_cue_ball(game_object))
-        {
-            penalty = true;
-            EventHandler.InvokePunish(players[current_player], -5f);
-        }
-        else if (is_ball(game_object))
-        {
-            scored = true;
-            EventHandler.InvokePunish(players[current_player], 5f);
-
-            scored_balls++;
-            print("Score is " + scored_balls);
-            if (scored_balls >= balls.Count)
-            {
-                EventHandler.InvokeEndScenario();
+                data[i].get_cue_ball().transform.localPosition = new_position;
             }
         }
     }
 
-    public void when_out_of_bounds(GameObject game_object)
+    public void reward_player(GameObject game_object, float reward)
     {
-        if (is_cue_ball(game_object) || is_ball(game_object))
+        for (int i = 0; i < data.Count; i++)
         {
-            penalty = true;
-            EventHandler.InvokePunish(players[current_player], -5f);
+            if (data[i].in_game(game_object)) 
+            {
+                data[i].reward_player(reward);
+            }
         }
     }
 
-    public bool is_cue_ball(GameObject game_object)
+    public Rigidbody get_cue_ball(GameObject game_object)
     {
-        return cue_ball.get_ball() == game_object;
+        for (int i = 0; i < data.Count; i++)
+        {
+            if (data[i].in_game(game_object))
+            {
+                return data[i].get_cue_ball();
+            }
+        }
+        return null;
     }
 
-    public bool is_ball(GameObject game_object)
+    public List<Rigidbody> get_balls(GameObject game_object)
     {
-        return get_ball_data(game_object).get_rigidbody() != null;
+        for (int i = 0; i < data.Count; i++)
+        {
+            if (data[i].in_game(game_object))
+            {
+                return data[i].get_balls();
+            }
+        }
+        return null;
     }
 
-    public void restart_game()
+    public int get_score(GameObject game_object)
     {
-        ball_shot = false;
-        print("Game restarted");
-        scored = false;
-        penalty = false;
-        current_player = 0;
-        scored_balls = 0;
-        EventHandler.InvokeStartTurn(players[current_player], false);
-    }
-
-    public void reward_player(float value)
-    {
-        EventHandler.InvokePunish(players[current_player], value);
+        for (int i = 0; i < data.Count; i++)
+        {
+            if (data[i].in_game(game_object))
+            {
+                return data[i].get_score();
+            }
+        }
+        return 0;
     }
 }
