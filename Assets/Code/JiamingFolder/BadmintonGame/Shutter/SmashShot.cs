@@ -50,6 +50,7 @@ public class SmashShot : Shot
         }
 
         transform.position = pos;
+        UpdateRotation(pos);
 
         elapsedTime += Time.deltaTime;
 

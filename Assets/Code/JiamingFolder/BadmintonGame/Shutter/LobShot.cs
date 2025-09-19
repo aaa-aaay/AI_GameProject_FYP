@@ -25,6 +25,7 @@ public class LobShot : Shot
         pos.y += Mathf.Sin(Mathf.PI * t) * arcHeight;
 
         transform.position = pos;
+        UpdateRotation(pos);
 
         if (t >= 1f)
             isFlying = false; 

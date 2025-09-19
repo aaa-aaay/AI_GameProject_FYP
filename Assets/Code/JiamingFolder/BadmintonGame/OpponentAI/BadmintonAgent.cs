@@ -25,13 +25,16 @@ public class BadmintonAgent : Agent
     [SerializeField] private BadmintionGameManager _gameManager;
     [SerializeField] private RacketSwing _racketSwing;
     [SerializeField] private Racket _racket;
+    [SerializeField] private Transform _shotMarker;
 
 
 
     private Vector3 _startPosition;
     private float _prevDistToShuttle;
-    private GameObject racketGO;
     private Rigidbody _rb;
+
+    private Vector3 _prevShuttlePos;
+    private Vector3 _shuttleVelocity;
 
 
 
@@ -44,7 +47,6 @@ public class BadmintonAgent : Agent
         _gameManager.OnPlayer1Score += AIScores;
         _gameManager.OnPlayer2Score += EnemyScores;
 
-        racketGO = _racket.gameObject;
         _rb = GetComponent<Rigidbody>();
 
     }
@@ -53,6 +55,11 @@ public class BadmintonAgent : Agent
     {
         transform.localPosition = _startPosition + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
         _prevDistToShuttle = float.PositiveInfinity; // reset each episode
+
+
+        // Reset previous position for velocity calc
+        _prevShuttlePos = _shuttle.localPosition;
+        _shuttleVelocity = Vector3.zero;
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -63,9 +70,12 @@ public class BadmintonAgent : Agent
         sensor.AddObservation(_gameManager.player1Score);
         sensor.AddObservation(_gameManager.player2Score);
         sensor.AddObservation(_opponetTransform.localPosition);
-        sensor.AddObservation(racketGO.transform.localPosition);
-        sensor.AddObservation(racketGO.transform.localRotation);
-        
+        sensor.AddObservation(_shotMarker.localPosition);
+
+        // --- New useful observations ---
+        sensor.AddObservation(_shuttleVelocity); // direction + speed
+        sensor.AddObservation(Vector3.Distance(transform.localPosition, _shuttle.localPosition));
+
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -103,7 +113,7 @@ public class BadmintonAgent : Agent
         transform.localPosition += movement * _moveSpeed * Time.deltaTime;
 
 
-
+        
 
 
         // Prevent crossing the net
@@ -111,7 +121,7 @@ public class BadmintonAgent : Agent
         {
             Vector3 corrected = transform.localPosition;
             corrected.z = _net.localPosition.z - 0.2f; // stay just before the net
-            _rb.MovePosition(corrected);
+            transform.localPosition = corrected;
         }
 
         MovementRewards();
@@ -141,14 +151,29 @@ public class BadmintonAgent : Agent
         if (_racketSwing.racketSwinging) return;
 
 
+        //1 to hit right, 2 to hit left
+
         if (choice == 0)
-            _racketSwing.StartSwing(Racket.ShotType.Smash);
+            _racketSwing.StartSwing(Racket.ShotType.Smash,1);
         else if (choice == 1)
-            _racketSwing.StartSwing(Racket.ShotType.Drop);
-        else
-            _racketSwing.StartSwing(Racket.ShotType.Lob);
+            _racketSwing.StartSwing(Racket.ShotType.Drop,1);
+        else if(choice == 2)
+            _racketSwing.StartSwing(Racket.ShotType.Lob,1);
+        else if(choice== 3)
+            _racketSwing.StartSwing(Racket.ShotType.Smash, 2);
+        else if(choice== 4)
+            _racketSwing.StartSwing(Racket.ShotType.Drop, 2);
+        else if(choice== 5)
+            _racketSwing.StartSwing(Racket.ShotType.Smash, 2);
     }
 
+
+    private void Update()
+    {
+        // Compute pseudo-velocity manually
+        _shuttleVelocity = (_shuttle.localPosition - _prevShuttlePos) / Time.deltaTime;
+        _prevShuttlePos = _shuttle.localPosition;
+    }
 
     private void RewardForHiting()
     {

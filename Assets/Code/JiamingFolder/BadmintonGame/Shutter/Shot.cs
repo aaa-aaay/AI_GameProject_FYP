@@ -12,7 +12,9 @@ public abstract class Shot : MonoBehaviour
     protected float elapsedTime;
 
     protected bool isFlying = false;
-        
+    private Vector3 prevPos;
+
+
     [SerializeField] protected float shotSpreadRange;
 
     [SerializeField] private GameObject shotLocationMaker;
@@ -79,5 +81,28 @@ public abstract class Shot : MonoBehaviour
 
         shotLocationMaker.gameObject.SetActive(!reset);
         shotLocationMaker.transform.position = targetPosition;
+    }
+
+
+
+    protected void UpdateRotation(Vector3 currentPos)
+    {
+        if (!isFlying) return;
+
+        if (prevPos == Vector3.zero)
+        {
+            prevPos = currentPos;
+            return;
+        }
+
+        Vector3 velocity = (currentPos - prevPos).normalized;
+        prevPos = currentPos;
+
+        if (velocity.sqrMagnitude > 0.0001f)
+        {
+            // Align -Y axis of shuttle with velocity
+            Quaternion rotation = Quaternion.LookRotation(velocity, Vector3.forward);
+            transform.rotation = rotation * Quaternion.Euler(-90f, 0f, 0f);
+        }
     }
 }

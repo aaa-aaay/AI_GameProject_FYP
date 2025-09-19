@@ -29,6 +29,7 @@ public class DropShot : Shot
         pos.y = Mathf.Lerp(startPos.y, targetPos.y, t) + bump;
 
         transform.position = pos;
+        UpdateRotation(pos);
 
         elapsedTime += Time.deltaTime;
 
