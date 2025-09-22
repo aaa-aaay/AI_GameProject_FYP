@@ -17,9 +17,11 @@ behaviors:
       extrinsic:
         gamma: 0.99
         strength: 1.0
-    max_steps: 1000000
+
+    max_steps: 5000000
     time_horizon: 64
     summary_freq: 1000
+
   Runner:
     trainer_type: ppo
     hyperparameters:
@@ -38,12 +40,12 @@ behaviors:
       extrinsic:
         gamma: 0.99
         strength: 1.0
-    max_steps: 1000000
+    max_steps: 5000000
     time_horizon: 64
     summary_freq: 1000
-  
 
 
-
-
+    #initial training function
     #mlagents-learn config/tagnrun.yaml --run-id=runner_vs_tagger --force
+    #continue from the most recent checkpoint
+    # mlagents-learn config/tagnrun.yaml --run-id=runner_vs_tagger --resume

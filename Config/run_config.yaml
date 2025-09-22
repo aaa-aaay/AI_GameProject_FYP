@@ -23,4 +23,7 @@ behaviors:
     summary_freq: 1000
 
 
+    #initial training function
     #mlagents-learn config/run_config.yaml --run-id=runner_vs_tagger --force
+    #continue from the most recent checkpoint
+    # mlagents-learn config/run_config.yaml --run-id=runner_vs_tagger --resume

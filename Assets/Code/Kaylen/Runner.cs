@@ -1,21 +1,23 @@
-using UnityEngine;
-using Unity.MLAgents;
+﻿using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Runner : Agent
 {
-    [SerializeField] private Transform tagger;            // Reference to the seeker
+    [SerializeField] public Transform tagger;            // Reference to the seeker
 
 
     [Header("Movement Settings")]
     public float moveSpeed = 3f;
-    public float jumpForce = 5f;
     public float dangerRadius = 5f;
 
+
+
+
     private Rigidbody rb;
-    private bool isGrounded = true;
 
     public override void Initialize()
     {
@@ -28,19 +30,17 @@ public class Runner : Agent
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
-        // Reset positions
-        transform.localPosition = new Vector3(Random.Range(-3f, 3f), 0.5f, Random.Range(-3f, 3f));
-        if (tagger != null)
-        {
-            tagger.localPosition = new Vector3(Random.Range(-3f, 3f), 0.5f, Random.Range(-3f, 3f));
-        }
+        //transform.localPosition = new Vector3(Random.Range(-21, 21), 0.5f, Random.Range(-21, 21));
+        //if (tagger != null)
+        //{
+        //    tagger.localPosition = new Vector3(Random.Range(-21, 21), 0.5f, Random.Range(-21, 21));
+        //}
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(transform.localPosition);   // runner pos
         sensor.AddObservation(tagger.localPosition);      // tagger pos
-        sensor.AddObservation(isGrounded ? 1 : 0);        // grounded check
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -51,42 +51,31 @@ public class Runner : Agent
         Vector3 move = new Vector3(moveX, 0, moveZ).normalized * moveSpeed;
         rb.MovePosition(transform.position + move * Time.fixedDeltaTime);
 
-        float currentSpeed = moveSpeed;
-        if (!isGrounded)
-            currentSpeed *= 1.2f;
-
-        // Jump
-        float jump = actions.ContinuousActions[2];
-        if (jump > 0.5f && isGrounded)
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isGrounded = false;
-        }
-
-        // Distance penalty if tagger is close
+        // --- Distance-based penalty/reward ---
         float distance = Vector3.Distance(transform.position, tagger.position);
+
+        // Punish heavily if the Tagger is very close
         if (distance < dangerRadius)
         {
+            // The closer the Tagger, the stronger the penalty
             float penalty = Mathf.Lerp(-1f, 0f, distance / dangerRadius);
             AddReward(penalty * Time.deltaTime);
-           
         }
         else
         {
-            AddReward(0.01f); // small survival reward
+            // Small positive reward for surviving outside the danger zone
+            AddReward(0.01f * Time.deltaTime);
         }
     }
+ 
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Ground"))
+       if (collision.collider.CompareTag("Wall"))
         {
-            isGrounded = true;
-        }
-        else if (collision.collider.CompareTag("Wall"))
-        {
-            AddReward(-1f);   // big penalty for touching wall
-            EndEpisode();     // reset episode after mistake
+
+            AddReward(-10f);   // big penalty for touching wall
+            EndEpisode();
         }
     }
 
@@ -95,7 +84,6 @@ public class Runner : Agent
         var continuous = actionsOut.ContinuousActions;
         continuous[0] = Input.GetAxisRaw("Horizontal"); // X movement
         continuous[1] = Input.GetAxisRaw("Vertical");   // Z movement
-        continuous[2] = Input.GetButton("Jump") ? 1f : 0f; // Jump action
     }
 
     private void OnDrawGizmosSelected()
