@@ -1,7 +1,7 @@
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
-using Unity.MLAgents.Integrations.Match3;
 using Unity.MLAgents.Sensors;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BadmintonAgent : Agent
@@ -14,11 +14,8 @@ public class BadmintonAgent : Agent
 
     [Header("Stats")]
     [SerializeField] private float _moveSpeed = 5.0f;
-    [SerializeField] private float _hitRange = 2.0f;
-
     [SerializeField] private float offsetFromShuttle = 1.6f;
-    [SerializeField] private float _minHeight = 0.5f;
-    [SerializeField] private float _maxHeight = 3.0f;
+    [SerializeField] private float miniOffsetFromNet = 0.2f;
 
 
     [Header("Other References")]
@@ -27,11 +24,13 @@ public class BadmintonAgent : Agent
     [SerializeField] private Racket _racket;
     [SerializeField] private Transform _shotMarker;
 
+    [Header("Self Training")]
+    [SerializeField] private int teamID;
+
 
 
     private Vector3 _startPosition;
     private float _prevDistToShuttle;
-    private Rigidbody _rb;
 
     private Vector3 _prevShuttlePos;
     private Vector3 _shuttleVelocity;
@@ -44,10 +43,20 @@ public class BadmintonAgent : Agent
         _racket.OnHitShutter += RewardForHiting;
         _racket.OnMissShutter += PunishForMissing;
         _gameManager.OnGameOver += HandleGameOver;
-        _gameManager.OnPlayer1Score += AIScores;
-        _gameManager.OnPlayer2Score += EnemyScores;
 
-        _rb = GetComponent<Rigidbody>();
+
+        if (teamID == 0)
+        {
+            _gameManager.OnPlayer1Score += OnScore;
+            _gameManager.OnPlayer2Score += OnOpponentScore;
+           
+        }
+        else
+        {
+            _gameManager.OnPlayer2Score += OnScore;
+            _gameManager.OnPlayer1Score += OnOpponentScore;
+        }
+
 
     }
 
@@ -64,6 +73,7 @@ public class BadmintonAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
+        sensor.AddObservation(teamID == 0 ? -1f : 1f);
         sensor.AddObservation(transform.localPosition);
         sensor.AddObservation(_shuttle.transform.localPosition);
         sensor.AddObservation(_shuttle.localPosition - transform.localPosition);
@@ -110,17 +120,24 @@ public class BadmintonAgent : Agent
 
         //transform.position += movement * _moveSpeed * Time.deltaTime;
 
-        transform.localPosition += movement * _moveSpeed * Time.deltaTime;
+        transform.position += movement * _moveSpeed * Time.deltaTime;
 
 
-        
 
 
-        // Prevent crossing the net
-        if (transform.localPosition.z > _net.localPosition.z)
+
+        if (teamID == 1 && transform.localPosition.z > _net.localPosition.z - miniOffsetFromNet)
         {
             Vector3 corrected = transform.localPosition;
-            corrected.z = _net.localPosition.z - 0.2f; // stay just before the net
+            corrected.z = _net.localPosition.z - miniOffsetFromNet;
+            transform.localPosition = corrected;
+        }
+
+        // Agent on team 1 (right side of court)
+        if (teamID == 0 && transform.localPosition.z < _net.localPosition.z + miniOffsetFromNet)
+        {
+            Vector3 corrected = transform.localPosition;
+            corrected.z = _net.localPosition.z + miniOffsetFromNet;
             transform.localPosition = corrected;
         }
 
@@ -150,6 +167,10 @@ public class BadmintonAgent : Agent
     {
         if (_racketSwing.racketSwinging) return;
 
+
+        float distToShuttle = Vector3.Distance(transform.localPosition, _shuttle.localPosition);
+        if (distToShuttle < 2.0f) AddReward(0.05f);
+        else AddReward(-0.01f);
 
         //1 to hit right, 2 to hit left
 
@@ -181,21 +202,21 @@ public class BadmintonAgent : Agent
     }
     private void PunishForMissing()
     {
-        AddReward(-0.5f);
+        AddReward(-0.2f);
     }
-    private void AIScores()
+    private void HandleGameOver()
+    {
+        EndEpisode();
+    }
+
+    private void OnScore()
     {
         AddReward(3.0f);
     }
 
-    private void EnemyScores()
+    private void OnOpponentScore()
     {
         AddReward(-3.0f);
-    }
-
-    private void HandleGameOver()
-    {
-        EndEpisode();
     }
 
 
