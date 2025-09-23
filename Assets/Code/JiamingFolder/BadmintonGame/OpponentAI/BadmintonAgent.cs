@@ -1,7 +1,7 @@
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Integrations.Match3;
 using Unity.MLAgents.Sensors;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class BadmintonAgent : Agent
@@ -14,8 +14,8 @@ public class BadmintonAgent : Agent
 
     [Header("Stats")]
     [SerializeField] private float _moveSpeed = 5.0f;
+
     [SerializeField] private float offsetFromShuttle = 1.6f;
-    [SerializeField] private float miniOffsetFromNet = 0.2f;
 
 
     [Header("Other References")]
@@ -23,9 +23,6 @@ public class BadmintonAgent : Agent
     [SerializeField] private RacketSwing _racketSwing;
     [SerializeField] private Racket _racket;
     [SerializeField] private Transform _shotMarker;
-
-    [Header("Self Training")]
-    [SerializeField] private int teamID;
 
 
 
@@ -43,19 +40,8 @@ public class BadmintonAgent : Agent
         _racket.OnHitShutter += RewardForHiting;
         _racket.OnMissShutter += PunishForMissing;
         _gameManager.OnGameOver += HandleGameOver;
-
-
-        if (teamID == 0)
-        {
-            _gameManager.OnPlayer1Score += OnScore;
-            _gameManager.OnPlayer2Score += OnOpponentScore;
-           
-        }
-        else
-        {
-            _gameManager.OnPlayer2Score += OnScore;
-            _gameManager.OnPlayer1Score += OnOpponentScore;
-        }
+        _gameManager.OnPlayer1Score += AIScores;
+        _gameManager.OnPlayer2Score += EnemyScores;
 
 
     }
@@ -73,7 +59,6 @@ public class BadmintonAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(teamID == 0 ? -1f : 1f);
         sensor.AddObservation(transform.localPosition);
         sensor.AddObservation(_shuttle.transform.localPosition);
         sensor.AddObservation(_shuttle.localPosition - transform.localPosition);
@@ -120,24 +105,17 @@ public class BadmintonAgent : Agent
 
         //transform.position += movement * _moveSpeed * Time.deltaTime;
 
-        transform.position += movement * _moveSpeed * Time.deltaTime;
+        transform.localPosition += movement * _moveSpeed * Time.deltaTime;
 
 
 
 
 
-        if (teamID == 1 && transform.localPosition.z > _net.localPosition.z - miniOffsetFromNet)
+        // Prevent crossing the net
+        if (transform.localPosition.z > _net.localPosition.z)
         {
             Vector3 corrected = transform.localPosition;
-            corrected.z = _net.localPosition.z - miniOffsetFromNet;
-            transform.localPosition = corrected;
-        }
-
-        // Agent on team 1 (right side of court)
-        if (teamID == 0 && transform.localPosition.z < _net.localPosition.z + miniOffsetFromNet)
-        {
-            Vector3 corrected = transform.localPosition;
-            corrected.z = _net.localPosition.z + miniOffsetFromNet;
+            corrected.z = _net.localPosition.z - 0.2f; // stay just before the net
             transform.localPosition = corrected;
         }
 
@@ -168,23 +146,19 @@ public class BadmintonAgent : Agent
         if (_racketSwing.racketSwinging) return;
 
 
-        float distToShuttle = Vector3.Distance(transform.localPosition, _shuttle.localPosition);
-        if (distToShuttle < 2.0f) AddReward(0.05f);
-        else AddReward(-0.01f);
-
         //1 to hit right, 2 to hit left
 
         if (choice == 0)
-            _racketSwing.StartSwing(Racket.ShotType.Smash,1);
+            _racketSwing.StartSwing(Racket.ShotType.Smash, 1);
         else if (choice == 1)
-            _racketSwing.StartSwing(Racket.ShotType.Drop,1);
-        else if(choice == 2)
-            _racketSwing.StartSwing(Racket.ShotType.Lob,1);
-        else if(choice== 3)
+            _racketSwing.StartSwing(Racket.ShotType.Drop, 1);
+        else if (choice == 2)
+            _racketSwing.StartSwing(Racket.ShotType.Lob, 1);
+        else if (choice == 3)
             _racketSwing.StartSwing(Racket.ShotType.Smash, 2);
-        else if(choice== 4)
+        else if (choice == 4)
             _racketSwing.StartSwing(Racket.ShotType.Drop, 2);
-        else if(choice== 5)
+        else if (choice == 5)
             _racketSwing.StartSwing(Racket.ShotType.Smash, 2);
     }
 
@@ -202,21 +176,21 @@ public class BadmintonAgent : Agent
     }
     private void PunishForMissing()
     {
-        AddReward(-0.2f);
+        AddReward(-0.5f);
     }
-    private void HandleGameOver()
-    {
-        EndEpisode();
-    }
-
-    private void OnScore()
+    private void AIScores()
     {
         AddReward(3.0f);
     }
 
-    private void OnOpponentScore()
+    private void EnemyScores()
     {
         AddReward(-3.0f);
+    }
+
+    private void HandleGameOver()
+    {
+        EndEpisode();
     }
 
 
@@ -240,7 +214,7 @@ public class BadmintonAgent : Agent
         {
             discreteActionsOut[0] = 3;
         }
-        else if( Input.GetKey(KeyCode.DownArrow))
+        else if (Input.GetKey(KeyCode.DownArrow))
         {
             discreteActionsOut[0] = 4;
         }
