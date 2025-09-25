@@ -1,17 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class LobShot : Shot
 {
-
-    [SerializeField]
-    private float travelTime = 1.5f;
-
-    [SerializeField]
-    private float arcHeight = 3.0f;
+    [SerializeField] private float arcHeight = 3.0f;
 
     private void Update()
     {
@@ -28,6 +19,6 @@ public class LobShot : Shot
         UpdateRotation(pos);
 
         if (t >= 1f)
-            isFlying = false; 
+            isFlying = false;
     }
 }

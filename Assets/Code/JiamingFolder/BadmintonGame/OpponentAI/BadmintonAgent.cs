@@ -66,6 +66,7 @@ public class BadmintonAgent : Agent
         sensor.AddObservation(_gameManager.player2Score);
         sensor.AddObservation(_opponetTransform.localPosition);
         sensor.AddObservation(_shotMarker.localPosition);
+        sensor.AddObservation(_racket.gameObject.transform.localPosition);
 
         // --- New useful observations ---
         sensor.AddObservation(_shuttleVelocity); // direction + speed

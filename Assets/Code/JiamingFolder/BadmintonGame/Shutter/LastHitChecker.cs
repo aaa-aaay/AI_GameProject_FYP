@@ -11,7 +11,7 @@ public class LastHitChecker : MonoBehaviour
         racketThatLastHit = null;
     }
 
-    public void SetLastHitRacker(GameObject racket)
+    public void SetLastHitRacket(GameObject racket)
     {
         racketThatLastHit = racket;
         OnHitByRacker?.Invoke(racket);

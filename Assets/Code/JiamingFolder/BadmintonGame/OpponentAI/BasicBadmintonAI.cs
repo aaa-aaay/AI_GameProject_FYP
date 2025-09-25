@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class BasicBadmintonAI : MonoBehaviour
@@ -13,29 +14,73 @@ public class BasicBadmintonAI : MonoBehaviour
     [SerializeField] private float minHeight = 0.5f;
     [SerializeField] private float maxHeight = 3.0f;
 
-    [Header("References")]
-    [SerializeField] private BadmintionGameManager _gameManager;
+    [Header("Racket References")]
+    [SerializeField] private RacketSwing _racketSwing;
+    [SerializeField] private GameObject _mainRacketGO;
+
+    [Header("map References")]
     [SerializeField] private Transform _shuttle;
     [SerializeField] private Transform _net;
-    [SerializeField] private RacketSwing _racketSwing;
+    [SerializeField] private Transform _courtCenterPoint;
+    [SerializeField] private Transform _shutterLandingMarker;
+
+    [Header("Managers")]
+    [SerializeField] private BadmintionGameManager _gameManager;
+    [SerializeField] private LastHitChecker _lastHitChecker;
 
 
     private Vector3 _startPos;
+    private bool attacking = false;
+    private bool serving = false;
     private bool isWaitingForSwing = false;
     private void Start()
     {
         _startPos = transform.position;
         _gameManager.OnGameOver += HandleGameOver;
+        _gameManager.OnPlayer2Score += HandleScoring;
+        _gameManager.OnPlayer1Score += HandleMissing;
+        _lastHitChecker.OnHitByRacker += CheckWhoHit;
+
+        attacking = false;
+        serving = false;
     }
 
     void Update()
     {
         if (_shuttle == null || _net == null) return;
 
+        
+        MoveTo(attacking);
+
+
+        if (isWaitingForSwing || _racketSwing.racketSwinging) return;
+        // --- Step 2: Check if AI can hit ---
+        bool inRange = Vector3.Distance(transform.position, _shuttle.position) < hitRange;
+        bool inHeight = _shuttle.position.y > minHeight && _shuttle.position.y < maxHeight;
+
+        if (inRange && inHeight)
+        {
+            PerformShot();
+        }
+    }
+
+
+    private void MoveTo(bool attackMode)
+    {
         // --- Step 1: Move behind shuttle ---
+
         Vector3 dirToNet = (_net.position - _shuttle.position).normalized;
-        Vector3 desiredPos = _shuttle.position - dirToNet * offset;
+        Vector3 desiredPos = Vector3.zero;
+
+        if (attackMode) desiredPos = _shutterLandingMarker.position;
+
+        else desiredPos = _courtCenterPoint.position;
+
+        if (serving) desiredPos = _shuttle.position - dirToNet * offset;
+
+
         desiredPos.y = transform.position.y;
+
 
         // --- Prevent crossing the net (respect offset) ---
         if (transform.position.z > _net.position.z) // AI on "top" side
@@ -51,18 +96,8 @@ public class BasicBadmintonAI : MonoBehaviour
 
         // --- Move toward corrected position ---
         transform.position = Vector3.MoveTowards(transform.position, desiredPos, moveSpeed * Time.deltaTime);
-
-
-        if (isWaitingForSwing || _racketSwing.racketSwinging) return;
-        // --- Step 2: Check if AI can hit ---
-        bool inRange = Vector3.Distance(transform.position, _shuttle.position) < hitRange;
-        bool inHeight = _shuttle.position.y > minHeight && _shuttle.position.y < maxHeight;
-
-        if (inRange && inHeight)
-        {
-            PerformShot();
-        }
     }
+
 
     private void PerformShot()
     {
@@ -95,5 +130,37 @@ public class BasicBadmintonAI : MonoBehaviour
     private void HandleGameOver()
     {
         transform.position = _startPos;
+    }
+
+    private void HandleScoring()
+    {
+        attacking = false;
+        serving = true;
+        Debug.Log("switching to attack");
+    }
+
+    private void HandleMissing()
+    {
+        attacking = false;
+        Debug.Log("lost a point");
+    }
+
+    private void CheckWhoHit(GameObject lastHitRacket)
+    {
+        if (lastHitRacket == _mainRacketGO) {
+
+            //Ai just hit the shutter, go to defence
+
+            attacking = false;
+            serving = false;
+
+        }
+        else
+        {
+
+            //opponent just hit the shutter, go to attack
+
+            attacking = true;
+        }
     }
 }

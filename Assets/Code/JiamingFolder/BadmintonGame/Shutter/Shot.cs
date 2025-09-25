@@ -6,18 +6,22 @@ using UnityEngine;
 
 public abstract class Shot : MonoBehaviour
 {
-    protected Vector3 startPos;
+
+
+    [SerializeField] private GameObject shotLocationMaker;
+    [SerializeField] protected float shotSpreadRange;
+    [SerializeField] protected float travelTime = 10f;
+
+
     protected Vector3 targetPos;
-
-    protected float elapsedTime;
-
-    protected bool isFlying = false;
+    protected Vector3 startPos;
     private Vector3 prevPos;
 
 
-    [SerializeField] protected float shotSpreadRange;
+    protected bool isFlying = false;
+    protected float elapsedTime;
 
-    [SerializeField] private GameObject shotLocationMaker;
+
 
     protected Vector3 CalculateWhichTarget(List<Transform> listOfTargets, int direction)
     {
@@ -68,6 +72,7 @@ public abstract class Shot : MonoBehaviour
         SetLocationMarker(targetPos);
         elapsedTime = 0f;
         isFlying = true;
+
 
 
         // Stop any other shot updates on this object

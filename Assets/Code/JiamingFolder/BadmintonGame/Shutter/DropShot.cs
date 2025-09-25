@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DropShot : Shot
 {
-    [SerializeField] private float travelTime = 1.5f;
     [SerializeField] private float arcHeight = 3.0f;
 
     private Rigidbody rb;
@@ -14,15 +11,12 @@ public class DropShot : Shot
         rb = GetComponent<Rigidbody>();
     }
 
-
     private void Update()
     {
         if (!isFlying) return;
 
         // compute t first, then increment time
         float t = Mathf.Clamp01(elapsedTime / travelTime);
-
-
 
         float bump = 4f * t * (1f - t) * arcHeight; // peak at mid
         Vector3 pos = Vector3.Lerp(startPos, targetPos, t);

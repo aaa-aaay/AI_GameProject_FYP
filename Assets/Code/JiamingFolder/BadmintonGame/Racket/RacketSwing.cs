@@ -6,7 +6,7 @@ public class RacketSwing : MonoBehaviour
 {
 
     [SerializeField]
-    private GameObject _racketGO;
+    private GameObject _racketSwingGO;
 
     [SerializeField]
     private Transform _lerpTransform;
@@ -25,8 +25,8 @@ public class RacketSwing : MonoBehaviour
 
     private void Start()
     {
-        _origRot = _racketGO.transform.localRotation;
-        _origPos = _racketGO.transform.localPosition;
+        _origRot = _racketSwingGO.transform.localRotation;
+        _origPos = _racketSwingGO.transform.localPosition;
         _racket.DeactivateCollider();
 
     }
@@ -49,13 +49,13 @@ public class RacketSwing : MonoBehaviour
         Quaternion startRotation = _origRot;
         while (time < duration)
         {
-            _racketGO.transform.localPosition = Vector3.Lerp(startPosition, targetTransform.localPosition, time / duration);
-            _racketGO.transform.localRotation = Quaternion.Slerp(startRotation, targetTransform.localRotation, time / duration);
+            _racketSwingGO.transform.localPosition = Vector3.Lerp(startPosition, targetTransform.localPosition, time / duration);
+            _racketSwingGO.transform.localRotation = Quaternion.Slerp(startRotation, targetTransform.localRotation, time / duration);
             time += Time.deltaTime;
             yield return null;
         }
-        _racketGO.transform.localPosition = targetTransform.localPosition;
-        _racketGO.transform.localRotation = targetTransform.localRotation;
+        _racketSwingGO.transform.localPosition = targetTransform.localPosition;
+        _racketSwingGO.transform.localRotation = targetTransform.localRotation;
 
         _racket.DeactivateCollider();
 
@@ -63,17 +63,17 @@ public class RacketSwing : MonoBehaviour
 
 
         time = 0;
-        startPosition = _racketGO.transform.localPosition;
-        startRotation = _racketGO.transform.localRotation;
+        startPosition = _racketSwingGO.transform.localPosition;
+        startRotation = _racketSwingGO.transform.localRotation;
         while (time < duration)
         {
-            _racketGO.transform.localPosition = Vector3.Lerp(startPosition, _origPos, time / duration);
-            _racketGO.transform.localRotation = Quaternion.Slerp(startRotation, _origRot, time / duration);
+            _racketSwingGO.transform.localPosition = Vector3.Lerp(startPosition, _origPos, time / duration);
+            _racketSwingGO.transform.localRotation = Quaternion.Slerp(startRotation, _origRot, time / duration);
             time += Time.deltaTime;
             yield return null;
         }
-        _racketGO.transform.localPosition = _origPos;
-        _racketGO.transform.localRotation = _origRot;
+        _racketSwingGO.transform.localPosition = _origPos;
+        _racketSwingGO.transform.localRotation = _origRot;
         racketSwinging = false;
     }
 

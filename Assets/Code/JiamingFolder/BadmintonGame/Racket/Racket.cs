@@ -8,18 +8,17 @@ public class Racket : MonoBehaviour
 
     private Collider _collider;
 
-    [SerializeField]
-    private BadmintonCourtTargets _targets;
-
+    [SerializeField] private BadmintonCourtTargets _targets;
     [SerializeField] private bool _isOpponent;
-    [SerializeField] private BadmintionGameManager _gameManager;
+    [SerializeField] private LastHitChecker _lastHitChecker;
 
+
+    private int _shotDirection;
     private bool hitShutter;
-
 
     public event Action OnHitShutter;
     public event Action OnMissShutter;
-    private int _shotDirection;
+
 
 
     public enum ShotType
@@ -70,6 +69,7 @@ public class Racket : MonoBehaviour
         {
             ShootWithTechnique(other);
             hitShutter = true;
+            _lastHitChecker.SetLastHitRacket(gameObject);
             DeactivateCollider();
 
 

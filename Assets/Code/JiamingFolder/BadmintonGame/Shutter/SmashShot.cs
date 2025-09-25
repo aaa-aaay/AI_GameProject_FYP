@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class SmashShot : Shot
 {
-
     [Header("Smash Tuning")]
-    [SerializeField] private float travelTime = 0.35f;   // fast
-    [SerializeField] private float arcHeight = 0.8f;    // small, quick “pop” near start
-    [SerializeField] private float downBias = 2.5f;    // adds extra downward pull
-    [SerializeField] private float skewPower = 0.35f;   // < 1 => peak earlier (steeper)
+    [SerializeField] private float arcHeight = 0.8f;     // small, quick “pop” near start
+    [SerializeField] private float downBias = 2.5f;      // adds extra downward pull
+    [SerializeField] private float skewPower = 0.35f;    // < 1 => peak earlier (steeper)
 
     [Header("Physics")]
     [SerializeField] private bool faceVelocity = true;
@@ -18,7 +16,6 @@ public class SmashShot : Shot
     {
         rb = GetComponent<Rigidbody>();
     }
-
 
     private void Update()
     {
@@ -65,8 +62,6 @@ public class SmashShot : Shot
         }
     }
 
-
-
     public override void Cancel()
     {
         isFlying = false;
@@ -77,7 +72,4 @@ public class SmashShot : Shot
             rb.useGravity = true;
         }
     }
-
-
-
 }
