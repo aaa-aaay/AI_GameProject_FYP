@@ -8,7 +8,7 @@ public class BadmintionPlayer : MonoBehaviour
     [SerializeField] private float _slowedMoveSpeed = 5f;
     [SerializeField] private float _evenMoreSlowedSpeed = 5f;
     private RacketSwing _racketSwing;
-    private BadmintonStamina _stamina;
+    //private BadmintonStamina _stamina;
 
     private int _shootingDirection;
 
@@ -20,7 +20,7 @@ public class BadmintionPlayer : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _racketSwing = GetComponent<RacketSwing>();
-        _stamina = GetComponent<BadmintonStamina>();
+        //_stamina = GetComponent<BadmintonStamina>();
         InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
 
 
@@ -69,7 +69,7 @@ public class BadmintionPlayer : MonoBehaviour
     private void WantToSwingRacket(Racket.ShotType shotType, BadmintonStamina.actions action)
     {
         if (_racketSwing.racketSwinging) return;
-        _stamina.UseStamina(action);
+        //_stamina.UseStamina(action);
         _racketSwing.StartSwing(shotType, _shootingDirection);
     }
 
@@ -77,22 +77,22 @@ public class BadmintionPlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_moveInput == Vector2.zero) _stamina.UseStamina(BadmintonStamina.actions.Rest);
-        else _stamina.UseStamina(BadmintonStamina.actions.Running);
+        //if (_moveInput == Vector2.zero) _stamina.UseStamina(BadmintonStamina.actions.Rest);
+        //else _stamina.UseStamina(BadmintonStamina.actions.Running);
 
         float finalMoveSpeed = _moveSpeed;
 
-        if(_stamina.GetStamina() < 70)
-        {
-            finalMoveSpeed = _slowedMoveSpeed;
-            //decrease speed;
-        }
-        if (_stamina.GetStamina() < 30) {
+        //if(_stamina.GetStamina() < 70)
+        //{
+        //    finalMoveSpeed = _slowedMoveSpeed;
+        //    //decrease speed;
+        //}
+        //if (_stamina.GetStamina() < 30) {
 
-            finalMoveSpeed = _evenMoreSlowedSpeed;
-            //decrease speed even more
+        //    finalMoveSpeed = _evenMoreSlowedSpeed;
+        //    //decrease speed even more
 
-        }
+        //}
 
 
         Vector3 move = new Vector3(_moveInput.x, 0, _moveInput.y) * finalMoveSpeed * Time.fixedDeltaTime;
