@@ -12,15 +12,15 @@ public class LobbyWorld : MonoBehaviour
 
 
 
-    [SerializeField] private Material _unlockedMaterial;
-    [SerializeField] private Material _lockedMaterial;
-    private MeshRenderer MeshRenderer;
+    //[SerializeField] private Material _unlockedMaterial;
+    //[SerializeField] private Material _lockedMaterial;
+    //private MeshRenderer MeshRenderer;
 
     private void Awake()
     {
-        MeshRenderer = GetComponent<MeshRenderer>();
+       // MeshRenderer = GetComponent<MeshRenderer>();
         _worldSelect = GetComponentInChildren<WorldSelect>();
-        SetState(false);
+        //SetState(false);
     }
 
 
@@ -29,12 +29,12 @@ public class LobbyWorld : MonoBehaviour
         if (unlockedworld)
         {
             _worldSelect.enabled = true;
-            MeshRenderer.material = _unlockedMaterial;
+           // MeshRenderer.material = _unlockedMaterial;
         }
         else
         {
             _worldSelect.enabled = false;
-            MeshRenderer.material = _lockedMaterial;
+            //MeshRenderer.material = _lockedMaterial;
         }
     }
 

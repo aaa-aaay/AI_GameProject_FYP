@@ -8,10 +8,10 @@ public class WorldSelect : MonoBehaviour
     private int _nextSceneNumber;
 
     [SerializeField]
-    private GameObject popUpCanvas;
+    private string _levelName;
 
     private InputManager _inputManager;
-
+    private UIManager _uiManager;
     private bool playerInRange = false;
 
     private void Start()
@@ -20,15 +20,14 @@ public class WorldSelect : MonoBehaviour
        
         _inputManager = ServiceLocator.Instance.GetService<InputManager>();
         _inputManager.onInteract += HandleInteract;
-        Debug.Log("InputManager found: " + (_inputManager != null));
+
+        _uiManager = ServiceLocator.Instance.GetService<UIManager>();
 
         playerInRange = false;
-        popUpCanvas.SetActive(false);
     }
 
     private void HandleInteract()
     {
-        Debug.Log("interacted");
 
         if(playerInRange)
         {
@@ -41,9 +40,8 @@ public class WorldSelect : MonoBehaviour
         if (other.CompareTag("Player"))
         {
 
-            //show pop up UI to ask player if they want to enter next scene
             playerInRange = true;
-            popUpCanvas.SetActive(true);
+            _uiManager.OpenLevelSelectUI(_levelName, 1);
             
 
 
@@ -57,7 +55,7 @@ public class WorldSelect : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            popUpCanvas.SetActive(false);
+            _uiManager.HideLevelSelectUI();
            
 
         }
