@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("References")]
     public Transform playerModel;
+    public TimerUI timerUI;   // reference to timer UI in scene
 
     [Header("Tag Settings")]
     public GameObject tagHitboxPrefab;
@@ -21,19 +22,44 @@ public class PlayerMovement : MonoBehaviour
     private GameObject activeHitbox;
     private Coroutine tagCoroutine;
 
+    // material tracking
+    private Material lastMaterial;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+        if (playerModel != null)
+        {
+            Renderer rend = playerModel.GetComponent<Renderer>();
+            if (rend != null)
+                lastMaterial = rend.material;
+        }
     }
 
     void Update()
     {
+        // Input for tagging
         if (Input.GetMouseButtonDown(0) && canTag)
         {
-            // keep a reference so we can cancel it from DisableTagging()
             if (tagCoroutine != null) StopCoroutine(tagCoroutine);
             tagCoroutine = StartCoroutine(DoTag());
+        }
+
+        // Detect material change -> trigger timer
+        if (playerModel != null)
+        {
+            Renderer rend = playerModel.GetComponent<Renderer>();
+            if (rend != null && rend.material != lastMaterial)
+            {
+                lastMaterial = rend.material;
+                if (timerUI != null)
+                {
+                    timerUI.StartTimerOnMaterialChange();
+                    Debug.Log("Timer started due to material change!");
+                }
+            }
         }
     }
 
@@ -50,7 +76,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 inputDir = new Vector3(x, 0f, z).normalized;
         Vector3 move = inputDir * moveSpeed;
 
-        // use rb.velocity so collisions are handled by the physics engine
         rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
 
         // Rotate toward movement direction
@@ -66,7 +91,6 @@ public class PlayerMovement : MonoBehaviour
         if (!canTag) yield break;
         canTag = false;
 
-        // destroy existing hitbox if any
         if (activeHitbox != null)
         {
             Destroy(activeHitbox);
@@ -76,7 +100,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 spawnPos = playerModel.position + playerModel.forward * tagOffset;
         activeHitbox = Instantiate(tagHitboxPrefab, spawnPos, playerModel.rotation, playerModel);
 
-        // keep hitbox briefly
         yield return new WaitForSeconds(0.1f);
 
         if (activeHitbox != null)
@@ -90,7 +113,7 @@ public class PlayerMovement : MonoBehaviour
         tagCoroutine = null;
     }
 
-    // Called by CaptureManager to immediately disable tagging and remove an active hitbox
+    // Called by CaptureManager to immediately disable tagging
     public void DisableTagging()
     {
         canTag = false;
@@ -108,5 +131,14 @@ public class PlayerMovement : MonoBehaviour
         }
 
         Debug.Log("Player tagging disabled by CaptureManager.");
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Tagger"))
+        {
+            Debug.Log("You Lose");
+            // optional: handle defeat here (restart, end episode, etc.)
+        }
     }
 }

@@ -1,89 +1,221 @@
-﻿using Unity.MLAgents;
-using Unity.MLAgents.Actuators;
-using Unity.MLAgents.Sensors;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Runner : Agent
+public class Runner : MonoBehaviour
 {
-    [SerializeField] public Transform tagger;            // Reference to the seeker
-
+    public enum State { Idle, Run }
+    public State currentState = State.Idle;
 
     [Header("Movement Settings")]
     public float moveSpeed = 3f;
+    public float nodeReachThreshold = 0.5f;
     public float dangerRadius = 5f;
 
-
-
+    [Header("References")]
+    public Transform tagger;            // Tagger AI
+    public List<PathNode> allNodes;     // Assign all PathNodes in the arena
 
     private Rigidbody rb;
+    public List<PathNode> path = new List<PathNode>();
+    public int pathIndex = 0;
 
-    public override void Initialize()
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotation; // prevent tumbling
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+        PickNewIdleTarget(); // start by idling
     }
 
-    public override void OnEpisodeBegin()
+    void Update()
     {
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        float distToTagger = Vector3.Distance(transform.position, tagger.position);
 
-        //transform.localPosition = new Vector3(Random.Range(-21, 21), 0.5f, Random.Range(-21, 21));
-        //if (tagger != null)
-        //{
-        //    tagger.localPosition = new Vector3(Random.Range(-21, 21), 0.5f, Random.Range(-21, 21));
-        //}
-    }
-
-    public override void CollectObservations(VectorSensor sensor)
-    {
-        sensor.AddObservation(transform.localPosition);   // runner pos
-        sensor.AddObservation(tagger.localPosition);      // tagger pos
-    }
-
-    public override void OnActionReceived(ActionBuffers actions)
-    {
-        // Movement
-        float moveX = actions.ContinuousActions[0];
-        float moveZ = actions.ContinuousActions[1];
-        Vector3 move = new Vector3(moveX, 0, moveZ).normalized * moveSpeed;
-        rb.MovePosition(transform.position + move * Time.fixedDeltaTime);
-
-        // --- Distance-based penalty/reward ---
-        float distance = Vector3.Distance(transform.position, tagger.position);
-
-        // Punish heavily if the Tagger is very close
-        if (distance < dangerRadius)
+        // --- State switching ---
+        if (distToTagger <= dangerRadius)
         {
-            // The closer the Tagger, the stronger the penalty
-            float penalty = Mathf.Lerp(-1f, 0f, distance / dangerRadius);
-            AddReward(penalty * Time.deltaTime);
+            currentState = State.Run;
         }
-        else
+        else if (currentState == State.Run && distToTagger > dangerRadius * 1.5f)
         {
-            // Small positive reward for surviving outside the danger zone
-            AddReward(0.01f * Time.deltaTime);
+            // Safe: go back to idle wandering
+            currentState = State.Idle;
+            PickNewIdleTarget();
         }
-    }
- 
 
-    private void OnCollisionEnter(Collision collision)
-    {
-       if (collision.collider.CompareTag("Wall"))
+        // --- Execute state behaviour ---
+        switch (currentState)
         {
-
-            AddReward(-10f);   // big penalty for touching wall
-            EndEpisode();
+            case State.Idle:
+                IdleBehaviour();
+                break;
+            case State.Run:
+                RunBehaviour();
+                break;
         }
     }
 
-    public override void Heuristic(in ActionBuffers actionsOut)
+    // -------------------------------
+    // IDLE: move to a random node
+    // -------------------------------
+    void IdleBehaviour()
     {
-        var continuous = actionsOut.ContinuousActions;
-        continuous[0] = Input.GetAxisRaw("Horizontal"); // X movement
-        continuous[1] = Input.GetAxisRaw("Vertical");   // Z movement
+        MoveAlongPath();
+
+        if (path.Count == 0 || pathIndex >= path.Count)
+            PickNewIdleTarget();
+    }
+
+    void PickNewIdleTarget()
+    {
+        PathNode start = FindClosestNode();
+        PathNode goal = allNodes[Random.Range(0, allNodes.Count)];
+        path = AStar.FindPath(start, goal);
+        pathIndex = 0;
+    }
+
+    // -------------------------------
+    // RUN: chain furthest nodes until safe
+    // -------------------------------
+    void RunBehaviour()
+    {
+        MoveAlongPath();
+
+        // Reached end of current path
+        if (path.Count == 0 || pathIndex >= path.Count)
+        {
+            float distToTagger = Vector3.Distance(transform.position, tagger.position);
+
+            if (distToTagger <= dangerRadius)
+            {
+                // Still in danger → keep running to the next furthest node
+                PickFurthestNodeFromTagger();
+            }
+            else
+            {
+                // Safe → back to idle
+                currentState = State.Idle;
+                PickNewIdleTarget();
+            }
+        }
+    }
+
+    void PickFurthestNodeFromTagger()
+    {
+        PathNode start = FindClosestNode();
+
+        if (tagger == null) return;
+
+        Vector3 toTagger = (tagger.position - transform.position).normalized;
+
+        PathNode bestNode = null;
+        float bestScore = -Mathf.Infinity;
+
+        foreach (var node in allNodes)
+        {
+            Vector3 toNode = (node.transform.position - transform.position).normalized;
+
+            // Dot product tells relative direction (-1 = opposite, +1 = same direction)
+            float alignment = Vector3.Dot(toNode, toTagger);
+
+            // Prefer nodes *behind* relative to tagger
+            if (alignment < 0f)
+            {
+                // Score = distance to tagger (further = better) + weight to "behind-ness"
+                float dist = Vector3.Distance(node.transform.position, tagger.position);
+                float score = dist * (1f - alignment); // weighting: behind nodes get boosted
+
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestNode = node;
+                }
+            }
+        }
+
+        // If no "behind" nodes found, fallback to just the furthest
+        if (bestNode == null)
+        {
+            float maxDist = -Mathf.Infinity;
+            foreach (var node in allNodes)
+            {
+                float d = Vector3.Distance(node.transform.position, tagger.position);
+                if (d > maxDist)
+                {
+                    maxDist = d;
+                    bestNode = node;
+                }
+            }
+        }
+
+        if (bestNode != null)
+        {
+            path = AStar.FindPath(start, bestNode);
+            pathIndex = 0;
+        }
+    }
+
+
+    void MoveAlongPath()
+    {
+        if (path == null || path.Count == 0) return;
+
+        if (pathIndex >= path.Count)
+        {
+            // Reached end of path, pick new target depending on state
+            switch (currentState)
+            {
+                case State.Idle:
+                    PickNewIdleTarget();
+                    break;
+                case State.Run:
+                    PickFurthestNodeFromTagger();
+                    break;
+            }
+            return;
+        }
+
+        Vector3 targetPos = path[pathIndex].transform.position;
+        Vector3 dir = (targetPos - transform.position);
+        float dist = dir.magnitude;
+
+        if (dist < nodeReachThreshold)
+        {
+            pathIndex++;
+            return; // wait until next frame to move to next node
+        }
+
+        dir.Normalize();
+        rb.MovePosition(transform.position + dir * moveSpeed * Time.deltaTime);
+
+        // Rotate toward movement direction
+        if (dir.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
+        }
+    }
+
+
+
+
+    PathNode FindClosestNode()
+    {
+        PathNode closest = null;
+        float minDist = Mathf.Infinity;
+
+        foreach (var n in allNodes)
+        {
+            float d = Vector3.Distance(transform.position, n.transform.position);
+            if (d < minDist)
+            {
+                minDist = d;
+                closest = n;
+            }
+        }
+
+        return closest;
     }
 
     private void OnDrawGizmosSelected()

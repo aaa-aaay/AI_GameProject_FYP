@@ -1,12 +1,10 @@
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
 using TMPro;
 
 public class TimerUI : MonoBehaviour
 {
-    public float maxTime = 30f;       // Total time for the episode
-    public TMP_Text timerText;            // Reference to UI Text
+    public float maxTime = 30f;    // Total time for the episode
+    public TMP_Text timerText;     // Reference to UI Text
 
     private float currentTime;
     private bool isRunning = false;
@@ -14,7 +12,7 @@ public class TimerUI : MonoBehaviour
     void Start()
     {
         ResetTimer();
-        StartTimer(); // starts counting automatically
+
     }
 
     void Update()
@@ -50,5 +48,12 @@ public class TimerUI : MonoBehaviour
     public float GetRemainingTime()
     {
         return currentTime;
+    }
+
+    // NEW Å® Called when RunnerÅfs material changes
+    public void StartTimerOnMaterialChange()
+    {
+        ResetTimer();
+        StartTimer();
     }
 }
