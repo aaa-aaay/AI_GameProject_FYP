@@ -141,6 +141,9 @@ public class BadmintonAgent : Agent
         Vector3 desiredPos = _shuttle.localPosition;
         float currentDist = Vector3.Distance(transform.localPosition, desiredPos);
 
+        if (currentDist < _prevDistToShuttle) AddReward(0.05f);
+        else AddReward(-0.05f);
+
         // Encourage being near shuttle, not overshooting
         if (currentDist < _targetRangeFromShutter)
         {

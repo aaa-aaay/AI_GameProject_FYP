@@ -10,7 +10,8 @@ public class LobbyWorld : MonoBehaviour
 
     private WorldSelect _worldSelect;
 
-
+    [SerializeField] private GameObject lockedModel;
+    [SerializeField] private GameObject UnlockedModel;
 
     //[SerializeField] private Material _unlockedMaterial;
     //[SerializeField] private Material _lockedMaterial;
@@ -24,16 +25,37 @@ public class LobbyWorld : MonoBehaviour
     }
 
 
+    private void Start()
+    {
+        lockedModel.SetActive(false);
+        UnlockedModel.SetActive(false);
+
+        if (_isUnlocked)
+        {
+            UnlockedModel.SetActive(true);
+            SetState(true);
+        }
+        else
+        {
+            
+            SetState(false);
+        }
+    }
+
     public void SetState(bool unlockedworld)
     {
         if (unlockedworld)
         {
             _worldSelect.enabled = true;
-           // MeshRenderer.material = _unlockedMaterial;
+            lockedModel.SetActive(false);
+            UnlockedModel.SetActive(true);
+            // MeshRenderer.material = _unlockedMaterial;
         }
         else
         {
             _worldSelect.enabled = false;
+            lockedModel.SetActive(true);
+            UnlockedModel.SetActive(false);
             //MeshRenderer.material = _lockedMaterial;
         }
     }
