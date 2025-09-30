@@ -117,8 +117,8 @@ public class archery_handler : MonoBehaviour
     public void OnHit(int point)
     {
         isFlying = false;
-        //arrowCamera.enabled = false;
-        //playerCamera.enabled = true;
+        arrowCamera.enabled = false;
+        playerCamera.enabled = true;
 
         canShoot = true;
 
