@@ -45,21 +45,6 @@ public class arrow : MonoBehaviour
         rb.AddForce(windForce, ForceMode.Acceleration);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!other.transform.TryGetComponent(out target target) && other.transform.gameObject.layer != LayerMask.NameToLayer("Floor"))
-            return;
-
-        SetCollision(false);
-
-        var collision = other.GetComponent<Collision>();
-
-        ContactPoint contact = collision.GetContact(0);
-        int point;
-
-        if (target) point = target.OnHit(contact); else point = 0;
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if (!collision.gameObject.TryGetComponent(out target target) && collision.gameObject.layer != LayerMask.NameToLayer("Floor"))
