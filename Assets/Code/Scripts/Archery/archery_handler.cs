@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Cinemachine;
+using UnityEditor.Toolbars;
 
 public class archery_handler : MonoBehaviour
 {
@@ -9,9 +10,7 @@ public class archery_handler : MonoBehaviour
     [SerializeField] private CinemachineCamera playerCamera;
     [SerializeField] private CinemachineCamera arrowCamera;
     [SerializeField] private GameObject playerObject;
-
-    private archery_player player;
-    [SerializeField] private archery_ui_handler uiHandler;
+    [SerializeField] private GameObject targetObject;
 
     [Header("Arrow")]
     [SerializeField, Tooltip("Number of arrows in object pool. Set to 0 to disable.")] private int numArrows = 3;
@@ -19,12 +18,24 @@ public class archery_handler : MonoBehaviour
     [SerializeField] private GameObject arrowPrefab;
     private arrow[] arrows;
 
+    [Header("Settings")]
+    private archery_player player;
+    [SerializeField] private archery_ui_handler uiHandler;
+    [field: SerializeField] public archery_settings settings { get; private set; }
+
     private bool isPlayerTurn;
     private bool isFlying;
     private bool canShoot;
 
     private float windDirection;
     private float windSpeed;
+
+    private float minTargetDistance;
+    private float maxTargetDistance;
+    private float maxLateralDistance;
+
+    private float targetDistance;
+    private float lateralDistance;
 
     public void Awake()
     {
@@ -43,31 +54,41 @@ public class archery_handler : MonoBehaviour
         if (!arrowCamera) Debug.LogError("arrowCamera not assigned.");
         arrowCamera.enabled = false;
 
-        player = GetComponent<archery_player>();
+        player = playerObject.GetComponent<archery_player>();
         if (!player)
-        {
-            gameObject.AddComponent<archery_player>();
-            Debug.LogWarning("archery_player has not been added.");
-        }
-        player.Init(0, 0);
+            Debug.LogError("archery_player has not been added.");
 
         arrows = new arrow[numArrows];
         for (int i = 0; i < numArrows; i++)
         {
             arrows[i] = Instantiate(arrowPrefab).GetComponent<arrow>();
+            arrows[i].gameObject.transform.parent = targetObject.transform;
             arrows[i].gameObject.SetActive(false);
         }
         currentArrow = 0;
 
+        minTargetDistance = settings.minTargetDistance;
+        maxTargetDistance = settings.maxTargetDistance;
+        maxLateralDistance = settings.maxLateralDistance;
+
+        if (maxTargetDistance < minTargetDistance)
+        {
+            Debug.LogWarning("maxTargetDistance (" + maxTargetDistance + ") less than minTargetDistance (" + minTargetDistance + "). maxTargetDistance set to minTargetDistance.");
+            maxTargetDistance = minTargetDistance;
+        }
+
         isPlayerTurn = true;
         isFlying = false;
         canShoot = true;
+
+        InitPlayer();
     }
 
     public void Shoot(float force, float yaw, float pitch)
     {
-        if (isFlying) return;
+        if (!canShoot) return;
         isFlying = true;
+        canShoot = false;
 
         playerCamera.enabled = false;
 
@@ -79,16 +100,19 @@ public class archery_handler : MonoBehaviour
 
         arrowCamera.Target.TrackingTarget = arrows[currentArrow].transform;
         arrowCamera.enabled = true;
+    }
 
-        currentArrow++;
-        if (currentArrow == numArrows)
-            currentArrow = 0;
-        arrows[currentArrow].gameObject.SetActive(false);
+    private void InitPlayer()
+    {
+        windDirection = Random.Range(0f, 360f);
+        windSpeed = Random.Range(0f, settings.maxWindSpeed);
 
+        targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
+        lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
 
-        player.Init(0, 0);
-        windDirection = Random.Range(0, 359);
-        windSpeed = Random.Range(0, 10);
+        targetObject.transform.position = playerObject.transform.position + new Vector3(lateralDistance, 1, targetDistance);
+
+        player.Init();
     }
 
     public void OnHit(int point)
@@ -98,10 +122,18 @@ public class archery_handler : MonoBehaviour
         playerCamera.enabled = true;
 
         Debug.Log($"Point: {point}");
+        canShoot = true;
+
+        currentArrow++;
+        if (currentArrow == numArrows)
+            currentArrow = 0;
+        arrows[currentArrow].gameObject.SetActive(false);
+
+        InitPlayer();
     }
 
     public void UpdateUI(float force, float yaw, float pitch)
     {
-        uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed);
+        uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed, targetDistance, lateralDistance);
     }
 }
