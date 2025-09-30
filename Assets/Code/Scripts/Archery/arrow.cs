@@ -1,8 +1,11 @@
-﻿using Unity.InferenceEngine;
+﻿using TMPro;
+using Unity.InferenceEngine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class arrow : MonoBehaviour
 {
+    [SerializeField] private Transform tip;
     private Rigidbody rb;
 
     public bool launched { get; private set; } = false;
@@ -53,8 +56,14 @@ public class arrow : MonoBehaviour
         SetCollision(false);
 
         ContactPoint contact = collision.GetContact(0);
-        int point;
 
+        Vector3 desiredTipPos = contact.point - contact.normal * 0.1f;
+        Vector3 delta = desiredTipPos - tip.position;
+        transform.position += delta;
+
+        transform.parent = collision.gameObject.transform;
+
+        int point;
         if (target) point = target.OnHit(contact); else point = 0;
 
         archery_handler.instance.OnHit(point);

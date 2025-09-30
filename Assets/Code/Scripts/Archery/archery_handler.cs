@@ -62,7 +62,6 @@ public class archery_handler : MonoBehaviour
         for (int i = 0; i < numArrows; i++)
         {
             arrows[i] = Instantiate(arrowPrefab).GetComponent<arrow>();
-            arrows[i].gameObject.transform.parent = targetObject.transform;
             arrows[i].gameObject.SetActive(false);
         }
         currentArrow = 0;
@@ -118,10 +117,9 @@ public class archery_handler : MonoBehaviour
     public void OnHit(int point)
     {
         isFlying = false;
-        arrowCamera.enabled = false;
-        playerCamera.enabled = true;
+        //arrowCamera.enabled = false;
+        //playerCamera.enabled = true;
 
-        Debug.Log($"Point: {point}");
         canShoot = true;
 
         currentArrow++;
