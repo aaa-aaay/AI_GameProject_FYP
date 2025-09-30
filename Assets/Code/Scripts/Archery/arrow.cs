@@ -6,6 +6,7 @@ public class arrow : MonoBehaviour
     private Rigidbody rb;
 
     public bool launched { get; private set; } = false;
+    private Vector3 windForce;
 
     private void Awake()
     {
@@ -18,7 +19,7 @@ public class arrow : MonoBehaviour
         launched = false;
     }
 
-    public void Shoot(float strength, float yaw, float pitch)
+    public void Shoot(float strength, float yaw, float pitch, float windDirection, float windStrength)
     {
         if (launched) return;
         launched = true;
@@ -28,7 +29,7 @@ public class arrow : MonoBehaviour
 
         rb.AddForce(direction * strength, ForceMode.Impulse);
 
-        Debug.Log($"Force: {strength} \t Yaw: {yaw} Pitch: {pitch} \t Direction: {direction}");
+        windForce = Quaternion.Euler(0f, windDirection, 0f) * Vector3.forward * windStrength;
     }
 
     private void FixedUpdate()
@@ -40,6 +41,8 @@ public class arrow : MonoBehaviour
             Quaternion targetRot = Quaternion.LookRotation(rb.linearVelocity.normalized, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 20f * Time.fixedDeltaTime);
         }
+
+        rb.AddForce(windForce, ForceMode.Acceleration);
     }
 
     private void OnTriggerEnter(Collider other)

@@ -81,5 +81,7 @@ public class archery_player : MonoBehaviour
 
         if (shoot.triggered)
             archery_handler.instance.Shoot(force, yaw, pitch);
+
+        archery_handler.instance.UpdateUI(force, yaw, pitch);
     }
 }

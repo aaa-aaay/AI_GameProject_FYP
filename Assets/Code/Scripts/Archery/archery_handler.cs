@@ -11,6 +11,7 @@ public class archery_handler : MonoBehaviour
     [SerializeField] private GameObject playerObject;
 
     private archery_player player;
+    [SerializeField] private archery_ui_handler uiHandler;
 
     [Header("Arrow")]
     [SerializeField, Tooltip("Number of arrows in object pool. Set to 0 to disable.")] private int numArrows = 3;
@@ -21,6 +22,9 @@ public class archery_handler : MonoBehaviour
     private bool isPlayerTurn;
     private bool isFlying;
     private bool canShoot;
+
+    private float windDirection;
+    private float windSpeed;
 
     public void Awake()
     {
@@ -60,11 +64,6 @@ public class archery_handler : MonoBehaviour
         canShoot = true;
     }
 
-    public void Update()
-    {
-        
-    }
-
     public void Shoot(float force, float yaw, float pitch)
     {
         if (isFlying) return;
@@ -76,7 +75,7 @@ public class archery_handler : MonoBehaviour
         arrows[currentArrow].transform.rotation = Quaternion.identity;
         arrows[currentArrow].gameObject.SetActive(true);
 
-        arrows[currentArrow].Shoot(force, yaw, pitch);
+        arrows[currentArrow].Shoot(force, yaw, pitch, windDirection, windSpeed);
 
         arrowCamera.Target.TrackingTarget = arrows[currentArrow].transform;
         arrowCamera.enabled = true;
@@ -88,6 +87,8 @@ public class archery_handler : MonoBehaviour
 
 
         player.Init(0, 0);
+        windDirection = Random.Range(0, 359);
+        windSpeed = Random.Range(0, 10);
     }
 
     public void OnHit(int point)
@@ -97,5 +98,10 @@ public class archery_handler : MonoBehaviour
         playerCamera.enabled = true;
 
         Debug.Log($"Point: {point}");
+    }
+
+    public void UpdateUI(float force, float yaw, float pitch)
+    {
+        uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed);
     }
 }
