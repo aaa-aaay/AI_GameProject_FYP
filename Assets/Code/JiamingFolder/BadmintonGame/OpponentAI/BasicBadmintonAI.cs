@@ -33,6 +33,9 @@ public class BasicBadmintonAI : MonoBehaviour
     private bool attacking = false;
     private bool serving = false;
     private bool isWaitingForSwing = false;
+
+    private Vector3 _lastShuttlePos;
+    private Vector3 _shuttleVelocity;
     private void Start()
     {
         _startPos = transform.position;
@@ -49,19 +52,31 @@ public class BasicBadmintonAI : MonoBehaviour
     {
         if (_shuttle == null || _net == null) return;
 
-        
+
+        // --- Track shuttle velocity ---
+        _shuttleVelocity = (_shuttle.position - _lastShuttlePos) / Time.deltaTime;
+        _lastShuttlePos = _shuttle.position;
+
         MoveTo(attacking);
 
 
-        if (isWaitingForSwing || _racketSwing.racketSwinging) return;
-        // --- Step 2: Check if AI can hit ---
-        bool inRange = Vector3.Distance(transform.position, _shuttle.position) < hitRange;
-        bool inHeight = _shuttle.position.y > minHeight && _shuttle.position.y < maxHeight;
 
-        if (inRange && inHeight)
+
+        if (attacking || serving)
         {
-            PerformShot();
+            if (isWaitingForSwing || _racketSwing.racketSwinging) return;
+            // --- Step 2: Check if AI can hit ---
+            bool inRange = Vector3.Distance(transform.position, _shuttle.position) < hitRange;
+            bool inHeight = _shuttle.position.y > minHeight && _shuttle.position.y < maxHeight;
+
+            if (inRange && inHeight)
+            {
+                PerformShot();
+            }
+
+            FaceIncomingShuttle();
         }
+
     }
 
 
@@ -98,7 +113,20 @@ public class BasicBadmintonAI : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, desiredPos, moveSpeed * Time.deltaTime);
     }
 
+    private void FaceIncomingShuttle()
+    {
+        if (_shuttleVelocity.sqrMagnitude < 0.01f) return; // shuttle barely moving
 
+        // Opposite of shuttle's velocity (where it's coming from)
+        Vector3 incomingDir = -_shuttleVelocity;
+        incomingDir.y = 0f; // ignore tilt so AI only rotates on ground plane
+
+        if (incomingDir.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(incomingDir, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 10f * Time.deltaTime);
+        }
+    }
     private void PerformShot()
     {
 
@@ -129,6 +157,8 @@ public class BasicBadmintonAI : MonoBehaviour
 
     private void HandleGameOver()
     {
+        attacking = false;
+        serving = false;
         transform.position = _startPos;
     }
 
@@ -142,6 +172,7 @@ public class BasicBadmintonAI : MonoBehaviour
     private void HandleMissing()
     {
         attacking = false;
+        serving = false;
         Debug.Log("lost a point");
     }
 

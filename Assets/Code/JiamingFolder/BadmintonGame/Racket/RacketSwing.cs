@@ -14,9 +14,11 @@ public class RacketSwing : MonoBehaviour
     private Vector3 _origPos;
     private Quaternion _origRot;
 
+
+    [HideInInspector]
     public bool racketSwinging = false;
 
-
+    [SerializeField] private float swingTime = 0.3f;
 
 
     [SerializeField] private Racket _racket;
@@ -39,7 +41,7 @@ public class RacketSwing : MonoBehaviour
         _racket.AssignShot(shotType, direction);
         _racket.ActivateCollider();
 
-        StartCoroutine(LerpRacket(_lerpTransform, 0.2f));
+        StartCoroutine(LerpRacket(_lerpTransform, swingTime));
     }
 
     private IEnumerator LerpRacket(Transform targetTransform, float duration)

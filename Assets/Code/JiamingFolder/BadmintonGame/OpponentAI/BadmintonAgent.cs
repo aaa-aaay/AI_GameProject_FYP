@@ -14,8 +14,8 @@ public class BadmintonAgent : Agent
 
     [Header("Stats")]
     [SerializeField] private float _moveSpeed = 5.0f;
-
-    [SerializeField] private float offsetFromShuttle = 1.6f;
+    [SerializeField] private float _offsetFromNet = 0.1f;
+    [SerializeField] private float _targetRangeFromShutter = 3.0f;
 
 
     [Header("Other References")]
@@ -48,7 +48,7 @@ public class BadmintonAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        transform.localPosition = _startPosition + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
+        transform.localPosition = _startPosition;
         _prevDistToShuttle = float.PositiveInfinity; // reset each episode
 
 
@@ -112,12 +112,23 @@ public class BadmintonAgent : Agent
 
 
 
-        // Prevent crossing the net
-        if (transform.localPosition.z > _net.localPosition.z)
+        if (_startPosition.z > _net.localPosition.z)
         {
-            Vector3 corrected = transform.localPosition;
-            corrected.z = _net.localPosition.z - 0.2f; // stay just before the net
-            transform.localPosition = corrected;
+            if (transform.localPosition.z < _net.localPosition.z)
+            {
+                Vector3 corrected = transform.localPosition;
+                corrected.z = _net.localPosition.z + _offsetFromNet;
+                transform.localPosition = corrected;
+            }
+        }
+        else
+        {
+            if (transform.localPosition.z > _net.localPosition.z)
+            {
+                Vector3 corrected = transform.localPosition;
+                corrected.z = _net.localPosition.z - _offsetFromNet;
+                transform.localPosition = corrected;
+            }
         }
 
         MovementRewards();
@@ -127,15 +138,19 @@ public class BadmintonAgent : Agent
     private void MovementRewards()
     {
 
-        Vector3 dirToNet = (_net.localPosition - _shuttle.localPosition).normalized;
-        Vector3 desiredPos = _shuttle.localPosition - dirToNet * offsetFromShuttle;
-
-
-        // Distance reward
+        Vector3 desiredPos = _shuttle.localPosition;
         float currentDist = Vector3.Distance(transform.localPosition, desiredPos);
 
-        if (currentDist < _prevDistToShuttle) AddReward(0.05f);
-        else AddReward(-0.05f);
+        // Encourage being near shuttle, not overshooting
+        if (currentDist < _targetRangeFromShutter)
+        {
+            AddReward(0.1f);
+        }
+        else
+        {
+            // small penalty if too far
+            AddReward(-0.01f * currentDist);
+        }
 
         _prevDistToShuttle = currentDist;
 
@@ -146,6 +161,13 @@ public class BadmintonAgent : Agent
     {
         if (_racketSwing.racketSwinging) return;
 
+
+        float dist = Vector3.Distance(transform.localPosition, _shuttle.localPosition);
+
+        if (dist < _targetRangeFromShutter)
+        {
+            AddReward(0.3f); // encourage trying a swing near shuttle
+        }
 
         //1 to hit right, 2 to hit left
 
@@ -173,20 +195,20 @@ public class BadmintonAgent : Agent
 
     private void RewardForHiting()
     {
-        AddReward(1.0f);
+        AddReward(1.5f);
     }
     private void PunishForMissing()
     {
-        AddReward(-0.5f);
+        AddReward(-0.3f);
     }
     private void AIScores()
     {
-        AddReward(3.0f);
+        AddReward(5.0f);
     }
 
     private void EnemyScores()
     {
-        AddReward(-3.0f);
+        AddReward(-5.0f);
     }
 
     private void HandleGameOver()

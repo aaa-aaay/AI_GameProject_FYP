@@ -84,6 +84,7 @@ public class BadmintionGameManager : MonoBehaviour
         player1Score = player2Score = 0;
         _P2ScoreDisplay.text = player2Score.ToString();
         _P1ScoreDisplay.text = player1Score.ToString();
+        shutter.transform.position = shutterSpawnPoint1.position;
         OnGameOver?.Invoke();
     }
 }

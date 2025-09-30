@@ -1,7 +1,5 @@
-using NUnit.Framework;
+
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
 public abstract class Shot : MonoBehaviour
