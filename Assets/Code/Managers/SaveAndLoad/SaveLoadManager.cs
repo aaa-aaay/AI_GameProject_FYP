@@ -15,7 +15,7 @@ public class SaveLoadManager : MonoBehaviour,IGameService
 
     private void OnDisable()
     {
-        ServiceLocator.Instance.RemoveService<SaveLoadManager>(false);
+        //ServiceLocator.Instance.RemoveService<SaveLoadManager>(false);
     }
 
     public void SaveData(int worldNo, int starCount)

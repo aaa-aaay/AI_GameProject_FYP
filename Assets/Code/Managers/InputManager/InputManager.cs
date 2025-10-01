@@ -42,67 +42,38 @@ public class InputManager : MonoBehaviour,IGameService
 
     public event Action onInteract;
 
-
-
-    private void OnEnable()
+    private void Awake()
     {
         ServiceLocator.Instance.AddService(this, false);
+    }
+    private void OnEnable()
+    {
 
+        Debug.Log("InputManager OnEnable called");
         _inputActionAsset.Enable();
-        _moveActionReference.action.Enable();
-        _moveActionReference.action.performed += Move;
-        _moveActionReference.action.canceled += MoveEnd;
 
-        _jumpActionReference.action.Enable();
-        _jumpActionReference.action.performed += Jump;
-
-        _clickActionReference.action.Enable();
-        _clickActionReference.action.performed += Click;
-
-        _rightClickActionReference.action.Enable();
-        _rightClickActionReference.action.performed += RightClick;
-
-        _middleClickReference.action.Enable();
-        _middleClickReference.action.performed += MiddleClick;
-
-        _interactActionReference.action.Enable();
-        _interactActionReference.action.performed += Interact;
+        BindActions();
 
     }
     private void OnDisable()
     {
-        ServiceLocator.Instance.RemoveService<InputManager>(false);
+        //Debug.Log("InputManager OnDisable called");
+        //UnbindActions();
 
-
-        _inputActionAsset.Disable();
-        _moveActionReference.action.Disable();
-        _moveActionReference.action.performed -= Move;
-        _moveActionReference.action.canceled -= MoveEnd;
-
-        _jumpActionReference.action.Disable();
-        _jumpActionReference.action.performed -= Jump;
-
-
-
-        _clickActionReference.action.Disable();
-        _clickActionReference.action.performed -= Click;
-
-        _rightClickActionReference.action.Disable();
-        _rightClickActionReference.action.performed -= RightClick;
-
-        _middleClickReference.action.Disable();
-        _middleClickReference.action.performed -= MiddleClick;
-
-        _interactActionReference.action.Disable();
-        _interactActionReference.action.performed -= Interact;
+        //_inputActionAsset.Disable();
 
 
 
     }
 
+    private void OnDestroy()
+    {
+        //ServiceLocator.Instance.RemoveService<InputManager>(false);
+    }
 
     private void Move(InputAction.CallbackContext context)
     {
+        Debug.Log("hellow");
         OnMove?.Invoke(context.ReadValue<Vector2>());
     }
 
@@ -136,5 +107,31 @@ public class InputManager : MonoBehaviour,IGameService
         
         Debug.Log("Interact action fired: " + context.phase);
         onInteract?.Invoke();
+    }
+
+
+
+    private void BindActions()
+    {
+        _moveActionReference.action.performed += Move;
+        _moveActionReference.action.canceled += MoveEnd;
+
+        _jumpActionReference.action.performed += Jump;
+        _clickActionReference.action.performed += Click;
+        _rightClickActionReference.action.performed += RightClick;
+        _middleClickReference.action.performed += MiddleClick;
+        _interactActionReference.action.performed += Interact;
+    }
+
+    private void UnbindActions()
+    {
+        _moveActionReference.action.performed -= Move;
+        _moveActionReference.action.canceled -= MoveEnd;
+
+        _jumpActionReference.action.performed -= Jump;
+        _clickActionReference.action.performed -= Click;
+        _rightClickActionReference.action.performed -= RightClick;
+        _middleClickReference.action.performed -= MiddleClick;
+        _interactActionReference.action.performed -= Interact;
     }
 }

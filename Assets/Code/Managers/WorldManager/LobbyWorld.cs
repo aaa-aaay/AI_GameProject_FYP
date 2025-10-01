@@ -46,14 +46,14 @@ public class LobbyWorld : MonoBehaviour
     {
         if (unlockedworld)
         {
-            _worldSelect.enabled = true;
+            _worldSelect.Activate(true);
             lockedModel.SetActive(false);
             UnlockedModel.SetActive(true);
             // MeshRenderer.material = _unlockedMaterial;
         }
         else
         {
-            _worldSelect.enabled = false;
+            _worldSelect.Activate(false);
             lockedModel.SetActive(true);
             UnlockedModel.SetActive(false);
             //MeshRenderer.material = _lockedMaterial;
