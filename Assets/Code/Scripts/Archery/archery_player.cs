@@ -6,13 +6,14 @@ public class archery_player : MonoBehaviour
     [Header("Input")]
     [SerializeField] private InputActionAsset inputActions;
 
+    private bool isTurn;
+
     private InputActionMap archeryMap;
     private InputAction move;
     private InputAction increaseForce;
     private InputAction decreaseForce;
     private InputAction shoot;
 
-    [Header("Physics")]
     private float minForce;
     private float maxForce;
     private float maxYaw;
@@ -26,8 +27,9 @@ public class archery_player : MonoBehaviour
     public float yaw { get; private set; }
     public float pitch { get; private set; }
 
-    public void Init()
+    public void Initialize()
     {
+        isTurn = false;
         handler = archery_handler.instance;
         settings = handler.settings;
 
@@ -39,7 +41,6 @@ public class archery_player : MonoBehaviour
 
         foreach (var map in inputActions.actionMaps) map.Disable();
         archeryMap = inputActions.FindActionMap("Archery", true);
-        archeryMap.Enable();
         move = archeryMap.FindAction("Move", true);
         increaseForce = archeryMap.FindAction("IncreaseForce", true);
         decreaseForce = archeryMap.FindAction("DecreaseForce", true);
@@ -57,6 +58,14 @@ public class archery_player : MonoBehaviour
             maxPitch = minPitch;
         }
 
+        StartTurn();
+    }
+
+    public void StartTurn()
+    {
+        isTurn = true;
+        archeryMap.Enable();
+
         if (minForce > 10f) force = minForce; else force = 10f;
         yaw = 0f;
         if (minPitch > 0f) pitch = minPitch; else pitch = 0f;
@@ -64,6 +73,8 @@ public class archery_player : MonoBehaviour
 
     private void Update()
     {
+        if (!isTurn) return;
+
         Vector2 moveInput = move.ReadValue<Vector2>();
 
         yaw += moveInput.x * 10f * Time.deltaTime;
@@ -81,6 +92,7 @@ public class archery_player : MonoBehaviour
         if (shoot.triggered)
         {
             handler.Shoot(force, yaw, pitch);
+            isTurn = false;
             archeryMap.Disable();
         }
 

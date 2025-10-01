@@ -2,9 +2,11 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using System.Collections;
 
 public class archery_agent : Agent
 {
+    [SerializeField] private float minAimTime = 2f;
     private bool isTurn;
 
     private float minForce;
@@ -15,7 +17,10 @@ public class archery_agent : Agent
 
     private archery_handler handler;
     private archery_settings settings;
+    private DecisionRequester decisionRequester;
 
+    private bool canShoot;
+    
     private float force;
     private float yaw;
     private float pitch;
@@ -26,20 +31,19 @@ public class archery_agent : Agent
         isTurn = false;
         handler = archery_handler.instance;
         settings = handler.settings;
+        decisionRequester = GetComponent<DecisionRequester>();
 
         minForce = settings.minForce;
         maxForce = settings.maxForce;
         maxYaw = settings.maxYaw;
         minPitch = settings.minPitch;
         maxPitch = settings.maxPitch;
-
-        StartTurn();
     }
 
     public void StartTurn()
     {
         isTurn = true;
-        EndEpisode();
+        decisionRequester.enabled = true;
     }
 
     public override void OnEpisodeBegin()
@@ -47,7 +51,16 @@ public class archery_agent : Agent
         if (minForce > 10f) force = minForce; else force = 10f;
         yaw = 0f;
         if (minPitch > 0f) pitch = minPitch; else pitch = 0f;
+        canShoot = false;
+        StartCoroutine(ShootTimer());
         shoot = false;
+    }
+
+    private IEnumerator ShootTimer()
+    {
+        yield return new WaitForSeconds(minAimTime);
+
+        canShoot = true;
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -66,6 +79,11 @@ public class archery_agent : Agent
         sensor.AddObservation(yaw);
         sensor.AddObservation(pitch);
         sensor.AddObservation(shoot);
+    }
+
+    public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
+    {
+        if (!canShoot) actionMask.SetActionEnabled(branch: 3, actionIndex: 1, isEnabled: false);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -111,6 +129,7 @@ public class archery_agent : Agent
 
         if (da[3] == 1)
         {
+            decisionRequester.enabled = false;
             isTurn = false;
             shoot = true;
             handler.Shoot(force, yaw, pitch);
@@ -122,5 +141,6 @@ public class archery_agent : Agent
     public void OnHit(int point)
     {
         AddReward(point * 0.01f);
+        EndEpisode();
     }
 }

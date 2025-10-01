@@ -1,16 +1,21 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using UnityEditor.Toolbars;
+using System.Collections;
 
 public class archery_handler : MonoBehaviour
 {
     public static archery_handler instance;
 
     [Header("Cinemachine Camera")]
+    [SerializeField, Tooltip("Time in seconds for camera to stay at arrow position after hitting")] private float cameraStay = 3f;
     [SerializeField] private CinemachineCamera playerCamera;
     [SerializeField] private CinemachineCamera arrowCamera;
     [SerializeField] private GameObject playerObject;
-    [SerializeField] private GameObject targetObject;
+    private archery_player player;
+    [SerializeField] private GameObject agentObject;
+    private archery_agent agent;
+    [field: SerializeField] public GameObject targetObject { get; private set; }
 
     [Header("Arrow")]
     [SerializeField, Tooltip("Number of arrows in object pool. Set to 0 to disable.")] private int numArrows = 3;
@@ -19,16 +24,14 @@ public class archery_handler : MonoBehaviour
     private arrow[] arrows;
 
     [Header("Settings")]
-    private archery_player player;
     [SerializeField] private archery_ui_handler uiHandler;
     [field: SerializeField] public archery_settings settings { get; private set; }
 
     private bool isPlayerTurn;
-    private bool isFlying;
     private bool canShoot;
 
-    private float windDirection;
-    private float windSpeed;
+    public float windDirection{ get; private set; }
+    public float windSpeed { get; private set; }
 
     private float minTargetDistance;
     private float maxTargetDistance;
@@ -37,7 +40,7 @@ public class archery_handler : MonoBehaviour
     private float targetDistance;
     private float lateralDistance;
 
-    public void Awake()
+    private void Awake()
     {
         if (instance == null)
             instance = this;
@@ -58,6 +61,10 @@ public class archery_handler : MonoBehaviour
         if (!player)
             Debug.LogError("archery_player has not been added.");
 
+        agent = agentObject.GetComponent<archery_agent>();
+        if (!agent)
+            Debug.LogError("archery_agent has not been added.");
+
         arrows = new arrow[numArrows];
         for (int i = 0; i < numArrows; i++)
         {
@@ -76,22 +83,29 @@ public class archery_handler : MonoBehaviour
             maxTargetDistance = minTargetDistance;
         }
 
-        isPlayerTurn = true;
-        isFlying = false;
+        //isPlayerTurn = true;
+        isPlayerTurn = false;
         canShoot = true;
 
-        InitPlayer();
+        player.Initialize();
+        //PlayerTurn();
+        agent.enabled = true;
+        AgentTurn();
+
     }
 
     public void Shoot(float force, float yaw, float pitch)
     {
         if (!canShoot) return;
-        isFlying = true;
         canShoot = false;
 
         playerCamera.enabled = false;
 
-        arrows[currentArrow].transform.position = playerObject.transform.position;
+        if (isPlayerTurn)
+            arrows[currentArrow].transform.position = playerObject.transform.position;
+        else
+            arrows[currentArrow].transform.position = agentObject.transform.position;
+
         arrows[currentArrow].transform.rotation = Quaternion.identity;
         arrows[currentArrow].gameObject.SetActive(true);
 
@@ -101,7 +115,7 @@ public class archery_handler : MonoBehaviour
         arrowCamera.enabled = true;
     }
 
-    private void InitPlayer()
+    private void PlayerTurn()
     {
         windDirection = Random.Range(0f, 360f);
         windSpeed = Random.Range(0f, settings.maxWindSpeed);
@@ -111,27 +125,74 @@ public class archery_handler : MonoBehaviour
 
         targetObject.transform.position = playerObject.transform.position + new Vector3(lateralDistance, 1, targetDistance);
 
-        player.Init();
+        player.StartTurn();
+    }
+
+    private void AgentTurn()
+    {
+        //windDirection = Random.Range(0f, 360f);
+        //windSpeed = Random.Range(0f, settings.maxWindSpeed);
+
+        //targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
+        //lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
+
+        windDirection = 0;
+        windSpeed = 0;
+        targetDistance = minTargetDistance;
+        lateralDistance = 0;
+
+        targetObject.transform.position = agentObject.transform.position + new Vector3(lateralDistance, 1, targetDistance);
+
+        agent.StartTurn();
     }
 
     public void OnHit(int point)
     {
-        isFlying = false;
-        arrowCamera.enabled = false;
-        playerCamera.enabled = true;
-
-        canShoot = true;
-
         currentArrow++;
         if (currentArrow == numArrows)
             currentArrow = 0;
         arrows[currentArrow].gameObject.SetActive(false);
 
-        InitPlayer();
+        if (isPlayerTurn)
+        {
+            isPlayerTurn = false;
+        }
+        else
+        {
+            //isPlayerTurn = true;
+
+            if (point > 0) agent.OnHit(point);
+            else
+            {
+                agent.OnHit(Mathf.RoundToInt(-Vector3.Distance(targetObject.transform.position, agentObject.transform.position)));
+            }
+        }
+
+        StartCoroutine(ReturnCamera());
     }
 
     public void UpdateUI(float force, float yaw, float pitch)
     {
         uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed, targetDistance, lateralDistance);
+    }
+
+    private IEnumerator ReturnCamera()
+    {
+        yield return new WaitForSecondsRealtime(cameraStay);
+
+        if (isPlayerTurn)
+        {
+            playerCamera.Target.TrackingTarget = playerObject.transform;
+            player.StartTurn();
+        }
+        else
+        {
+            playerCamera.Target.TrackingTarget = agentObject.transform;
+            agent.StartTurn();
+        }
+
+        arrowCamera.enabled = false;
+        playerCamera.enabled = true;
+        canShoot = true;
     }
 }

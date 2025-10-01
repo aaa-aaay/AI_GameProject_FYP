@@ -27,6 +27,9 @@ public class arrow : MonoBehaviour
         if (launched) return;
         launched = true;
 
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
         Quaternion angle = Quaternion.Euler(-pitch, yaw, 0f);
         Vector3 direction = angle * Vector3.forward;
 
