@@ -13,12 +13,14 @@ public class Runner : MonoBehaviour
     public float dangerRadius = 5f;
 
     [Header("References")]
-    public Transform tagger;            // Tagger AI
     public List<PathNode> allNodes;     // Assign all PathNodes in the arena
 
     private Rigidbody rb;
     public List<PathNode> path = new List<PathNode>();
     public int pathIndex = 0;
+
+    // Track the closest danger for Gizmo line
+    private Transform closestDanger;
 
     void Start()
     {
@@ -30,34 +32,51 @@ public class Runner : MonoBehaviour
 
     void Update()
     {
-        float distToTagger = Vector3.Distance(transform.position, tagger.position);
+        // Detect any object with tag "Runner" or "Tagger" in danger radius
+        Collider[] hits = Physics.OverlapSphere(transform.position, dangerRadius);
+        bool dangerDetected = false;
+        Transform closest = null;
+        float closestDist = Mathf.Infinity;
 
-        // --- State switching ---
-        if (distToTagger <= dangerRadius)
+        foreach (var hit in hits)
         {
-            currentState = State.Run;
+            if ((hit.CompareTag("Runner") || hit.CompareTag("Tagger")) && hit.gameObject != gameObject)
+            {
+                float d = Vector3.Distance(transform.position, hit.transform.position);
+                if (d < closestDist)
+                {
+                    closestDist = d;
+                    closest = hit.transform;
+                    dangerDetected = true;
+                }
+            }
         }
-        else if (currentState == State.Run && distToTagger > dangerRadius * 1.5f)
+
+        closestDanger = closest; // store for Gizmo
+
+        // Switch state based on detection
+        if (dangerDetected)
         {
-            // Safe: go back to idle wandering
+            if (currentState != State.Run)
+            {
+                currentState = State.Run;
+                PickFurthestNodeFrom(closest);
+            }
+        }
+        else if (currentState == State.Run && !dangerDetected)
+        {
             currentState = State.Idle;
             PickNewIdleTarget();
         }
 
-        // --- Execute state behaviour ---
+        // Execute behavior
         switch (currentState)
         {
-            case State.Idle:
-                IdleBehaviour();
-                break;
-            case State.Run:
-                RunBehaviour();
-                break;
+            case State.Idle: IdleBehaviour(); break;
+            case State.Run: RunBehaviour(closest); break;
         }
     }
 
-    // -------------------------------
-    // IDLE: move to a random node
     // -------------------------------
     void IdleBehaviour()
     {
@@ -75,56 +94,38 @@ public class Runner : MonoBehaviour
         pathIndex = 0;
     }
 
-    // -------------------------------
-    // RUN: chain furthest nodes until safe
-    // -------------------------------
-    void RunBehaviour()
+    void RunBehaviour(Transform dangerSource)
     {
         MoveAlongPath();
 
-        // Reached end of current path
         if (path.Count == 0 || pathIndex >= path.Count)
         {
-            float distToTagger = Vector3.Distance(transform.position, tagger.position);
-
-            if (distToTagger <= dangerRadius)
-            {
-                // Still in danger → keep running to the next furthest node
-                PickFurthestNodeFromTagger();
-            }
+            if (dangerSource != null)
+                PickFurthestNodeFrom(dangerSource);
             else
-            {
-                // Safe → back to idle
-                currentState = State.Idle;
                 PickNewIdleTarget();
-            }
         }
     }
 
-    void PickFurthestNodeFromTagger()
+    void PickFurthestNodeFrom(Transform target)
     {
         PathNode start = FindClosestNode();
+        if (target == null) return;
 
-        if (tagger == null) return;
-
-        Vector3 toTagger = (tagger.position - transform.position).normalized;
-
+        Vector3 toTarget = (target.position - transform.position).normalized;
         PathNode bestNode = null;
         float bestScore = -Mathf.Infinity;
 
         foreach (var node in allNodes)
         {
             Vector3 toNode = (node.transform.position - transform.position).normalized;
+            float alignment = Vector3.Dot(toNode, toTarget);
 
-            // Dot product tells relative direction (-1 = opposite, +1 = same direction)
-            float alignment = Vector3.Dot(toNode, toTagger);
-
-            // Prefer nodes *behind* relative to tagger
+            // Prefer nodes opposite direction from target
             if (alignment < 0f)
             {
-                // Score = distance to tagger (further = better) + weight to "behind-ness"
-                float dist = Vector3.Distance(node.transform.position, tagger.position);
-                float score = dist * (1f - alignment); // weighting: behind nodes get boosted
+                float dist = Vector3.Distance(node.transform.position, target.position);
+                float score = dist * (1f - alignment);
 
                 if (score > bestScore)
                 {
@@ -134,13 +135,13 @@ public class Runner : MonoBehaviour
             }
         }
 
-        // If no "behind" nodes found, fallback to just the furthest
+        // Fallback: just the furthest node
         if (bestNode == null)
         {
             float maxDist = -Mathf.Infinity;
             foreach (var node in allNodes)
             {
-                float d = Vector3.Distance(node.transform.position, tagger.position);
+                float d = Vector3.Distance(node.transform.position, target.position);
                 if (d > maxDist)
                 {
                     maxDist = d;
@@ -156,49 +157,30 @@ public class Runner : MonoBehaviour
         }
     }
 
-
     void MoveAlongPath()
     {
         if (path == null || path.Count == 0) return;
-
-        if (pathIndex >= path.Count)
-        {
-            // Reached end of path, pick new target depending on state
-            switch (currentState)
-            {
-                case State.Idle:
-                    PickNewIdleTarget();
-                    break;
-                case State.Run:
-                    PickFurthestNodeFromTagger();
-                    break;
-            }
-            return;
-        }
+        if (pathIndex >= path.Count) return;
 
         Vector3 targetPos = path[pathIndex].transform.position;
-        Vector3 dir = (targetPos - transform.position);
+        Vector3 dir = targetPos - transform.position;
         float dist = dir.magnitude;
 
         if (dist < nodeReachThreshold)
         {
             pathIndex++;
-            return; // wait until next frame to move to next node
+            return;
         }
 
         dir.Normalize();
         rb.MovePosition(transform.position + dir * moveSpeed * Time.deltaTime);
 
-        // Rotate toward movement direction
         if (dir.sqrMagnitude > 0.001f)
         {
             Quaternion targetRot = Quaternion.LookRotation(dir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
         }
     }
-
-
-
 
     PathNode FindClosestNode()
     {
@@ -220,7 +202,15 @@ public class Runner : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        // Draw danger radius
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, dangerRadius);
+
+        // Draw line to closest danger
+        if (closestDanger != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, closestDanger.position);
+        }
     }
 }
