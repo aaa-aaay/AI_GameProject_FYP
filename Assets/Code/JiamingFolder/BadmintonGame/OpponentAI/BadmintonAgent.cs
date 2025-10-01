@@ -137,23 +137,15 @@ public class BadmintonAgent : Agent
 
     private void MovementRewards()
     {
+        Vector3 dirToNet = (_net.localPosition - _shuttle.localPosition).normalized;
+        Vector3 desiredPos = _shuttle.localPosition - dirToNet;
 
-        Vector3 desiredPos = _shuttle.localPosition;
+
+        // Distance reward
         float currentDist = Vector3.Distance(transform.localPosition, desiredPos);
 
         if (currentDist < _prevDistToShuttle) AddReward(0.05f);
         else AddReward(-0.05f);
-
-        // Encourage being near shuttle, not overshooting
-        if (currentDist < _targetRangeFromShutter)
-        {
-            AddReward(0.1f);
-        }
-        else
-        {
-            // small penalty if too far
-            AddReward(-0.01f * currentDist);
-        }
 
         _prevDistToShuttle = currentDist;
 
@@ -198,20 +190,20 @@ public class BadmintonAgent : Agent
 
     private void RewardForHiting()
     {
-        AddReward(1.5f);
+        AddReward(1.0f);
     }
     private void PunishForMissing()
     {
-        AddReward(-0.3f);
+        AddReward(-0.5f);
     }
     private void AIScores()
     {
-        AddReward(5.0f);
+        AddReward(3.0f);
     }
 
     private void EnemyScores()
     {
-        AddReward(-5.0f);
+        AddReward(-3.0f);
     }
 
     private void HandleGameOver()
