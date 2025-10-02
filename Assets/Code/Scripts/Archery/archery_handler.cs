@@ -178,7 +178,7 @@ public class archery_handler : MonoBehaviour
 
     private IEnumerator ReturnCamera()
     {
-        yield return new WaitForSecondsRealtime(cameraStay);
+        yield return new WaitForSeconds(cameraStay);
 
         if (isPlayerTurn)
         {
