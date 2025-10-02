@@ -22,24 +22,14 @@ public class LobbyWorld : MonoBehaviour
        // MeshRenderer = GetComponent<MeshRenderer>();
         _worldSelect = GetComponentInChildren<WorldSelect>();
         //SetState(false);
+
+        lockedModel.SetActive(false);
+        UnlockedModel.SetActive(false);
     }
 
 
     private void Start()
     {
-        lockedModel.SetActive(false);
-        UnlockedModel.SetActive(false);
-
-        if (_isUnlocked)
-        {
-            UnlockedModel.SetActive(true);
-            SetState(true);
-        }
-        else
-        {
-            
-            SetState(false);
-        }
     }
 
     public void SetState(bool unlockedworld)

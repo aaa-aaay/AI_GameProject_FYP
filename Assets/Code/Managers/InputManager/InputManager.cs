@@ -48,8 +48,6 @@ public class InputManager : MonoBehaviour,IGameService
     }
     private void OnEnable()
     {
-
-        Debug.Log("InputManager OnEnable called");
         _inputActionAsset.Enable();
 
         BindActions();
@@ -73,7 +71,6 @@ public class InputManager : MonoBehaviour,IGameService
 
     private void Move(InputAction.CallbackContext context)
     {
-        Debug.Log("hellow");
         OnMove?.Invoke(context.ReadValue<Vector2>());
     }
 

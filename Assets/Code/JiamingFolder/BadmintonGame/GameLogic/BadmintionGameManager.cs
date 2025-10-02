@@ -71,13 +71,13 @@ public class BadmintionGameManager : MonoBehaviour
     {
        if(player1Score >= ScoreToWin)
        {
-            GameOver(1);
-            //ResetGame();
+            //GameOver(1);
+            ResetGame();
        }
        else if(player2Score >= ScoreToWin)
        {
-            GameOver(2);
-            //ResetGame();
+            //GameOver(2);
+            ResetGame();
         }
     }
 
@@ -93,9 +93,12 @@ public class BadmintionGameManager : MonoBehaviour
     public void GameOver(int playerNo)
     {
         UIManager uiManager = ServiceLocator.Instance.GetService<UIManager>();
+        SaveLoadManager slManager = ServiceLocator.Instance.GetService<SaveLoadManager>();
+
         if (playerNo == 1) {
 
             uiManager.ToggleLevelCompleteUI(true);
+            slManager.SaveData(2, 3);
             //player 1 won, go to level Complete UI
 
         }

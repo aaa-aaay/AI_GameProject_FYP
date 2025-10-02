@@ -1516,7 +1516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db7b53be4c8b91e4babc5b87a9aa6576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScoreToWin: 7
+  ScoreToWin: 2
   player1Score: 0
   player2Score: 0
   shutter: {fileID: 8733045207917645439}
@@ -3525,8 +3525,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8ebfe906a0993b4c86a8764605a40a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 8
+  moveSpeed: 10
   offset: 1
+  missChance: 0.8
+  positionErrorRange: 2
+  minimumMovementSpeed: 0.1
   hitRange: 3.7
   minHeight: 0.1
   maxHeight: 7
