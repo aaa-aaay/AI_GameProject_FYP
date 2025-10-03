@@ -23,6 +23,7 @@ public class Racket : MonoBehaviour
 
     public enum ShotType
     {
+        None,
         Lob,
         Drop,
         Smash
@@ -84,6 +85,7 @@ public class Racket : MonoBehaviour
     {
 
         Shot shot;
+        ShotType type;
         List<Transform> FinalShotTarget = new List<Transform>();
 
         switch (_currentShotType)
@@ -92,23 +94,27 @@ public class Racket : MonoBehaviour
             case ShotType.Lob:
                 shot = other.GetComponent<LobShot>();
                 FinalShotTarget = _isOpponent ? _targets.backTargetsBlue : _targets.backTargetsRed;
+                type = ShotType.Lob;
                 break;
 
 
             case ShotType.Drop:
                 shot = other.GetComponent<DropShot>();
                 FinalShotTarget = _isOpponent ? _targets.frontTargetsBlue : _targets.frontTargetsRed;
+                type = ShotType.Drop;
                 break;
 
 
             case ShotType.Smash:
                 shot = other.GetComponent<SmashShot>();
                 FinalShotTarget = _isOpponent ? _targets.middleTargetsBlue : _targets.middleTargetsRed;
+                type = ShotType.Smash;
                 break;
 
             default:
                 shot = other.GetComponent<LobShot>();
                 FinalShotTarget = _isOpponent ? _targets.backTargetsBlue : _targets.backTargetsRed;
+                type = ShotType.Lob;
                 break;
 
         }
@@ -118,6 +124,8 @@ public class Racket : MonoBehaviour
         //2 for right
         //3 for random or closest???
         shot.ExecuteShot(FinalShotTarget, _shotDirection);
+
+        other.GetComponent<ShotTypeTracker>().setShotType(type);
 
 
 

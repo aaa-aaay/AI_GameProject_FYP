@@ -1516,7 +1516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db7b53be4c8b91e4babc5b87a9aa6576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScoreToWin: 2
+  ScoreToWin: 21
   player1Score: 0
   player2Score: 0
   shutter: {fileID: 8733045207917645439}
@@ -2498,7 +2498,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 24
+    VectorObservationSize: 21
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -2535,7 +2535,7 @@ MonoBehaviour:
   _shuttle: {fileID: 6139159909941392361}
   _net: {fileID: 535387301998594496}
   _opponetTransform: {fileID: 1801510040893940285}
-  _moveSpeed: 8
+  _moveSpeed: 10
   _offsetFromNet: 0.2
   _targetRangeFromShutter: 2
   _gameManager: {fileID: 475283693624100567}
@@ -3525,11 +3525,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8ebfe906a0993b4c86a8764605a40a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
+  moveSpeed: 9
   offset: 1
-  missChance: 0.8
-  positionErrorRange: 2
-  minimumMovementSpeed: 0.1
+  _missChance: 0.6
+  _smashMissChance: 0.1
+  _dropMissChance: 0.3
+  _positionErrorRange: 1.5
+  _minimumMovementSpeed: 0.3
   hitRange: 3.7
   minHeight: 0.1
   maxHeight: 7
@@ -3692,6 +3694,7 @@ GameObject:
   - component: {fileID: 293742294633644628}
   - component: {fileID: 640325196435187780}
   - component: {fileID: 4243282475897268420}
+  - component: {fileID: 2755862152664953700}
   m_Layer: 0
   m_Name: shuttlecock
   m_TagString: Shutter
@@ -3851,6 +3854,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97981025e5546ed478a445db3242bf7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2755862152664953700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8733045207917645439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dc2e3a405040df45ac55de1fac6f06a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8744051276519847475

@@ -18,6 +18,7 @@ public class BadmintonAgent : Agent
     [SerializeField] private float _targetRangeFromShutter = 3.0f;
 
 
+
     [Header("Other References")]
     [SerializeField] private BadmintionGameManager _gameManager;
     [SerializeField] private RacketSwing _racketSwing;
@@ -65,8 +66,7 @@ public class BadmintonAgent : Agent
         sensor.AddObservation(_gameManager.player1Score);
         sensor.AddObservation(_gameManager.player2Score);
         sensor.AddObservation(_opponetTransform.localPosition);
-        sensor.AddObservation(_shotMarker.localPosition);
-        sensor.AddObservation(_racket.gameObject.transform.localPosition);
+        sensor.AddObservation(_shotMarker.localPosition);   
 
         // --- New useful observations ---
         sensor.AddObservation(_shuttleVelocity); // direction + speed
@@ -80,7 +80,7 @@ public class BadmintonAgent : Agent
 
 
 
-        AddReward(-0.001f); // small time penalty to avoid stalling
+        AddReward(-0.01f); // small time penalty to avoid stalling
 
 
     }
@@ -107,9 +107,6 @@ public class BadmintonAgent : Agent
         //transform.position += movement * _moveSpeed * Time.deltaTime;
 
         transform.localPosition += movement * _moveSpeed * Time.deltaTime;
-
-
-
 
 
         if (_startPosition.z > _net.localPosition.z)
@@ -157,12 +154,12 @@ public class BadmintonAgent : Agent
         if (_racketSwing.racketSwinging) return;
 
 
-        float dist = Vector3.Distance(transform.localPosition, _shuttle.localPosition);
+        //float dist = Vector3.Distance(transform.localPosition, _shuttle.localPosition);
 
-        if (dist < _targetRangeFromShutter)
-        {
-            AddReward(0.3f); // encourage trying a swing near shuttle
-        }
+        //if (dist < _targetRangeFromShutter)
+        //{
+        //    AddReward(0.3f); // encourage trying a swing near shuttle
+        //}
 
         //1 to hit right, 2 to hit left
 
@@ -177,7 +174,7 @@ public class BadmintonAgent : Agent
         else if (choice == 4)
             _racketSwing.StartSwing(Racket.ShotType.Drop, 2);
         else if (choice == 5)
-            _racketSwing.StartSwing(Racket.ShotType.Smash, 2);
+            _racketSwing.StartSwing(Racket.ShotType.Lob, 2);
     }
 
 
@@ -190,11 +187,11 @@ public class BadmintonAgent : Agent
 
     private void RewardForHiting()
     {
-        AddReward(1.0f);
+        AddReward(1.5f);
     }
     private void PunishForMissing()
     {
-        AddReward(-0.5f);
+        AddReward(-0.3f);
     }
     private void AIScores()
     {

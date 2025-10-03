@@ -10,9 +10,11 @@ public class BasicBadmintonAI : MonoBehaviour
     [SerializeField] private float offset = 1.0f;
 
     [Header("Controled Mistakes")]
-    [SerializeField, Range(0f, 1f)] private float missChance = 0.1f;
-    [SerializeField] private float positionErrorRange = 0.5f;
-    [SerializeField] private float minimumMovementSpeed = 0.3f;
+    [SerializeField, Range(0f, 1f)] private float _missChance = 0.1f;
+    [SerializeField, Range(0f, 1f)] private float _smashMissChance = 0.1f;
+    [SerializeField, Range(0f, 1f)] private float _dropMissChance = 0.1f;
+    [SerializeField] private float _positionErrorRange = 0.5f;
+    [SerializeField] private float _minimumMovementSpeed = 0.3f;
 
     [Header("AI Swing")]
     [SerializeField] private float hitRange = 0.5f;
@@ -34,6 +36,8 @@ public class BasicBadmintonAI : MonoBehaviour
     [SerializeField] private LastHitChecker _lastHitChecker;
 
 
+    private ShotTypeTracker _shotTracker;
+
     private Vector3 _startPos;
     private bool attacking = false;
     private bool serving = false;
@@ -51,6 +55,8 @@ public class BasicBadmintonAI : MonoBehaviour
 
         attacking = false;
         serving = false;
+
+        _shotTracker = _shuttle.gameObject.GetComponent<ShotTypeTracker>();
     }
 
     void Update()
@@ -63,9 +69,6 @@ public class BasicBadmintonAI : MonoBehaviour
         _lastShuttlePos = _shuttle.position;
 
         MoveTo(attacking);
-
-
-
 
         if (attacking || serving)
         {
@@ -99,9 +102,9 @@ public class BasicBadmintonAI : MonoBehaviour
         if (serving) desiredPos = _shuttle.position - dirToNet * offset;
 
 
-        desiredPos += new Vector3( Random.Range(-positionErrorRange, positionErrorRange),
+        desiredPos += new Vector3( Random.Range(-_positionErrorRange, _positionErrorRange),
             0f, 
-            Random.Range(-positionErrorRange, positionErrorRange));
+            Random.Range(-_positionErrorRange, _positionErrorRange));
 
 
         desiredPos.y = transform.position.y;
@@ -119,7 +122,7 @@ public class BasicBadmintonAI : MonoBehaviour
             desiredPos.z = Mathf.Min(desiredPos.z, maxZ);
         }
 
-        float finalMoveSpeed = moveSpeed * Random.Range(minimumMovementSpeed, 1.0f);
+        float finalMoveSpeed = moveSpeed * Random.Range(_minimumMovementSpeed, 1.0f);
 
         // --- Move toward corrected position ---
         transform.position = Vector3.MoveTowards(transform.position, desiredPos, finalMoveSpeed * Time.deltaTime);
@@ -145,15 +148,23 @@ public class BasicBadmintonAI : MonoBehaviour
         if (_racketSwing.racketSwinging) return;
 
 
-        
-        if (Random.value < missChance)
+
+
+        if (_shotTracker.getShotType() == Racket.ShotType.Smash)
         {
-            Debug.Log("AI hesitated and missed!");
-            return;
+            if (Random.value < _smashMissChance) return;
+        }
+        else if (_shotTracker.getShotType() == Racket.ShotType.Drop)
+        {
+            if (Random.value < _dropMissChance) return;
+        }
+        else
+        {
+            if (Random.value < _missChance) return;
         }
 
 
-        int choice = Random.Range(0, 3);
+        int choice = Random.Range(0, 4);
 
 
         if(choice == 0)
@@ -204,13 +215,10 @@ public class BasicBadmintonAI : MonoBehaviour
 
             attacking = false;
             serving = false;
-
         }
         else
         {
-
             //opponent just hit the shutter, go to attack
-
             attacking = true;
         }
     }
