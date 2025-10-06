@@ -13,7 +13,13 @@ public class WorldSelect : MonoBehaviour
     private InputManager _inputManager;
     private UIManager _uiManager;
     private bool playerInRange = false;
+    private Collider _collider;
 
+
+    private void Awake()
+    {
+        _collider = GetComponent<Collider>();
+    }
     private void Start()
     {
 
@@ -23,6 +29,8 @@ public class WorldSelect : MonoBehaviour
 
         _uiManager = ServiceLocator.Instance.GetService<UIManager>();
 
+
+
         playerInRange = false;
     }
 
@@ -31,7 +39,7 @@ public class WorldSelect : MonoBehaviour
 
         if(playerInRange)
         {
-            SceneManager.LoadScene(_nextSceneNumber);
+            ServiceLocator.Instance.GetService<MySceneManager>().LoadScene(_nextSceneNumber);
         }
     }
 
@@ -42,8 +50,6 @@ public class WorldSelect : MonoBehaviour
 
             playerInRange = true;
             _uiManager.OpenLevelSelectUI(_levelName, 1);
-            
-
 
         }
     }
@@ -58,6 +64,19 @@ public class WorldSelect : MonoBehaviour
             _uiManager.HideLevelSelectUI();
            
 
+        }
+    }
+
+    public void Activate(bool activate)
+    {
+        if (activate) {
+
+            _collider.enabled = true;
+
+        }
+        else
+        {
+            _collider.enabled = false;
         }
     }
 }

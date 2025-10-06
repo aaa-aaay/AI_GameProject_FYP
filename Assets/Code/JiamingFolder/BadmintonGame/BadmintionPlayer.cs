@@ -8,6 +8,7 @@ public class BadmintionPlayer : MonoBehaviour
     [SerializeField] private float _slowedMoveSpeed = 5f;
     [SerializeField] private float _evenMoreSlowedSpeed = 5f;
     private RacketSwing _racketSwing;
+    private BadmintionMovement _movement;
     //private BadmintonStamina _stamina;
 
     private int _shootingDirection;
@@ -20,6 +21,7 @@ public class BadmintionPlayer : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _racketSwing = GetComponent<RacketSwing>();
+        _movement = GetComponent<BadmintionMovement>();
         //_stamina = GetComponent<BadmintonStamina>();
         InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
 
@@ -41,7 +43,7 @@ public class BadmintionPlayer : MonoBehaviour
     {
         // Store input from InputManager
         _moveInput = direction;
-
+        _movement.Walk(true,direction);
         if (_moveInput.x < 0) _shootingDirection = 1;
         else if (_moveInput.x > 0) _shootingDirection = 2;
 
@@ -49,7 +51,9 @@ public class BadmintionPlayer : MonoBehaviour
 
     private void HandleMoveEnd()
     {
+
         _moveInput = Vector2.zero;
+        _movement.Walk(false, _moveInput);
 
     }
 

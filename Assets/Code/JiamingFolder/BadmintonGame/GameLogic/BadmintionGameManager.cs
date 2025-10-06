@@ -71,10 +71,12 @@ public class BadmintionGameManager : MonoBehaviour
     {
        if(player1Score >= ScoreToWin)
        {
+            //GameOver(1);
             ResetGame();
        }
        else if(player2Score >= ScoreToWin)
        {
+            //GameOver(2);
             ResetGame();
         }
     }
@@ -86,5 +88,24 @@ public class BadmintionGameManager : MonoBehaviour
         _P1ScoreDisplay.text = player1Score.ToString();
         shutter.transform.position = shutterSpawnPoint1.position;
         OnGameOver?.Invoke();
+    }
+
+    public void GameOver(int playerNo)
+    {
+        UIManager uiManager = ServiceLocator.Instance.GetService<UIManager>();
+        SaveLoadManager slManager = ServiceLocator.Instance.GetService<SaveLoadManager>();
+
+        if (playerNo == 1) {
+
+            uiManager.ToggleLevelCompleteUI(true);
+            slManager.SaveData(2, 3);
+            //player 1 won, go to level Complete UI
+
+        }
+        else
+        {
+            uiManager.ToggleLevelFailedUI(true);
+            //AI, go to fail Level UI
+        }
     }
 }
