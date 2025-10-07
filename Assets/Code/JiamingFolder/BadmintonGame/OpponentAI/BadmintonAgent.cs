@@ -17,7 +17,9 @@ public class BadmintonAgent : Agent
     [SerializeField] private float _offsetFromNet = 0.1f;
     [SerializeField] private float _targetRangeFromShutter = 3.0f;
 
-
+    [Header("Animation")]
+    [SerializeField] private BadmintionMovement _movement;
+    
 
     [Header("Other References")]
     [SerializeField] private BadmintionGameManager _gameManager;
@@ -96,11 +98,11 @@ public class BadmintonAgent : Agent
 
         switch (action)
         {
-            case 0: movement = Vector3.zero; break;          // do nothing
-            case 1: movement = Vector3.left; break;          // move left
-            case 2: movement = Vector3.right; break;         // move right
-            case 3: movement = Vector3.forward; break;       // move forward
-            case 4: movement = Vector3.back; break;
+            case 0: movement = SetMovement(Vector3.zero); break;          // do nothing
+            case 1: movement = SetMovement(Vector3.left); break;          // move left
+            case 2: movement = SetMovement(Vector3.right); break;         // move right
+            case 3: movement = SetMovement(Vector3.forward); break;       // move forward
+            case 4: movement = SetMovement(Vector3.back); break;
             case 5: SwingRacket(swingingAction); break;// swing the racket to try and hit the shutter
         }
 
@@ -184,7 +186,6 @@ public class BadmintonAgent : Agent
         _shuttleVelocity = (_shuttle.localPosition - _prevShuttlePos) / Time.deltaTime;
         _prevShuttlePos = _shuttle.localPosition;
     }
-
     private void RewardForHiting()
     {
         AddReward(1.5f);
@@ -208,8 +209,18 @@ public class BadmintonAgent : Agent
         EndEpisode();
     }
 
-
-
+    private Vector3 SetMovement(Vector3 dir)
+    {
+        if(dir == Vector3.zero)
+        {
+            _movement.Walk(false);
+        }
+        else
+        {
+            _movement.Walk(true);
+        }
+            return dir;
+    }
     public override void Heuristic(in ActionBuffers actionsOut)
     {
 

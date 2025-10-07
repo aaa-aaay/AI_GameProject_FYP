@@ -43,7 +43,7 @@ public class BadmintionPlayer : MonoBehaviour
     {
         // Store input from InputManager
         _moveInput = direction;
-        _movement.Walk(true,direction);
+        _movement.Walk(true);
         if (_moveInput.x < 0) _shootingDirection = 1;
         else if (_moveInput.x > 0) _shootingDirection = 2;
 
@@ -53,7 +53,7 @@ public class BadmintionPlayer : MonoBehaviour
     {
 
         _moveInput = Vector2.zero;
-        _movement.Walk(false, _moveInput);
+        _movement.Walk(false);
 
     }
 
