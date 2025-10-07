@@ -1,13 +1,8 @@
 using UnityEngine;
 
-public class Damageable : MonoBehaviour
+public class Damageable : SimpleDamageable
 {
-    [SerializeField] private float max_health = 5;
-    [SerializeField] private float damage_cooldown = 1;
     [SerializeField] private Teams starting_team;
-
-    private float health;
-    private float time_passed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -15,7 +10,10 @@ public class Damageable : MonoBehaviour
         health = max_health;
         time_passed = damage_cooldown;
 
-        TeamSingleton.instance.join_team(gameObject, starting_team);
+        if (TeamSingleton.instance != null)
+        {
+            TeamSingleton.instance.join_team(gameObject, starting_team);
+        }
 
         EventHandler.GotHit += handle_hit;
         EventHandler.TookDamage += take_damage;
@@ -23,17 +21,7 @@ public class Damageable : MonoBehaviour
         EventHandler.EndScenario += reset_damageable;
     }
 
-    public float get_health()
-    {
-        return health;
-    }
-
-    private void Update()
-    {
-        time_passed += Time.deltaTime;
-    }
-
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         EventHandler.GotHit -= handle_hit;
         EventHandler.TookDamage -= take_damage;
@@ -41,7 +29,7 @@ public class Damageable : MonoBehaviour
         EventHandler.EndScenario -= reset_damageable;
     }
 
-    public void handle_hit(GameObject hitter, GameObject target, float damage)
+    public override void handle_hit(GameObject hitter, GameObject target, float damage)
     {
         if (target == gameObject)
         {
@@ -56,42 +44,20 @@ public class Damageable : MonoBehaviour
         }
     }
 
-    public void take_damage(GameObject hitter, float damage)
+    public override void reset_health(GameObject killer, GameObject target)
     {
-        health -= damage;
-        time_passed = 0;
-
-        if (health <= 0)
+        if (killer == target)
         {
-            EventHandler.InvokeGotKill(hitter, gameObject);
+            if (killer == gameObject)
+            {
+                EventHandler.InvokePunish(gameObject, -1);
+            }
         }
-    }
-
-    public void take_damage(GameObject hitter, GameObject target, float damage)
-    {
-        if (target == gameObject)
+        else if (killer == gameObject)
         {
-            print(gameObject.name + " took damage");
-            take_damage(hitter, damage);
+            heal_damage(2);
         }
-    }
-
-    public void heal_damage(float healing)
-    {
-        health += healing;
-        if (health > max_health)
-        {
-            health = max_health;
-        }
-    }
-
-    public void reset_health(GameObject killer, GameObject target)
-    {
-        if (killer == gameObject)
-        {
-            heal_damage(max_health);
-        }
-        if (target == gameObject)
+        else if (target == gameObject)
         {
             if (TeamSingleton.instance.get_team(killer) != Teams.None)
             {
@@ -100,9 +66,18 @@ public class Damageable : MonoBehaviour
         }
     }
 
-    public void reset_damageable()
+    public override void reset_damageable()
     {
         TeamSingleton.instance.change_team(gameObject, starting_team, false);
         health = max_health;
+    }
+
+    public override void reset_damageable(GameObject target)
+    {
+        if (target == gameObject)
+        {
+            TeamSingleton.instance.change_team(gameObject, starting_team, false);
+            health = max_health;
+        }
     }
 }

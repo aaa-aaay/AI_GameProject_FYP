@@ -16,6 +16,8 @@ public class EventHandler
     public static Action<GameObject> Scored;
     public static Action<GameObject> RestartGame;
 
+    public static Action<GameObject> FailedHit;
+
     public static void InvokeEndScenario()
     {
         if (EndScenario != null)
@@ -85,6 +87,14 @@ public class EventHandler
         if (RestartGame != null)
         {
             RestartGame.Invoke(game_object);
+        }
+    }
+
+    public static void InvokeFailedHit(GameObject game_object)
+    {
+        if (FailedHit != null)
+        {
+            FailedHit.Invoke(game_object);
         }
     }
 }

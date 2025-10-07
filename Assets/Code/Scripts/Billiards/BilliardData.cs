@@ -16,6 +16,7 @@ public class BilliardData
     [SerializeField] private Rigidbody cue_ball;
     [SerializeField] private List<Rigidbody> balls;
     [SerializeField] private List<GameObject> players;
+    [SerializeField] private List<GameObject> holes;
 
     public void start()
     {
@@ -66,12 +67,18 @@ public class BilliardData
     {
         if (!shot_ball)
         {
-            shot_ball = true;
-            force.y = 0;
+            //shot_ball = true;
+            //force.y = 0;
 
-            cue_ball.isKinematic = false;
-            cue_ball.AddForce(force, ForceMode.Impulse);
+            //cue_ball.isKinematic = false;
+            //cue_ball.AddForce(force, ForceMode.Impulse);
         }
+
+        shot_ball = true;
+        force.y = 0;
+
+        cue_ball.isKinematic = false;
+        cue_ball.AddForce(force, ForceMode.Impulse);
     }
 
     public bool is_ball(GameObject game_object)
@@ -133,6 +140,10 @@ public class BilliardData
         {
             check_deceleration();
         }
+        if (check_alt_win())
+        {
+            restart_game();
+        }    
     }
 
     private void check_deceleration()
@@ -171,6 +182,7 @@ public class BilliardData
 
     private void next_turn()
     {
+        //Debug.Log(players[current_player].name + " turn over");
         if (!penalty)
         {
             if (scored)
@@ -218,6 +230,7 @@ public class BilliardData
     {
         if (in_game(game_object))
         {
+            Debug.Log(game_object.name + " was scored");
             if (is_cue_ball(game_object))
             {
                 penalty = true;
@@ -261,8 +274,7 @@ public class BilliardData
 
     private void restart_game()
     {
-        Debug.Log("Won game");
-        score = 0;
+        //Debug.Log("Won game");
         
         EventHandler.RestartGame(cue_ball.gameObject);
         for (int i = 0; i < players.Count; i++)
@@ -273,6 +285,7 @@ public class BilliardData
         {
             EventHandler.InvokeRestartGame(balls[i].gameObject);
         }
+        score = 0;
 
         EventHandler.InvokeStartTurn(players[current_player], false);
     }
@@ -280,5 +293,26 @@ public class BilliardData
     public int get_score()
     {
         return score;
+    }
+
+    public bool check_alt_win()
+    {
+        for (int i = 0; i < balls.Count; i++)
+        {
+            if (balls[i].transform.position.y >= -10 && balls[i].isKinematic)
+            {
+                continue;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public List<GameObject> get_holes()
+    {
+        return holes;
     }
 }
