@@ -10,31 +10,24 @@ public class ServiceLocator : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
+        if (!Instance)
+            Instance = this;
+        else
             Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
     }
 
     public void AddService<T>(T service, bool isAbstract = true) where T : IGameService
     {
-        Type keyType = isAbstract ? typeof(T).BaseType : typeof(T);
-
-        if (keyType == null)
+        if (isAbstract)
         {
-            return;
+            Type baseType = typeof(T).BaseType;
+            if (baseType != null) _serviceDictionary.Add(baseType, service);
+            else Debug.Log("service type is null");
         }
-
-        if (_serviceDictionary.ContainsKey(keyType))
+        else
         {
-           
-            return;
+            _serviceDictionary.Add(typeof(T), service);
         }
-
-        _serviceDictionary.Add(keyType, service);
     }
 
     public void RemoveService<T>(bool isAbstract = true) where T : IGameService
