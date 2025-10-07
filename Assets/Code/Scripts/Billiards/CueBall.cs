@@ -15,7 +15,7 @@ public class CueBall : Ball
         EventHandler.RestartGame += restart_game;
     }
 
-    protected override void OnCollisionStay(Collision collision)
+    protected override void OnCollisionEnter(Collision collision)
     {
         if (!scored)
         {

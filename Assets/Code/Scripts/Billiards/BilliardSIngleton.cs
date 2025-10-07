@@ -127,16 +127,4 @@ public class BilliardSingleton : MonoBehaviour
         }
         return 0;
     }
-
-    public List<GameObject> get_holes(GameObject game_object)
-    {
-        for (int i = 0; i < data.Count; i++)
-        {
-            if (data[i].in_game(game_object))
-            {
-                return data[i].get_holes();
-            }
-        }
-        return null;
-    }
 }

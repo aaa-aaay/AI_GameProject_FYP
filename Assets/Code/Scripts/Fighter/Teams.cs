@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class TeamData
+public struct TeamData
 {
     [SerializeField] private GameObject player;
     [SerializeField] private Teams team;
