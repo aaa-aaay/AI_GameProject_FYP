@@ -9,6 +9,7 @@ public class BadmintionPlayer : MonoBehaviour
     [SerializeField] private float _evenMoreSlowedSpeed = 5f;
     private RacketSwing _racketSwing;
     private BadmintionMovement _movement;
+    private BadmintonStamina _stamina;
     //private BadmintonStamina _stamina;
 
     private int _shootingDirection;
@@ -22,7 +23,7 @@ public class BadmintionPlayer : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _racketSwing = GetComponent<RacketSwing>();
         _movement = GetComponent<BadmintionMovement>();
-        //_stamina = GetComponent<BadmintonStamina>();
+        _stamina = GetComponent<BadmintonStamina>();
         InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
 
 
@@ -34,6 +35,7 @@ public class BadmintionPlayer : MonoBehaviour
         inputManager.OnClick += HandleClick;
         inputManager.onRightClick += HandleRightClick;
         inputManager.onMiddleClick += HandleMiddleClick;
+        inputManager.onDash += HandleDash;
 
 
     }
@@ -69,6 +71,11 @@ public class BadmintionPlayer : MonoBehaviour
     {
         WantToSwingRacket(Racket.ShotType.Smash, BadmintonStamina.actions.SmashShot);
     }
+    private void HandleDash()
+    {
+        _movement.Dash(new Vector3(_moveInput.x, 0, _moveInput.y));
+        _stamina.UseStamina(BadmintonStamina.actions.Dash);
+    }
 
     private void WantToSwingRacket(Racket.ShotType shotType, BadmintonStamina.actions action)
     {
@@ -81,23 +88,23 @@ public class BadmintionPlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (_moveInput == Vector2.zero) _stamina.UseStamina(BadmintonStamina.actions.Rest);
-        //else _stamina.UseStamina(BadmintonStamina.actions.Running);
+        if (_moveInput == Vector2.zero) _stamina.UseStamina(BadmintonStamina.actions.Rest);
+        else _stamina.UseStamina(BadmintonStamina.actions.Running);
 
         float finalMoveSpeed = _moveSpeed;
 
-        //if(_stamina.GetStamina() < 70)
-        //{
-        //    finalMoveSpeed = _slowedMoveSpeed;
-        //    //decrease speed;
-        //}
-        //if (_stamina.GetStamina() < 30) {
+        if (_stamina.GetStamina() < 50)
+        {
+            finalMoveSpeed = _slowedMoveSpeed;
+            //decrease speed;
+        }
+        if (_stamina.GetStamina() < 25)
+        {
 
-        //    finalMoveSpeed = _evenMoreSlowedSpeed;
-        //    //decrease speed even more
+            finalMoveSpeed = _evenMoreSlowedSpeed;
+            //decrease speed even more
 
-        //}
-
+        }
 
         Vector3 move = new Vector3(_moveInput.x, 0, _moveInput.y) * finalMoveSpeed * Time.fixedDeltaTime;
         _rb.MovePosition(transform.position + transform.TransformDirection(move));
