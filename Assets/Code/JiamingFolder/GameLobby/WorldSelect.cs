@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class WorldSelect : MonoBehaviour
 {
     [SerializeField]
-    private int _nextSceneNumber;
+    private string _nextSceneName;
 
     [SerializeField]
     private string _levelName;
@@ -39,7 +39,7 @@ public class WorldSelect : MonoBehaviour
 
         if(playerInRange)
         {
-            ServiceLocator.Instance.GetService<MySceneManager>().LoadScene(_nextSceneNumber);
+            ServiceLocator.Instance.GetService<MySceneManager>().LoadScene(_nextSceneName);
         }
     }
 

@@ -4,7 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class MySceneManager : MonoBehaviour, IGameService
 {
-    [SerializeField] private int gameLobbySceneNo = 0;
+    [SerializeField] private string _gameLobbyName;
+
 
     private void OnEnable()
     {
@@ -16,18 +17,18 @@ public class MySceneManager : MonoBehaviour, IGameService
     }
 
 
-    public void LoadScene(int sceneNo)
+    public void LoadScene(string name)
     {
         //handle transition animation here
-        SceneManager.LoadScene(sceneNo);
+        EventHolder.InvokeStartLoadScene(name);
     }
 
     public void restartScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        EventHolder.InvokeStartLoadScene(SceneManager.GetActiveScene().name);
     }
     public void GoBacktoGameLobby()
     {
-        SceneManager.LoadScene(gameLobbySceneNo);
+        EventHolder.InvokeStartLoadScene(_gameLobbyName);
     }
 }
