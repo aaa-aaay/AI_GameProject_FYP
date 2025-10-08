@@ -73,8 +73,9 @@ public class BadmintionPlayer : MonoBehaviour
     }
     private void HandleDash()
     {
+        
+        if (_stamina.UseStamina(BadmintonStamina.actions.Dash))
         _movement.Dash(new Vector3(_moveInput.x, 0, _moveInput.y));
-        _stamina.UseStamina(BadmintonStamina.actions.Dash);
     }
 
     private void WantToSwingRacket(Racket.ShotType shotType, BadmintonStamina.actions action)

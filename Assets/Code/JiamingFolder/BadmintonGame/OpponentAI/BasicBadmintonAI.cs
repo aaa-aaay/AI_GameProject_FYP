@@ -36,6 +36,7 @@ public class BasicBadmintonAI : MonoBehaviour
 
 
     private ShotTypeTracker _shotTracker;
+    private BadmintonStamina _stamina;
 
     private Vector3 _startPos;
     private bool attacking = false;
@@ -56,6 +57,7 @@ public class BasicBadmintonAI : MonoBehaviour
         serving = false;
 
         _shotTracker = _shuttle.gameObject.GetComponent<ShotTypeTracker>();
+        _stamina = GetComponent<BadmintonStamina>();
     }
 
     void Update()
@@ -94,17 +96,17 @@ public class BasicBadmintonAI : MonoBehaviour
         Vector3 dirToNet = (_net.position - _shuttle.position).normalized;
         Vector3 desiredPos = Vector3.zero;
 
-        if (attackMode) desiredPos = _shutterLandingMarker.position;
+        if (attackMode) {
+
+            desiredPos = _shutterLandingMarker.position;
+            desiredPos += new Vector3(Random.Range(-_positionErrorRange, _positionErrorRange), 0f,
+            Random.Range(-_positionErrorRange, _positionErrorRange));
+
+        } 
 
         else desiredPos = _courtCenterPoint.position;
 
         if (serving) desiredPos = _shuttle.position - dirToNet * offset;
-
-
-        desiredPos += new Vector3( Random.Range(-_positionErrorRange, _positionErrorRange),
-            0f, 
-            Random.Range(-_positionErrorRange, _positionErrorRange));
-
 
         desiredPos.y = transform.position.y;
 
@@ -123,8 +125,23 @@ public class BasicBadmintonAI : MonoBehaviour
 
         float finalMoveSpeed = moveSpeed * Random.Range(_minimumMovementSpeed, 1.0f);
 
-        // --- Move toward corrected position ---
+        Vector3 vectorToTarget = transform.position - desiredPos;
+        vectorToTarget.y = 0;
+        if (vectorToTarget.magnitude < 0.2f)
+        {
+            finalMoveSpeed = 0;
+            _stamina.UseStamina(BadmintonStamina.actions.Rest);
+        }
+        else
+        {
+            _stamina.UseStamina(BadmintonStamina.actions.Running);
+        }
+
+
+            // --- Move toward corrected position ---
         transform.position = Vector3.MoveTowards(transform.position, desiredPos, finalMoveSpeed * Time.deltaTime);
+
+
     }
 
     private void FaceIncomingShuttle()
@@ -196,14 +213,12 @@ public class BasicBadmintonAI : MonoBehaviour
     {
         attacking = false;
         serving = true;
-        Debug.Log("switching to attack");
     }
 
     private void HandleMissing()
     {
         attacking = false;
         serving = false;
-        Debug.Log("lost a point");
     }
 
     private void CheckWhoHit(GameObject lastHitRacket)
