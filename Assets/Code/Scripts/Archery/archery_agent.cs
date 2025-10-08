@@ -90,7 +90,7 @@ public class archery_agent : Agent
     {
         if (!isTurn) return;
 
-        AddReward(-0.001f * Time.deltaTime);
+        //AddReward(-0.001f * Time.deltaTime);
 
         var da = actions.DiscreteActions;
 
@@ -138,9 +138,9 @@ public class archery_agent : Agent
         handler.UpdateUI(force, yaw, pitch);
     }
 
-    public void OnHit(int point)
+    public void OnHit(float point)
     {
-        AddReward(point * 0.01f);
+        AddReward(point);
         EndEpisode();
     }
 }

@@ -17,6 +17,9 @@ public class archery_handler : MonoBehaviour
     private archery_agent agent;
     [field: SerializeField] public GameObject targetObject { get; private set; }
 
+    private int playerPoint;
+    private int agentPoint;
+
     [Header("Arrow")]
     [SerializeField, Tooltip("Number of arrows in object pool. Set to 0 to disable.")] private int numArrows = 3;
     private int currentArrow;
@@ -64,6 +67,9 @@ public class archery_handler : MonoBehaviour
         agent = agentObject.GetComponent<archery_agent>();
         if (!agent)
             Debug.LogError("archery_agent has not been added.");
+
+        playerPoint = 0;
+        agentPoint = 0;
 
         arrows = new arrow[numArrows];
         for (int i = 0; i < numArrows; i++)
@@ -113,6 +119,8 @@ public class archery_handler : MonoBehaviour
 
         arrowCamera.Target.TrackingTarget = arrows[currentArrow].transform;
         arrowCamera.enabled = true;
+
+        Debug.Log($"Force: {force}\tYaw: {yaw}\tPitch: {pitch}");
     }
 
     private void PlayerTurn()
@@ -130,16 +138,15 @@ public class archery_handler : MonoBehaviour
 
     private void AgentTurn()
     {
-        //windDirection = Random.Range(0f, 360f);
-        //windSpeed = Random.Range(0f, settings.maxWindSpeed);
+        Random.InitState(Time.frameCount);
+        windDirection = Random.Range(0f, 360f);
+        windSpeed = Random.Range(0f, settings.maxWindSpeed);
 
-        //targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
-        //lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
+        targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
+        lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
 
         windDirection = 0;
         windSpeed = 0;
-        targetDistance = minTargetDistance;
-        lateralDistance = 0;
 
         targetObject.transform.position = agentObject.transform.position + new Vector3(lateralDistance, 1, targetDistance);
 
@@ -155,18 +162,22 @@ public class archery_handler : MonoBehaviour
 
         if (isPlayerTurn)
         {
+            playerPoint += point;
             isPlayerTurn = false;
         }
         else
         {
-            //isPlayerTurn = true;
+            agentPoint += point;
+            isPlayerTurn = true;
 
             if (point > 0) agent.OnHit(point);
             else
             {
-                agent.OnHit(Mathf.RoundToInt(-Vector3.Distance(targetObject.transform.position, agentObject.transform.position)));
+                agent.OnHit(-Vector3.Distance(targetObject.transform.position, agentObject.transform.position));
             }
         }
+
+        if (point > 0) Debug.Log($"Hit: {point}");
 
         StartCoroutine(ReturnCamera());
     }
@@ -183,16 +194,19 @@ public class archery_handler : MonoBehaviour
         if (isPlayerTurn)
         {
             playerCamera.Target.TrackingTarget = playerObject.transform;
-            player.StartTurn();
+            PlayerTurn();
         }
         else
         {
             playerCamera.Target.TrackingTarget = agentObject.transform;
-            agent.StartTurn();
+            AgentTurn();
         }
 
         arrowCamera.enabled = false;
         playerCamera.enabled = true;
+
+        //yield return new WaitForSeconds(3f);
+
         canShoot = true;
     }
 }

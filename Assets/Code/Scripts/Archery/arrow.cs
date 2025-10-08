@@ -64,10 +64,10 @@ public class arrow : MonoBehaviour
         Vector3 delta = desiredTipPos - tip.position;
         transform.position += delta;
 
-        if (target)
-            transform.parent = collision.transform.parent.transform;
-        else
-            transform.parent = collision.gameObject.transform;
+        //if (target)
+        //    transform.parent = collision.transform.parent.transform;
+        //else
+        //    transform.parent = collision.gameObject.transform;
 
         int point;
         if (target) point = target.OnHit(contact); else point = 0;

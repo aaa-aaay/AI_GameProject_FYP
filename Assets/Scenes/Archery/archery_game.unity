@@ -503,10 +503,10 @@ MonoBehaviour:
   playerObject: {fileID: 1854095903}
   agentObject: {fileID: 1854095903}
   <targetObject>k__BackingField: {fileID: 1868584998}
-  numArrows: 5
+  numArrows: 30
   arrowPrefab: {fileID: 1180116414938798258, guid: 3497321ecc578b449b560fd9005ae3cb, type: 3}
   uiHandler: {fileID: 1267131732}
-  <settings>k__BackingField: {fileID: 11400000, guid: 59061e2cdcbd404478f909b40313dac8, type: 2}
+  <settings>k__BackingField: {fileID: 11400000, guid: ae86cedcf93908b43b741fbf733d3c24, type: 2}
 --- !u!1 &1267131727
 GameObject:
   m_ObjectHideFlags: 0
@@ -658,7 +658,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 1000, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1612877829
 MonoBehaviour:
@@ -1045,6 +1045,7 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
+  minAimTime: 5
 --- !u!1 &1868584998
 GameObject:
   m_ObjectHideFlags: 0
