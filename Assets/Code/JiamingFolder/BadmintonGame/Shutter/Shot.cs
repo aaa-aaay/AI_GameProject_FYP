@@ -1,21 +1,25 @@
-using NUnit.Framework;
+
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
 public abstract class Shot : MonoBehaviour
 {
-    protected Vector3 startPos;
-    protected Vector3 targetPos;
 
-    protected float elapsedTime;
-
-    protected bool isFlying = false;
-        
-    [SerializeField] protected float shotSpreadRange;
 
     [SerializeField] private GameObject shotLocationMaker;
+    [SerializeField] protected float shotSpreadRange;
+    [SerializeField] protected float travelTime = 10f;
+
+
+    protected Vector3 targetPos;
+    protected Vector3 startPos;
+    private Vector3 prevPos;
+
+
+    protected bool isFlying = false;
+    protected float elapsedTime;
+
+
 
     protected Vector3 CalculateWhichTarget(List<Transform> listOfTargets, int direction)
     {
@@ -68,6 +72,7 @@ public abstract class Shot : MonoBehaviour
         isFlying = true;
 
 
+
         // Stop any other shot updates on this object
         foreach (var s in GetComponents<Shot>())
             if (s != this) s.Cancel();
@@ -79,5 +84,28 @@ public abstract class Shot : MonoBehaviour
 
         shotLocationMaker.gameObject.SetActive(!reset);
         shotLocationMaker.transform.position = targetPosition;
+    }
+
+
+
+    protected void UpdateRotation(Vector3 currentPos)
+    {
+        if (!isFlying) return;
+
+        if (prevPos == Vector3.zero)
+        {
+            prevPos = currentPos;
+            return;
+        }
+
+        Vector3 velocity = (currentPos - prevPos).normalized;
+        prevPos = currentPos;
+
+        if (velocity.sqrMagnitude > 0.0001f)
+        {
+            // Align -Y axis of shuttle with velocity
+            Quaternion rotation = Quaternion.LookRotation(velocity, Vector3.forward);
+            transform.rotation = rotation * Quaternion.Euler(-90f, 0f, 0f);
+        }
     }
 }

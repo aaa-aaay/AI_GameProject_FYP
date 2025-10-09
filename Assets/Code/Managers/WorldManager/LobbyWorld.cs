@@ -10,31 +10,43 @@ public class LobbyWorld : MonoBehaviour
 
     private WorldSelect _worldSelect;
 
+    [SerializeField] private GameObject lockedModel;
+    [SerializeField] private GameObject UnlockedModel;
 
-
-    [SerializeField] private Material _unlockedMaterial;
-    [SerializeField] private Material _lockedMaterial;
-    private MeshRenderer MeshRenderer;
+    //[SerializeField] private Material _unlockedMaterial;
+    //[SerializeField] private Material _lockedMaterial;
+    //private MeshRenderer MeshRenderer;
 
     private void Awake()
     {
-        MeshRenderer = GetComponent<MeshRenderer>();
+       // MeshRenderer = GetComponent<MeshRenderer>();
         _worldSelect = GetComponentInChildren<WorldSelect>();
-        SetState(false);
+        //SetState(false);
+
+        lockedModel.SetActive(false);
+        UnlockedModel.SetActive(false);
     }
 
+
+    private void Start()
+    {
+    }
 
     public void SetState(bool unlockedworld)
     {
         if (unlockedworld)
         {
-            _worldSelect.enabled = true;
-            MeshRenderer.material = _unlockedMaterial;
+            _worldSelect.Activate(true);
+            lockedModel.SetActive(false);
+            UnlockedModel.SetActive(true);
+            // MeshRenderer.material = _unlockedMaterial;
         }
         else
         {
-            _worldSelect.enabled = false;
-            MeshRenderer.material = _lockedMaterial;
+            _worldSelect.Activate(false);
+            lockedModel.SetActive(true);
+            UnlockedModel.SetActive(false);
+            //MeshRenderer.material = _lockedMaterial;
         }
     }
 

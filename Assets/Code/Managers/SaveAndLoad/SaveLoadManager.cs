@@ -1,5 +1,3 @@
-using Microsoft.Unity.VisualStudio.Editor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class SaveLoadManager : MonoBehaviour,IGameService
@@ -11,13 +9,11 @@ public class SaveLoadManager : MonoBehaviour,IGameService
         ServiceLocator.Instance.AddService(this, false);
         progress = new GameProgress();
         LoadData();
-
-
     }
 
     private void OnDisable()
     {
-        ServiceLocator.Instance.RemoveService<SaveLoadManager>(false);
+        //ServiceLocator.Instance.RemoveService<SaveLoadManager>(false);
     }
 
     public void SaveData(int worldNo, int starCount)
@@ -27,9 +23,14 @@ public class SaveLoadManager : MonoBehaviour,IGameService
         {
             if(levelDetail.levelIndex == worldNo)
             {
+                Debug.Log("found the world");
+                Debug.Log(levelDetail.stars);
+                Debug.Log(levelDetail.levelIndex);
                 if (starCount > levelDetail.stars)
                 {
                     levelDetail.stars = starCount;
+                    levelDetail.unlocked = true;
+                    Debug.Log("unlocked");
                 }
                 else return;
 
@@ -55,8 +56,6 @@ public class SaveLoadManager : MonoBehaviour,IGameService
         {
             string json = PlayerPrefs.GetString(keyToGet);
             progress = JsonUtility.FromJson<GameProgress>(json);
-
-            Debug.Log("Loaded game progress ");
             return true;
         }
         else
@@ -75,13 +74,14 @@ public class SaveLoadManager : MonoBehaviour,IGameService
         return progress;
     }
 
-    private void CreateNewSaveData()
+    public void CreateNewSaveData()
     {
         GameProgress newSave = new GameProgress();
-        newSave.levels.Add(new LevelProgress { levelIndex = 1, stars = 0 });
-        newSave.levels.Add(new LevelProgress { levelIndex = 2, stars = 0 });
-        newSave.levels.Add(new LevelProgress { levelIndex = 3, stars = 0 });
-        newSave.levels.Add(new LevelProgress { levelIndex = 4, stars = 0 });
+        newSave.levels.Add(new LevelProgress { levelIndex = 1, stars = 0, unlocked = true });
+        newSave.levels.Add(new LevelProgress { levelIndex = 2, stars = 0, unlocked = false });
+        newSave.levels.Add(new LevelProgress { levelIndex = 3, stars = 0, unlocked = false });
+        newSave.levels.Add(new LevelProgress { levelIndex = 4, stars = 0, unlocked = false });
+        newSave.levels.Add(new LevelProgress { levelIndex = 5, stars = 0, unlocked = false });
 
         string json = JsonUtility.ToJson(newSave);
         PlayerPrefs.SetString("GameProgress", json);
