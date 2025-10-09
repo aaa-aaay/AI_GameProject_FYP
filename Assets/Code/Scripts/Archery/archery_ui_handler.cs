@@ -13,6 +13,9 @@ public class archery_ui_handler : MonoBehaviour
     private float targetDistance;
     private float lateralDistance;
 
+    private int playerPoint;
+    private int agentPoint;
+
     public void set_value(float force, float yaw, float pitch, float windDirection, float windSpeed, float targetDistance, float lateralDistance)
     {
         this.force = force;
@@ -22,6 +25,15 @@ public class archery_ui_handler : MonoBehaviour
         this.windSpeed = windSpeed;
         this.targetDistance = targetDistance;
         this.lateralDistance = lateralDistance;
+
+        UpdateUI();
+    }
+
+    public void set_point(int playerPoint, int agentPoint)
+    {
+        this.playerPoint = playerPoint;
+        this.agentPoint = agentPoint;
+
         UpdateUI();
     }
 
@@ -33,6 +45,9 @@ public class archery_ui_handler : MonoBehaviour
             $"Wind Direction: {windDirection}\n" +
             $"Wind Speed: {windSpeed}\n" +
             $"Target Distance: {targetDistance}\n" +
-            $"Lateral Distance: {lateralDistance}";
+            $"Lateral Distance: {lateralDistance}\n" +
+            $"\n" +
+            $"Player Point: {playerPoint}\n" +
+            $"Agent Point: {agentPoint}";
     }
 }

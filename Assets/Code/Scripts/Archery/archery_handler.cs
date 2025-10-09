@@ -89,15 +89,12 @@ public class archery_handler : MonoBehaviour
             maxTargetDistance = minTargetDistance;
         }
 
-        //isPlayerTurn = true;
-        isPlayerTurn = false;
+        isPlayerTurn = true;
         canShoot = true;
 
         player.Initialize();
-        //PlayerTurn();
         agent.enabled = true;
-        AgentTurn();
-
+        StartCoroutine(PlayerTurn());
     }
 
     public void Shoot(float force, float yaw, float pitch)
@@ -123,8 +120,10 @@ public class archery_handler : MonoBehaviour
         Debug.Log($"Force: {force}\tYaw: {yaw}\tPitch: {pitch}");
     }
 
-    private void PlayerTurn()
+    private IEnumerator PlayerTurn()
     {
+        playerCamera.Target.TrackingTarget = playerObject.transform;
+        
         windDirection = Random.Range(0f, 360f);
         windSpeed = Random.Range(0f, settings.maxWindSpeed);
 
@@ -133,12 +132,16 @@ public class archery_handler : MonoBehaviour
 
         targetObject.transform.position = playerObject.transform.position + new Vector3(lateralDistance, 1, targetDistance);
 
+        yield return new WaitForSeconds(3f);
+
         player.StartTurn();
+        canShoot = true;
     }
 
-    private void AgentTurn()
+    private IEnumerator AgentTurn()
     {
-        Random.InitState(Time.frameCount);
+        playerCamera.Target.TrackingTarget = agentObject.transform;
+        
         windDirection = Random.Range(0f, 360f);
         windSpeed = Random.Range(0f, settings.maxWindSpeed);
 
@@ -150,7 +153,10 @@ public class archery_handler : MonoBehaviour
 
         targetObject.transform.position = agentObject.transform.position + new Vector3(lateralDistance, 1, targetDistance);
 
+        yield return new WaitForSeconds(3f);
+
         agent.StartTurn();
+        canShoot = true;
     }
 
     public void OnHit(int point)
@@ -176,6 +182,7 @@ public class archery_handler : MonoBehaviour
                 agent.OnHit(-Vector3.Distance(targetObject.transform.position, agentObject.transform.position));
             }
         }
+        uiHandler.set_point(playerPoint, agentPoint);
 
         if (point > 0) Debug.Log($"Hit: {point}");
 
@@ -191,22 +198,9 @@ public class archery_handler : MonoBehaviour
     {
         yield return new WaitForSeconds(cameraStay);
 
-        if (isPlayerTurn)
-        {
-            playerCamera.Target.TrackingTarget = playerObject.transform;
-            PlayerTurn();
-        }
-        else
-        {
-            playerCamera.Target.TrackingTarget = agentObject.transform;
-            AgentTurn();
-        }
+        if (isPlayerTurn) StartCoroutine(PlayerTurn()); else StartCoroutine(AgentTurn());
 
         arrowCamera.enabled = false;
         playerCamera.enabled = true;
-
-        //yield return new WaitForSeconds(3f);
-
-        canShoot = true;
     }
 }
