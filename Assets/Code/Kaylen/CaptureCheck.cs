@@ -10,19 +10,28 @@ public class CaptureManager : MonoBehaviour
 
     [Header("Next Map Settings")]
     public Transform nextMapSpawnPoint;  // where to teleport player
-    public Material newModel; // new material after capture
     public List<Transform> taggerSpawnPoints; // where taggers spawn (can be <3)
     public GameObject taggerPrefab; // tagger prefab to spawn
+
+    [Header("Visual Settings")]
+    public Material newModel; // 👈 material to apply after capture
+
+    [Header("Timer Reference")]
+    public TimerUI timerUI; // reference to the UI timer
 
     private PlayerMovement playerMovement;
 
     private void Start()
     {
-        // Use FindObjectOfType for compatibility across Unity versions
         playerMovement = FindFirstObjectByType<PlayerMovement>();
         if (playerMovement == null)
         {
             Debug.LogError("CaptureManager: No PlayerMovement found in the scene!");
+        }
+
+        if (timerUI == null)
+        {
+            timerUI = FindFirstObjectByType<TimerUI>();
         }
     }
 
@@ -40,17 +49,44 @@ public class CaptureManager : MonoBehaviour
 
     private IEnumerator HandleCaptureThresholdReached()
     {
-        // Wait one frame so any tag coroutine finishes its current frame (safe)
         yield return null;
 
         if (playerMovement == null) yield break;
 
         Debug.Log("Capture threshold reached — executing transition.");
 
-        // 1) Disable player's tagging immediately to avoid race conditions
+        // ✅ Start the timer immediately when capture requirement is met
+        if (timerUI != null)
+        {
+            timerUI.StartTimer();
+            Debug.Log("Timer started due to capture threshold.");
+        }
+        else
+        {
+            Debug.LogWarning("CaptureManager: TimerUI reference missing — timer not started.");
+        }
+
+        // ✅ Change player material (independent of timer)
+        if (newModel != null && playerMovement.playerModel != null)
+        {
+            Renderer rend = playerMovement.playerModel.GetComponent<Renderer>();
+            if (rend == null) rend = playerMovement.playerModel.GetComponentInChildren<Renderer>();
+
+            if (rend != null)
+            {
+                rend.material = newModel;
+                Debug.Log("Player material changed (independent of timer).");
+            }
+            else
+            {
+                Debug.LogWarning("CaptureManager: Could not find Renderer on playerModel to change material.");
+            }
+        }
+
+        // Disable tagging to prevent interactions during transition
         playerMovement.DisableTagging();
 
-        // 2) Teleport player
+        // Teleport player
         if (nextMapSpawnPoint != null)
         {
             playerMovement.transform.position = nextMapSpawnPoint.position;
@@ -62,12 +98,8 @@ public class CaptureManager : MonoBehaviour
             Debug.LogWarning("CaptureManager: nextMapSpawnPoint is not assigned.");
         }
 
-        // 3) Spawn 3 taggers (or fewer if spawn points list is small). If no spawn points, spawn near player.
-        if (taggerPrefab == null)
-        {
-            Debug.LogWarning("CaptureManager: taggerPrefab is not assigned. No taggers will be spawned.");
-        }
-        else
+        // Spawn new taggers
+        if (taggerPrefab != null)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -81,7 +113,6 @@ public class CaptureManager : MonoBehaviour
                 }
                 else
                 {
-                    // fallback: spawn around the player's new position
                     spawnPos = playerMovement.transform.position + Random.insideUnitSphere * 2f;
                     spawnPos.y = playerMovement.transform.position.y;
                 }
@@ -91,22 +122,9 @@ public class CaptureManager : MonoBehaviour
                 Debug.Log($"Spawned tagger at {spawnPos}");
             }
         }
-
-        // 4) Change player's material (try GetComponentInChildren if Renderer is on child)
-        if (newModel != null && playerMovement.playerModel != null)
+        else
         {
-            Renderer rend = playerMovement.playerModel.GetComponent<Renderer>();
-            if (rend == null) rend = playerMovement.playerModel.GetComponentInChildren<Renderer>();
-
-            if (rend != null)
-            {
-                rend.material = newModel;
-                Debug.Log("Player material changed.");
-            }
-            else
-            {
-                Debug.LogWarning("CaptureManager: Could not find Renderer on playerModel to change material.");
-            }
+            Debug.LogWarning("CaptureManager: taggerPrefab is not assigned. No taggers will be spawned.");
         }
     }
 }

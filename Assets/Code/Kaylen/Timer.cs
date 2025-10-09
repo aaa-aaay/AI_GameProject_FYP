@@ -12,7 +12,6 @@ public class TimerUI : MonoBehaviour
     void Start()
     {
         ResetTimer();
-
     }
 
     void Update()
@@ -31,6 +30,7 @@ public class TimerUI : MonoBehaviour
 
     public void StartTimer()
     {
+        ResetTimer();
         isRunning = true;
     }
 
@@ -48,12 +48,5 @@ public class TimerUI : MonoBehaviour
     public float GetRemainingTime()
     {
         return currentTime;
-    }
-
-    // NEW Å® Called when RunnerÅfs material changes
-    public void StartTimerOnMaterialChange()
-    {
-        ResetTimer();
-        StartTimer();
     }
 }
