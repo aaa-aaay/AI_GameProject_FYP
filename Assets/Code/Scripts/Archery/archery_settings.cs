@@ -3,6 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Minigames/Archery/Settings")]
 public class archery_settings : ScriptableObject
 {
+    [Header("Win Condition")]
+    [field: SerializeField, Min(1)] public int winningPoint { get; private set; } = 500;
     [Header("Force")]
     [field: SerializeField, Min(5f)] public float minForce { get; private set; } = 10f;
     [field: SerializeField, Min(5f)] public float maxForce { get; private set; } = 30f;

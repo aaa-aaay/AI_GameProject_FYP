@@ -19,6 +19,7 @@ public class archery_handler : MonoBehaviour
 
     private int playerPoint;
     private int agentPoint;
+    private int winCond;
 
     [Header("Arrow")]
     [SerializeField, Tooltip("Number of arrows in object pool. Set to 0 to disable.")] private int numArrows = 3;
@@ -70,6 +71,7 @@ public class archery_handler : MonoBehaviour
 
         playerPoint = 0;
         agentPoint = 0;
+        winCond = settings.winningPoint;
 
         arrows = new arrow[numArrows];
         for (int i = 0; i < numArrows; i++)
@@ -185,6 +187,15 @@ public class archery_handler : MonoBehaviour
         uiHandler.set_point(playerPoint, agentPoint);
 
         if (point > 0) Debug.Log($"Hit: {point}");
+
+        if (playerPoint >= winCond)
+        {
+            // Win logic
+        }
+        else if (agentPoint >= winCond)
+        {
+            // Lose logic
+        }
 
         StartCoroutine(ReturnCamera());
     }
