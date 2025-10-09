@@ -25,11 +25,8 @@ public class TransitionPlayer : MonoBehaviour
 
     public void OnStartLoadScene(string scene_name)
     {
-        if (gameObject.scene.name != scene_name)
-        {
-            load_scene = scene_name;
-             PlayStartLoadAnimation();
-        }
+        load_scene = scene_name;
+        PlayStartLoadAnimation();
     }
 
     public void StartLoad()

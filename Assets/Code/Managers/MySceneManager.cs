@@ -25,6 +25,8 @@ public class MySceneManager : MonoBehaviour, IGameService
 
     public void restartScene()
     {
+        //Debug.Log(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         EventHolder.InvokeStartLoadScene(SceneManager.GetActiveScene().name);
     }
     public void GoBacktoGameLobby()

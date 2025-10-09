@@ -85,18 +85,28 @@ public class PongInstance : MonoBehaviour
 
     private void Restart()
     {
+        UIManager uiManager = ServiceLocator.Instance.GetService<UIManager>();
+        SaveLoadManager slManager = ServiceLocator.Instance.GetService<SaveLoadManager>();
+
         if (player_points == opponent_points)
         {
             EventHolder.InvokeOnDraw(player);
             EventHolder.InvokeOnDraw(opponent);
+
+
         }
         else if (opponent_points > player_points)
         {
             EventHolder.InvokeOnLose(player);
             EventHolder.InvokeOnWin(opponent);
+
+            uiManager.ToggleLevelFailedUI(true);
+
         }
         else
         {
+            uiManager.ToggleLevelCompleteUI(true);
+            slManager.SaveData(3, 3);
             EventHolder.InvokeOnWin(player);
             EventHolder.InvokeOnLose(opponent);
         }

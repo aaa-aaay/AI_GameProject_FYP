@@ -83,6 +83,13 @@ public class UIManager : MonoBehaviour, IGameService
             sManager.GoBacktoGameLobby();
         }
     }
+    public void RestartScene()
+    {
+        _levelFailedCanvas.SetActive(false);
+        MySceneManager sManager = ServiceLocator.Instance.GetService<MySceneManager>();
+        sManager.restartScene();
+    }
+
 
 
 }

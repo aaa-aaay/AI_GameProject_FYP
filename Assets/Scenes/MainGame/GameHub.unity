@@ -1038,7 +1038,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5829487848601131889, guid: 1386131ff5fbfde42b3ac3127cd9f072, type: 3}
       propertyPath: _levelName
-      value: Archery
+      value: Pong
+      objectReference: {fileID: 0}
+    - target: {fileID: 5829487848601131889, guid: 1386131ff5fbfde42b3ac3127cd9f072, type: 3}
+      propertyPath: _nextSceneName
+      value: EsmondScene
       objectReference: {fileID: 0}
     - target: {fileID: 6929916092317211890, guid: 1386131ff5fbfde42b3ac3127cd9f072, type: 3}
       propertyPath: m_Name
@@ -1565,8 +1569,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _worldList:
   - {fileID: 2138694494}
-  - {fileID: 1136196404}
   - {fileID: 837802535}
+  - {fileID: 1136196404}
   - {fileID: 1414150148}
   - {fileID: 837735592}
 --- !u!1 &1314971155
@@ -2580,10 +2584,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3763106606102725044, guid: 618d3a79ef994b748a3761b95c018713, type: 3}
-      propertyPath: _dashActionReference
-      value: 
-      objectReference: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     - target: {fileID: 4045246173357957573, guid: 618d3a79ef994b748a3761b95c018713, type: 3}
       propertyPath: m_Name
       value: Global
@@ -2592,10 +2592,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 330585545}
-    - target: {fileID: 9094279838279580081, guid: 618d3a79ef994b748a3761b95c018713, type: 3}
-      propertyPath: _gameLobbyName
-      value: GameHub
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
