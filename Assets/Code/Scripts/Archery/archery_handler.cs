@@ -29,6 +29,7 @@ public class archery_handler : MonoBehaviour
     private arrow[] arrows;
 
     [Header("Settings")]
+    [SerializeField] private trajectory_preview preview;
     [SerializeField] private archery_ui_handler uiHandler;
     [field: SerializeField] public archery_settings settings { get; private set; }
 
@@ -217,6 +218,7 @@ public class archery_handler : MonoBehaviour
     public void UpdateUI(float force, float yaw, float pitch)
     {
         uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed, targetDistance, lateralDistance);
+        preview.ShowPath(force, yaw, pitch);
     }
 
     private IEnumerator ReturnCamera()
