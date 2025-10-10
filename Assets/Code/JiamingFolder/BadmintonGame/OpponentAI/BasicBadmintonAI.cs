@@ -80,6 +80,7 @@ public class BasicBadmintonAI : MonoBehaviour
 
             if (inRange && inHeight)
             {
+                Debug.Log("why ts not working");
                 PerformShot();
             }
 
