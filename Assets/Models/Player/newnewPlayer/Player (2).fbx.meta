@@ -1,9 +1,24 @@
 fileFormatVersion: 2
-guid: 25986856e12b59a46af8959de113c0d8
+guid: 18fae7b9ce1ea274da67240462badae8
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Player_accessory_mat
+    second: {fileID: 2100000, guid: d8b91c232945cd9489edc1579b3702b6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Player_body_mat
+    second: {fileID: 2100000, guid: 9895ed71c312ca242aee77aa787a127d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Player_not_body_mat
+    second: {fileID: 2100000, guid: f4b43e673ae580445b51503e3db91cdd, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -89,7 +104,7 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: 
+    rootMotionBoneName: root_jnt
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
