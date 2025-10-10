@@ -1,8 +1,11 @@
-﻿using Unity.InferenceEngine;
+﻿using TMPro;
+using Unity.InferenceEngine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class arrow : MonoBehaviour
 {
+    [SerializeField] private Transform tip;
     private Rigidbody rb;
 
     public bool launched { get; private set; } = false;
@@ -23,6 +26,9 @@ public class arrow : MonoBehaviour
     {
         if (launched) return;
         launched = true;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
 
         Quaternion angle = Quaternion.Euler(-pitch, yaw, 0f);
         Vector3 direction = angle * Vector3.forward;
@@ -45,21 +51,6 @@ public class arrow : MonoBehaviour
         rb.AddForce(windForce, ForceMode.Acceleration);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!other.transform.TryGetComponent(out target target) && other.transform.gameObject.layer != LayerMask.NameToLayer("Floor"))
-            return;
-
-        SetCollision(false);
-
-        var collision = other.GetComponent<Collision>();
-
-        ContactPoint contact = collision.GetContact(0);
-        int point;
-
-        if (target) point = target.OnHit(contact); else point = 0;
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if (!collision.gameObject.TryGetComponent(out target target) && collision.gameObject.layer != LayerMask.NameToLayer("Floor"))
@@ -68,8 +59,17 @@ public class arrow : MonoBehaviour
         SetCollision(false);
 
         ContactPoint contact = collision.GetContact(0);
-        int point;
 
+        Vector3 desiredTipPos = contact.point - contact.normal * 0.1f;
+        Vector3 delta = desiredTipPos - tip.position;
+        transform.position += delta;
+
+        //if (target)
+        //    transform.parent = collision.transform.parent.transform;
+        //else
+        //    transform.parent = collision.gameObject.transform;
+
+        int point;
         if (target) point = target.OnHit(contact); else point = 0;
 
         archery_handler.instance.OnHit(point);

@@ -6,30 +6,41 @@ public class archery_player : MonoBehaviour
     [Header("Input")]
     [SerializeField] private InputActionAsset inputActions;
 
+    private bool isTurn;
+
     private InputActionMap archeryMap;
     private InputAction move;
     private InputAction increaseForce;
     private InputAction decreaseForce;
     private InputAction shoot;
 
-    [Header("Physics")]
-    [SerializeField, Range(5f, Mathf.Infinity)] private float minForce = 10f;
-    [SerializeField, Range(5f, Mathf.Infinity)] private float maxForce = 30f;
-    [SerializeField, Range(-45f, 45f)] private float maxYaw = 30f;
-    [SerializeField, Range(-90f, 90f)] private float minPitch = 0f;
-    [SerializeField, Range(-90f, 90f)] private float maxPitch = 30f;
+    private float minForce;
+    private float maxForce;
+    private float maxYaw;
+    private float minPitch;
+    private float maxPitch;
+
+    private archery_handler handler;
+    private archery_settings settings;
 
     public float force { get; private set; }
     public float yaw { get; private set; }
     public float pitch { get; private set; }
-    public float windStrength { get; private set; }
-    public float windDirection { get; private set; }
 
-    private void OnEnable()
+    public void Initialize()
     {
+        isTurn = false;
+        handler = archery_handler.instance;
+        settings = handler.settings;
+
+        minForce = settings.minForce;
+        maxForce = settings.maxForce;
+        maxYaw = settings.maxYaw;
+        minPitch = settings.minPitch;
+        maxPitch = settings.maxPitch;
+
         foreach (var map in inputActions.actionMaps) map.Disable();
         archeryMap = inputActions.FindActionMap("Archery", true);
-        archeryMap.Enable();
         move = archeryMap.FindAction("Move", true);
         increaseForce = archeryMap.FindAction("IncreaseForce", true);
         decreaseForce = archeryMap.FindAction("DecreaseForce", true);
@@ -46,25 +57,24 @@ public class archery_player : MonoBehaviour
             Debug.LogWarning("maxPitch (" + maxPitch + ") less than minPitch (" + minPitch + "). maxPitch set to minPitch.");
             maxPitch = minPitch;
         }
+
+        StartTurn();
     }
 
-    private void OnDisable()
+    public void StartTurn()
     {
-        archeryMap.Disable();
-    }
+        isTurn = true;
+        archeryMap.Enable();
 
-    public void Init(float strength, float direction)
-    {
         if (minForce > 10f) force = minForce; else force = 10f;
         yaw = 0f;
         if (minPitch > 0f) pitch = minPitch; else pitch = 0f;
-
-        windStrength = strength;
-        windDirection = direction;
     }
 
     private void Update()
     {
+        if (!isTurn) return;
+
         Vector2 moveInput = move.ReadValue<Vector2>();
 
         yaw += moveInput.x * 10f * Time.deltaTime;
@@ -80,8 +90,12 @@ public class archery_player : MonoBehaviour
             force = Mathf.Max(force - 10f * Time.deltaTime, minForce);
 
         if (shoot.triggered)
-            archery_handler.instance.Shoot(force, yaw, pitch);
+        {
+            handler.Shoot(force, yaw, pitch);
+            isTurn = false;
+            archeryMap.Disable();
+        }
 
-        archery_handler.instance.UpdateUI(force, yaw, pitch);
+        handler.UpdateUI(force, yaw, pitch);
     }
 }
