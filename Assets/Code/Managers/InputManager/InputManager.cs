@@ -29,6 +29,9 @@ public class InputManager : MonoBehaviour,IGameService
     [SerializeField]
     private InputActionReference _interactActionReference;
 
+    [SerializeField]
+    private InputActionReference _dashActionReference;
+
 
     public event Action<Vector2> OnMove;
     public event Action OnMoveEnd;
@@ -41,6 +44,7 @@ public class InputManager : MonoBehaviour,IGameService
     public event Action onMiddleClick;
 
     public event Action onInteract;
+    public event Action onDash;
 
     private void Awake()
     {
@@ -106,6 +110,11 @@ public class InputManager : MonoBehaviour,IGameService
         onInteract?.Invoke();
     }
 
+    private void Dash(InputAction.CallbackContext context)
+    {
+        onDash?.Invoke();
+    }
+
 
 
     private void BindActions()
@@ -118,6 +127,7 @@ public class InputManager : MonoBehaviour,IGameService
         _rightClickActionReference.action.performed += RightClick;
         _middleClickReference.action.performed += MiddleClick;
         _interactActionReference.action.performed += Interact;
+        _dashActionReference.action.performed += Dash;
     }
 
     private void UnbindActions()

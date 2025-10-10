@@ -9,6 +9,7 @@ public class EventHolder
     public static Action<GameObject, GameObject> OnKill;
     public static Action<GameObject> OnLose;
     public static Action<GameObject> OnWin;
+    public static Action<GameObject> OnDraw;
     public static Action<GameObject> OnRestart;
 
     public static Action<string> StartLoadScene;
@@ -50,6 +51,14 @@ public class EventHolder
         if (OnWin != null)
         {
             OnWin.Invoke(player);
+        }
+    }
+
+    public static void InvokeOnDraw(GameObject player)
+    {
+        if (OnDraw != null)
+        {
+            OnDraw.Invoke(player);
         }
     }
 

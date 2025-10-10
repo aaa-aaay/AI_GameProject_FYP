@@ -91,4 +91,17 @@ public class Movement : MonoBehaviour
     {
         ResetDirection();
     }
+
+    public void SetDirectionHorizontal(Vector2 new_direction)
+    {
+        direction.x = new_direction.x;
+        direction.y = 0;
+        direction.z = 0;
+        direction.Normalize();
+    }
+
+    public void SetDirectionHorizontal(InputAction.CallbackContext context)
+    {
+        SetDirectionHorizontal(context.ReadValue<Vector2>());
+    }
 }

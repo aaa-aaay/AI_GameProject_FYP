@@ -13,13 +13,8 @@ public class LobbyWorld : MonoBehaviour
     [SerializeField] private GameObject lockedModel;
     [SerializeField] private GameObject UnlockedModel;
 
-    //[SerializeField] private Material _unlockedMaterial;
-    //[SerializeField] private Material _lockedMaterial;
-    //private MeshRenderer MeshRenderer;
-
     private void Awake()
     {
-       // MeshRenderer = GetComponent<MeshRenderer>();
         _worldSelect = GetComponentInChildren<WorldSelect>();
         //SetState(false);
 
@@ -36,23 +31,15 @@ public class LobbyWorld : MonoBehaviour
     {
         if (unlockedworld)
         {
-            _worldSelect.Activate(true);
+            //_worldSelect.Activate(true);
             lockedModel.SetActive(false);
             UnlockedModel.SetActive(true);
-            // MeshRenderer.material = _unlockedMaterial;
         }
         else
         {
-            _worldSelect.Activate(false);
+            //_worldSelect.Activate(false);
             lockedModel.SetActive(true);
             UnlockedModel.SetActive(false);
-            //MeshRenderer.material = _lockedMaterial;
         }
-    }
-
-    public void UnlockedWorld()
-    {
-        _worldSelect.enabled = true;
-        // the world in the lobby is now ready to play
     }
 }

@@ -17,6 +17,10 @@ public class BadmintonStamina : MonoBehaviour
     [SerializeField] private float dash;
     [SerializeField] private float resting;
 
+    [Header("running stamina checkpoints")]
+    [SerializeField] private float checkpoint1;
+    [SerializeField] private float checkpoint2;
+
 
     public enum actions
     {
@@ -65,10 +69,15 @@ public class BadmintonStamina : MonoBehaviour
     {
         staminaSlider.value = currentStamina;
     }
-
-
     public float GetStamina()
     {
         return currentStamina;
+    }
+
+    public float GetStaminaLimit(int checkPointNo)
+    {
+        if (checkPointNo == 1) { return checkpoint1; }
+        if (checkPointNo == 2) { return checkpoint2; }
+        else return 0;
     }
 }
