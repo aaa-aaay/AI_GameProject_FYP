@@ -79,7 +79,7 @@ public class SaveLoadManager : MonoBehaviour,IGameService
     {
         GameProgress newSave = new GameProgress();
         newSave.levels.Add(new LevelProgress { levelIndex = 1, stars = 0, unlocked = true });
-        newSave.levels.Add(new LevelProgress { levelIndex = 2, stars = 0, unlocked = true });
+        newSave.levels.Add(new LevelProgress { levelIndex = 2, stars = 0, unlocked = false });
         newSave.levels.Add(new LevelProgress { levelIndex = 3, stars = 0, unlocked = false });
         newSave.levels.Add(new LevelProgress { levelIndex = 4, stars = 0, unlocked = false });
         //newSave.levels.Add(new LevelProgress { levelIndex = 5, stars = 0, unlocked = false });

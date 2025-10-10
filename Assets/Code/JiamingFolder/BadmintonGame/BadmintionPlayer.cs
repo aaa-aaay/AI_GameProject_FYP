@@ -40,6 +40,22 @@ public class BadmintionPlayer : MonoBehaviour
 
     }
 
+    private void OnDestroy()
+    {
+        InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
+
+
+        //Movements
+        inputManager.OnMove -= HandleMove;
+        inputManager.OnMoveEnd -= HandleMoveEnd;
+
+        //racket "Attacks"
+        inputManager.OnClick -= HandleClick;
+        inputManager.onRightClick -= HandleRightClick;
+        inputManager.onMiddleClick -= HandleMiddleClick;
+        inputManager.onDash -= HandleDash;
+    }
+
 
     private void HandleMove(Vector2 direction)
     {
