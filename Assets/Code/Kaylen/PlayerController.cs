@@ -10,7 +10,6 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("References")]
     public Transform playerModel;
-    public TimerUI timerUI;   // reference to timer UI in scene
 
     [Header("Tag Settings")]
     public GameObject tagHitboxPrefab;
