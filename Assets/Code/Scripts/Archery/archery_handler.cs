@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Cinemachine;
 using UnityEditor.Toolbars;
 using System.Collections;
+using UnityEngine.Rendering;
 
 public class archery_handler : MonoBehaviour
 {
@@ -43,6 +44,9 @@ public class archery_handler : MonoBehaviour
 
     private float targetDistance;
     private float lateralDistance;
+
+    [Header("AI Training")]
+    [SerializeField] private bool isAiTraining = false;
 
     private void Awake()
     {
@@ -91,12 +95,21 @@ public class archery_handler : MonoBehaviour
             maxTargetDistance = minTargetDistance;
         }
 
-        isPlayerTurn = true;
         canShoot = true;
 
         player.Initialize();
         agent.enabled = true;
-        StartCoroutine(PlayerTurn());
+
+        if (!isAiTraining)
+        {
+            isPlayerTurn = true;
+            StartCoroutine(PlayerTurn());
+        }
+        else
+        {
+            isPlayerTurn = false;
+            StartCoroutine(AgentTurn());
+        }
     }
 
     public void Shoot(float force, float yaw, float pitch)
@@ -176,7 +189,8 @@ public class archery_handler : MonoBehaviour
         else
         {
             agentPoint += point;
-            isPlayerTurn = true;
+            
+            if (!isAiTraining) isPlayerTurn = true;
 
             if (point > 0) agent.OnHit(point);
             else

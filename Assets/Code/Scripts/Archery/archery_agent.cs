@@ -67,6 +67,7 @@ public class archery_agent : Agent
     {
         Vector3 toTarget = handler.targetObject.transform.position - transform.position;
         Vector3 toTargetLocal = transform.InverseTransformDirection(toTarget);
+        
         sensor.AddObservation(toTargetLocal.normalized);
         sensor.AddObservation(toTargetLocal.magnitude);
 
@@ -90,7 +91,7 @@ public class archery_agent : Agent
     {
         if (!isTurn) return;
 
-        //AddReward(-0.001f * Time.deltaTime);
+        AddReward(-0.001f * Time.deltaTime);
 
         var da = actions.DiscreteActions;
 
