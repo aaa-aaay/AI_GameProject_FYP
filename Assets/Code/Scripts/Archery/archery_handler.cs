@@ -203,12 +203,16 @@ public class archery_handler : MonoBehaviour
 
         if (point > 0) Debug.Log($"Hit: {point}");
 
+        MiniGameOverHandler gameOverHandler = GetComponent<MiniGameOverHandler>();
         if (playerPoint >= winCond)
         {
+            ServiceLocator.Instance.GetService<InputManager>().EnableActions(); //renable actions
+            gameOverHandler.HandleGameOver(true, 4, 3);
             // Win logic
         }
         else if (agentPoint >= winCond)
         {
+            gameOverHandler.HandleGameOver(false);
             // Lose logic
         }
 

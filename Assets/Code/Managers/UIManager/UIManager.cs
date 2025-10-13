@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -19,15 +18,19 @@ public class UIManager : MonoBehaviour, IGameService
     [SerializeField] private GameObject _levelFailedCanvas;
     private bool _levelCompleteCanvasOpen;
 
+
     private void OnEnable()
     {
         ServiceLocator.Instance.AddService(this, false);
         _levelSelectCanvasGO.SetActive(false);
+        _levelCompleteCanvasOpen = false;
 
 
-        
-        
+
+
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+
 
     }
 
@@ -75,11 +78,12 @@ public class UIManager : MonoBehaviour, IGameService
     }
     private void OnSpacePressed()
     {
+        Debug.Log("Space pressed");
         if (_levelCompleteCanvasOpen)
         {
             _levelCompleteCanvasOpen = false;
             MySceneManager sManager = ServiceLocator.Instance.GetService<MySceneManager>();
-
+            Debug.Log("return to mainmenu");
             sManager.GoBacktoGameLobby();
         }
     }

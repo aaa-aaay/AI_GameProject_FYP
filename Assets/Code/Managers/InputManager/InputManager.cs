@@ -1,7 +1,9 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
+[DefaultExecutionOrder(-1)]
 public class InputManager : MonoBehaviour,IGameService
 {
 
@@ -86,6 +88,7 @@ public class InputManager : MonoBehaviour,IGameService
     private void Jump(InputAction.CallbackContext context)
     {
         OnJump?.Invoke();
+        Debug.Log("Jumped");
     }
 
     private void Click(InputAction.CallbackContext context)
@@ -121,7 +124,6 @@ public class InputManager : MonoBehaviour,IGameService
     {
         _moveActionReference.action.performed += Move;
         _moveActionReference.action.canceled += MoveEnd;
-
         _jumpActionReference.action.performed += Jump;
         _clickActionReference.action.performed += Click;
         _rightClickActionReference.action.performed += RightClick;
@@ -140,5 +142,16 @@ public class InputManager : MonoBehaviour,IGameService
         _rightClickActionReference.action.performed -= RightClick;
         _middleClickReference.action.performed -= MiddleClick;
         _interactActionReference.action.performed -= Interact;
+    }
+
+    public void EnableActions()
+    {
+        _moveActionReference.action.Enable();
+        _jumpActionReference.action.Enable();
+        _clickActionReference.action.Enable();
+        _rightClickActionReference.action.Enable();
+        _middleClickReference.action.Enable();
+        _interactActionReference.action.Enable();
+        _dashActionReference.action.Enable();
     }
 }
