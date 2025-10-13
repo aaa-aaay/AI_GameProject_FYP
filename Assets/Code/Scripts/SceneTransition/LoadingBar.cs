@@ -40,13 +40,13 @@ public class LoadingBar : MonoBehaviour
 
             if (value >= 1)
             {
+                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
                 operation.allowSceneActivation = true;
             }
 
             yield return null;
         }
 
-        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(scene));
     }
 }
