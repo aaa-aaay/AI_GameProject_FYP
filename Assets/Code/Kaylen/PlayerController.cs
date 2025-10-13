@@ -10,12 +10,14 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("References")]
     public Transform playerModel;
-    public TimerUI timerUI;   // reference to timer UI in scene
 
     [Header("Tag Settings")]
     public GameObject tagHitboxPrefab;
     public float tagCooldown = 1f;
     public float tagOffset = 1f;
+
+    [Header("GameOverhandler")]
+    [SerializeField] private MiniGameOverHandler _handler;
 
     private Rigidbody rb;
     private bool canTag = true;
@@ -116,6 +118,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.collider.CompareTag("Tagger"))
         {
+            _handler.HandleGameOver(false);
             Debug.Log("You Lose");
             // optional: handle defeat here (restart, end episode, etc.)
         }
