@@ -29,9 +29,12 @@ public class WorldSelect : MonoBehaviour
 
         _uiManager = ServiceLocator.Instance.GetService<UIManager>();
 
-
-
         playerInRange = false;
+    }
+
+    private void OnDestroy()
+    {
+        _inputManager.onInteract -= HandleInteract;
     }
 
     private void HandleInteract()
