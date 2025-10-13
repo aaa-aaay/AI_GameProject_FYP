@@ -11,7 +11,12 @@ public class ForceKnockback : MonoBehaviour
     {
         rigid_body = GetComponent<Rigidbody>();
 
-        EventHolder.OnHit += WhenHit;
+        EventHolder.OnTakeDamage += WhenHit;
+    }
+
+    private void OnDestroy()
+    {
+        EventHolder.OnTakeDamage -= WhenHit;
     }
 
     private void WhenHit(GameObject hitter, GameObject target, float damage)

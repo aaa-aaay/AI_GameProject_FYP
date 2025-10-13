@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Rotate : MonoBehaviour
 {
@@ -66,5 +67,20 @@ public class Rotate : MonoBehaviour
         {
             SetRotation(gameObject, direction);
         }
+    }
+
+    public virtual void SetRotationTopDown(Vector2 direction)
+    {
+        if (direction != Vector2.zero)
+        {
+            time_passed = 0;
+            start_rotation = transform.rotation;
+            end_rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y), Vector3.up);
+        }
+    }
+
+    public void SetRotationTopDown(InputAction.CallbackContext context)
+    {
+        SetRotationTopDown(context.ReadValue<Vector2>());
     }
 }
