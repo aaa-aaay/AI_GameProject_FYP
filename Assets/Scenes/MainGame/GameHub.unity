@@ -690,9 +690,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: d2c8be6646d27a14ebf0c7bfe9a5fd7f, type: 2}
     - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: dialouge.name
+      value: Badminton
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
       propertyPath: dialouge.pfpSprite
       value: 
       objectReference: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: 'dialouge.sentences.Array.data[0]'
+      value: Hello!
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: 'dialouge.sentences.Array.data[1]'
+      value: This is the World of Badminton!
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4477,6 +4489,87 @@ Transform:
   - {fileID: 2018884800}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1747279348
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5295147322558731498, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -110.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 5295147322558731498, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5000005
+      objectReference: {fileID: 0}
+    - target: {fileID: 5295147322558731498, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 83.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 5295147322558731498, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.022600137
+      objectReference: {fileID: 0}
+    - target: {fileID: 5295147322558731498, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5295147322558731498, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.9997446
+      objectReference: {fileID: 0}
+    - target: {fileID: 5295147322558731498, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5295147322558731498, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5295147322558731498, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 177.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 5295147322558731498, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6513300941133152378, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: m_Name
+      value: NPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: dialouge.name
+      value: GameHubNPC01
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: dialouge.sentences.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: 'dialouge.sentences.Array.data[0]'
+      value: Welcome to the Game Hub!
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: 'dialouge.sentences.Array.data[1]'
+      value: This is where you can explore all our different games!
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: 'dialouge.sentences.Array.data[2]'
+      value: There is always something to find or somebody to talk to these days.
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: 'dialouge.sentences.Array.data[3]'
+      value: Have fun around here!
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c0e976307484df043afeea940b4f6e69, type: 3}
 --- !u!1 &1762429643
 GameObject:
   m_ObjectHideFlags: 0
@@ -5140,9 +5233,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: aee76f4d83b1ce1438c65acc414e86da, type: 2}
     - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: dialouge.name
+      value: Archery
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
       propertyPath: dialouge.pfpSprite
       value: 
       objectReference: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: 'dialouge.sentences.Array.data[0]'
+      value: Hello!
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: 'dialouge.sentences.Array.data[1]'
+      value: This is the World of Archery!
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5302,6 +5407,18 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: 8fa1c0093209dda4580efed90d0fc5c2, type: 2}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: dialouge.name
+      value: Pong
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: 'dialouge.sentences.Array.data[0]'
+      value: Hello!
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: 'dialouge.sentences.Array.data[1]'
+      value: This is the World of Pong!
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6960,16 +7077,24 @@ PrefabInstance:
       value: NPC
       objectReference: {fileID: 0}
     - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: dialouge.name
+      value: Catch
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
       propertyPath: dialouge.sentences.Array.size
-      value: 3
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: 'dialouge.sentences.Array.data[0]'
+      value: Hello!
       objectReference: {fileID: 0}
     - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
       propertyPath: 'dialouge.sentences.Array.data[1]'
-      value: Hello welcome to catch
+      value: This is the World of Tag!
       objectReference: {fileID: 0}
     - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
       propertyPath: 'dialouge.sentences.Array.data[2]'
-      value: bye
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7451,3 +7576,4 @@ SceneRoots:
   - {fileID: 1359670707083355718}
   - {fileID: 1696973819}
   - {fileID: 504924452}
+  - {fileID: 1747279348}
