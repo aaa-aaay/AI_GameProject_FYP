@@ -3,8 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] string _gameLobbySceneName = "GameLobby";
-
     void Start()
     {
         //play mainmenu bg music
@@ -12,7 +10,7 @@ public class MainMenu : MonoBehaviour
 
     public void GoGameLobby()
     {
-        ServiceLocator.Instance.GetService<MySceneManager>().LoadScene(_gameLobbySceneName);
+        ServiceLocator.Instance.GetService<MySceneManager>().GoBacktoGameLobby();
     }
 
 

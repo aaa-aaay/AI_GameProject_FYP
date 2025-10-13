@@ -21,16 +21,18 @@ public class MySceneManager : MonoBehaviour, IGameService
     {
         //handle transition animation here
         EventHolder.InvokeStartLoadScene(name);
+        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
     }
 
     public void restartScene()
     {
         //Debug.Log(SceneManager.GetActiveScene().name);
         //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
         EventHolder.InvokeStartLoadScene(SceneManager.GetActiveScene().name);
     }
     public void GoBacktoGameLobby()
     {
-        EventHolder.InvokeStartLoadScene(_gameLobbyName);
+        LoadScene(_gameLobbyName);
     }
 }

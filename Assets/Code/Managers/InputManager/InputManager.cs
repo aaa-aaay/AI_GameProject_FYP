@@ -154,4 +154,9 @@ public class InputManager : MonoBehaviour,IGameService
         _interactActionReference.action.Enable();
         _dashActionReference.action.Enable();
     }
+
+    public void toggleInputActivation(bool enable) {
+        if (enable) { _inputActionAsset.Enable(); }
+        else { _inputActionAsset.Disable(); }
+    }
 }
