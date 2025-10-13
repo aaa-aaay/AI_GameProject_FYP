@@ -1026,6 +1026,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   balls:
   - {fileID: 4554061158509156893}
+  power_ups:
+  - {fileID: 8317263329487837619, guid: 9ad4e142d11fdbf4a8cf5cfe10460e7a, type: 3}
+  - {fileID: 8317263329487837619, guid: 626bfeafa64de0a44a1141e01f2501c6, type: 3}
   player: {fileID: 5340120807119539360}
   opponent: {fileID: 3513108686039933995}
   Scored:
@@ -1062,6 +1065,8 @@ MonoBehaviour:
   left_scoring_bounds: -60
   right_scoring_bounds: 60
   win_score: 10
+  min_power_up_time: 5
+  max_power_up_time: 10
 --- !u!1 &5093963351767495939
 GameObject:
   m_ObjectHideFlags: 0
@@ -1365,7 +1370,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   tolerance: 5
-  reaction_distance: 30
 --- !u!1 &5465953793993073515
 GameObject:
   m_ObjectHideFlags: 0

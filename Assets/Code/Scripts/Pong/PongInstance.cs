@@ -5,6 +5,7 @@ using UnityEngine.Events;
 public class PongInstance : MonoBehaviour
 {
     [SerializeField] private List<Rigidbody> balls;
+    [SerializeField] private List<GameObject> power_ups;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject opponent;
 
@@ -16,9 +17,14 @@ public class PongInstance : MonoBehaviour
     [SerializeField] private float right_scoring_bounds;
     [SerializeField] private float win_score = 10;
 
+    [SerializeField] private float min_power_up_time;
+    [SerializeField] private float max_power_up_time;
+
     private int player_points;
     private int opponent_points;
     private float time_passed;
+    private float power_up_time;
+    private float power_time_passed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,6 +36,15 @@ public class PongInstance : MonoBehaviour
     void Update()
     {
         time_passed += Time.deltaTime;
+        power_time_passed += Time.deltaTime;
+
+        if (power_time_passed > power_up_time)
+        {
+            Instantiate(power_ups[Random.Range(0, power_ups.Count)]).transform.position = new Vector3(Random.Range(-40, 40), 2, Random.Range(-50, 50));
+
+            power_time_passed = 0;
+            power_up_time = Random.Range(min_power_up_time, max_power_up_time);
+        }
 
         if (player.transform.localPosition.x > 37)
         {
@@ -119,6 +134,9 @@ public class PongInstance : MonoBehaviour
         player_points = 0;
         opponent_points = 0;
         time_passed = 0;
+        power_time_passed = 0;
+
+        power_up_time = Random.Range(min_power_up_time, max_power_up_time);
 
         ScoreChanged?.Invoke(player_points, opponent_points);
     }

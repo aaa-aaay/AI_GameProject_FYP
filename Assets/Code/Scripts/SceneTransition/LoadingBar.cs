@@ -46,6 +46,7 @@ public class LoadingBar : MonoBehaviour
             yield return null;
         }
 
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(scene));
     }
 }
