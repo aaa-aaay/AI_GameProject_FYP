@@ -23,6 +23,11 @@ public class Knockback : MonoBehaviour
         EventHolder.OnTakeDamage += WhenHit;
     }
 
+    private void OnDestroy()
+    {
+        EventHolder.OnTakeDamage -= WhenHit;
+    }
+
     // Update is called once per frame
     void LateUpdate()
     {
@@ -36,7 +41,7 @@ public class Knockback : MonoBehaviour
         movement.AddDirection(Vector3.Slerp(direction * knockback_force, Vector3.zero, time_passed / knockback_duration));
     }
 
-    public void WhenHit(GameObject hitter, GameObject target, float damage)
+    private void WhenHit(GameObject hitter, GameObject target, float damage)
     {
         if (target == gameObject)
         {
