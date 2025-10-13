@@ -19,6 +19,12 @@ public class BadmintionMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
     }
 
+    private void OnDestroy()
+    {
+        _animator = null;
+        _rb = null;
+
+    }
     public void Walk(bool start)
     {
         _animator.SetBool("walking", start);

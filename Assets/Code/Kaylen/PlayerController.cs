@@ -10,32 +10,24 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("References")]
     public Transform playerModel;
-    public TimerUI timerUI;   // reference to timer UI in scene
 
     [Header("Tag Settings")]
     public GameObject tagHitboxPrefab;
     public float tagCooldown = 1f;
     public float tagOffset = 1f;
 
+    [Header("GameOverhandler")]
+    [SerializeField] private MiniGameOverHandler _handler;
+
     private Rigidbody rb;
     private bool canTag = true;
     private GameObject activeHitbox;
     private Coroutine tagCoroutine;
 
-    // material tracking
-    private Material lastMaterial;
-
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-
-        if (playerModel != null)
-        {
-            Renderer rend = playerModel.GetComponent<Renderer>();
-            if (rend != null)
-                lastMaterial = rend.material;
-        }
     }
 
     void Update()
@@ -43,23 +35,10 @@ public class PlayerMovement : MonoBehaviour
         // Input for tagging
         if (Input.GetMouseButtonDown(0) && canTag)
         {
-            if (tagCoroutine != null) StopCoroutine(tagCoroutine);
-            tagCoroutine = StartCoroutine(DoTag());
-        }
+            if (tagCoroutine != null)
+                StopCoroutine(tagCoroutine);
 
-        // Detect material change -> trigger timer
-        if (playerModel != null)
-        {
-            Renderer rend = playerModel.GetComponent<Renderer>();
-            if (rend != null && rend.material != lastMaterial)
-            {
-                lastMaterial = rend.material;
-                if (timerUI != null)
-                {
-                    timerUI.StartTimerOnMaterialChange();
-                    Debug.Log("Timer started due to material change!");
-                }
-            }
+            tagCoroutine = StartCoroutine(DoTag());
         }
     }
 
@@ -82,7 +61,9 @@ public class PlayerMovement : MonoBehaviour
         if (inputDir != Vector3.zero && playerModel != null)
         {
             Quaternion targetRotation = Quaternion.LookRotation(inputDir);
-            playerModel.rotation = Quaternion.Slerp(playerModel.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+            playerModel.rotation = Quaternion.Slerp(
+                playerModel.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime
+            );
         }
     }
 
@@ -137,6 +118,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.collider.CompareTag("Tagger"))
         {
+            _handler.HandleGameOver(false);
             Debug.Log("You Lose");
             // optional: handle defeat here (restart, end episode, etc.)
         }
