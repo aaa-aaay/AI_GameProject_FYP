@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Cinemachine;
 using UnityEditor.Toolbars;
 using System.Collections;
+using UnityEngine.Rendering;
 
 public class archery_handler : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class archery_handler : MonoBehaviour
     private arrow[] arrows;
 
     [Header("Settings")]
+    [SerializeField] private trajectory_preview preview;
     [SerializeField] private archery_ui_handler uiHandler;
     [field: SerializeField] public archery_settings settings { get; private set; }
 
@@ -43,6 +45,9 @@ public class archery_handler : MonoBehaviour
 
     private float targetDistance;
     private float lateralDistance;
+
+    [Header("AI Training")]
+    [SerializeField] private bool isAiTraining = false;
 
     private void Awake()
     {
@@ -91,12 +96,21 @@ public class archery_handler : MonoBehaviour
             maxTargetDistance = minTargetDistance;
         }
 
-        isPlayerTurn = true;
         canShoot = true;
 
         player.Initialize();
         agent.enabled = true;
-        StartCoroutine(PlayerTurn());
+
+        if (!isAiTraining)
+        {
+            isPlayerTurn = true;
+            StartCoroutine(PlayerTurn());
+        }
+        else
+        {
+            isPlayerTurn = false;
+            StartCoroutine(AgentTurn());
+        }
     }
 
     public void Shoot(float force, float yaw, float pitch)
@@ -176,7 +190,8 @@ public class archery_handler : MonoBehaviour
         else
         {
             agentPoint += point;
-            isPlayerTurn = true;
+            
+            if (!isAiTraining) isPlayerTurn = true;
 
             if (point > 0) agent.OnHit(point);
             else
@@ -203,6 +218,7 @@ public class archery_handler : MonoBehaviour
     public void UpdateUI(float force, float yaw, float pitch)
     {
         uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed, targetDistance, lateralDistance);
+        preview.ShowPath(force, yaw, pitch);
     }
 
     private IEnumerator ReturnCamera()
