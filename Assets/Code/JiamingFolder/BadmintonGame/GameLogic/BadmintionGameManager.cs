@@ -99,12 +99,13 @@ public class BadmintionGameManager : MonoBehaviour
 
         if (playerNo == 1) {
 
-            handler.HandleGameOver(true, 2, 3);
 
+            handler.HandleGameOver(false);
         }
         else
         {
-            handler.HandleGameOver(false);
+            handler.HandleGameOver(true, 2, 3);
+            
         }
     }
 }

@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -19,16 +18,16 @@ public class UIManager : MonoBehaviour, IGameService
     [SerializeField] private GameObject _levelFailedCanvas;
     private bool _levelCompleteCanvasOpen;
 
+    private InputManager _inputManager;
+
+
     private void OnEnable()
     {
         ServiceLocator.Instance.AddService(this, false);
         _levelSelectCanvasGO.SetActive(false);
+        _levelCompleteCanvasOpen = false;
 
-
-        
-        
         SceneManager.sceneLoaded += OnSceneLoaded;
-
     }
 
     private void OnDisable()
@@ -40,8 +39,7 @@ public class UIManager : MonoBehaviour, IGameService
 
     private void Start()
     {
-        InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
-        inputManager.OnJump += OnSpacePressed;
+        _inputManager = ServiceLocator.Instance.GetService<InputManager>();
     }
 
     public void OpenLevelSelectUI(string levelName, int StarUnlocked)
@@ -59,12 +57,15 @@ public class UIManager : MonoBehaviour, IGameService
     public void ToggleLevelCompleteUI(bool open)
     {
         _levelCompleteCanvas.SetActive(open);
-        _levelCompleteCanvasOpen = true;
+        _levelCompleteCanvasOpen = open;
+        _inputManager.toggleInputActivation(!open);
+
     }
 
     public void ToggleLevelFailedUI(bool open)
     {
         _levelFailedCanvas.SetActive(open);
+        _inputManager.toggleInputActivation(!open);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -73,16 +74,7 @@ public class UIManager : MonoBehaviour, IGameService
         ToggleLevelCompleteUI(false);
         HideLevelSelectUI();
     }
-    private void OnSpacePressed()
-    {
-        if (_levelCompleteCanvasOpen)
-        {
-            _levelCompleteCanvasOpen = false;
-            MySceneManager sManager = ServiceLocator.Instance.GetService<MySceneManager>();
 
-            sManager.GoBacktoGameLobby();
-        }
-    }
     public void RestartScene()
     {
         _levelFailedCanvas.SetActive(false);

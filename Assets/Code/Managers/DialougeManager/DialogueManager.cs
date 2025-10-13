@@ -77,7 +77,7 @@ public class DialogueManager : MonoBehaviour, IGameService
         }
     }
 
-    void EndDialogue()
+    public void EndDialogue()
     {
         haveDialouge = false;
         canvas.SetActive(false);
