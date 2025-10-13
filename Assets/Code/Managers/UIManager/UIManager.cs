@@ -27,13 +27,7 @@ public class UIManager : MonoBehaviour, IGameService
         _levelSelectCanvasGO.SetActive(false);
         _levelCompleteCanvasOpen = false;
 
-
-
-
         SceneManager.sceneLoaded += OnSceneLoaded;
-
-
-
     }
 
     private void OnDisable()
@@ -46,7 +40,6 @@ public class UIManager : MonoBehaviour, IGameService
     private void Start()
     {
         _inputManager = ServiceLocator.Instance.GetService<InputManager>();
-        //_inputManager.OnJump += OnSpacePressed;
     }
 
     public void OpenLevelSelectUI(string levelName, int StarUnlocked)
@@ -81,15 +74,7 @@ public class UIManager : MonoBehaviour, IGameService
         ToggleLevelCompleteUI(false);
         HideLevelSelectUI();
     }
-    //private void OnSpacePressed()
-    //{
-    //    if (_levelCompleteCanvasOpen)
-    //    {
-    //        _levelCompleteCanvasOpen = false;
-    //        MySceneManager sManager = ServiceLocator.Instance.GetService<MySceneManager>();
-    //        sManager.GoBacktoGameLobby();
-    //    }
-    //}
+
     public void RestartScene()
     {
         _levelFailedCanvas.SetActive(false);
