@@ -1,14 +1,28 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class Teleporter : MonoBehaviour
 {
     [Header("Teleport Target")]
-    public Transform targetPosition; // Where the runner will be teleported 
+    public Transform targetPosition; 
+
+    [Header("UI Reference")]
+    public GameObject captureText; 
+
+    private bool hasActivated = false;
+
+    private void Start()
+    {
+        
+        if (captureText != null)
+            captureText.SetActive(false);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Check if the object entering is the Runner
+     
+        if (hasActivated) return;
+
+        
         if (other.CompareTag("Runner"))
         {
             // Teleport Runner
@@ -18,7 +32,13 @@ public class Teleporter : MonoBehaviour
                 Debug.Log($"{other.name} teleported to {targetPosition.position}");
             }
 
-           
+          
+            if (captureText != null)
+            {
+                captureText.SetActive(true);
+            }
+
+            hasActivated = true;
         }
     }
 }

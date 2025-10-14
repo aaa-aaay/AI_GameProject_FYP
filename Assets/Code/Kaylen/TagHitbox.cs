@@ -14,7 +14,7 @@ public class TagHitbox : MonoBehaviour
             return;
         }
 
-        // Skip if this Runner was already tagged
+        // Skip if tagged already
         if (taggedRunners.Contains(other.gameObject))
         {
             Debug.Log($"[TagHitbox] Ignored duplicate collider from {other.gameObject.name}");

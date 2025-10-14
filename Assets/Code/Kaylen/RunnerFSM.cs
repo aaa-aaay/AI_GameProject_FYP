@@ -13,13 +13,13 @@ public class Runner : MonoBehaviour
     public float dangerRadius = 5f;
 
     [Header("References")]
-    public List<PathNode> allNodes;     // Assign all PathNodes in the arena
+    public List<PathNode> allNodes;    
 
     private Rigidbody rb;
     public List<PathNode> path = new List<PathNode>();
     public int pathIndex = 0;
 
-    // Track the closest danger for Gizmo line
+ 
     private Transform closestDanger;
 
     void Start()
@@ -54,7 +54,7 @@ public class Runner : MonoBehaviour
 
         closestDanger = closest; // store for Gizmo
 
-        // Switch state based on detection
+       
         if (dangerDetected)
         {
             if (currentState != State.Run)
@@ -69,7 +69,7 @@ public class Runner : MonoBehaviour
             PickNewIdleTarget();
         }
 
-        // Execute behavior
+      
         switch (currentState)
         {
             case State.Idle: IdleBehaviour(); break;
@@ -77,7 +77,7 @@ public class Runner : MonoBehaviour
         }
     }
 
-    // -------------------------------
+
     void IdleBehaviour()
     {
         MoveAlongPath();
@@ -135,7 +135,7 @@ public class Runner : MonoBehaviour
             }
         }
 
-        // Fallback: just the furthest node
+     
         if (bestNode == null)
         {
             float maxDist = -Mathf.Infinity;

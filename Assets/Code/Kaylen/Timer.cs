@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,33 +6,36 @@ using System.Collections.Generic;
 public class TimerUI : MonoBehaviour
 {
     [Header("Timer Settings")]
-    public float maxTime = 30f;    // Total time for the episode
-    public TMP_Text timerText;     // Reference to UI Text
-
+    public float maxTime = 30f;  
+    public TMP_Text timerText;    
+    public TMP_Text captureText;
     [Header("Exit UI")]
-    public CanvasGroup exitCanvasGroup;   // Use CanvasGroup for fade
-    public float fadeDuration = 1f;       // Fade duration
-    public float displayDuration = 3f;    // Time before fade out
+    public CanvasGroup exitCanvasGroup;  
+    public float fadeDuration = 1f;      
+    public float displayDuration = 3f;   
 
     [Header("Exit Spawn Settings")]
-    public GameObject exitPrefab;         // The prefab to spawn
-    public List<Transform> spawnPoints;   // List of possible spawn points
+    public GameObject exitPrefab;       
+    public List<Transform> spawnPoints;   
 
     private float currentTime;
     private bool isRunning = false;
     private bool hasTriggeredExit = false;
-
+    private bool showingTimer = false;
     void Start()
     {
         ResetTimer();
 
         if (exitCanvasGroup != null)
-            exitCanvasGroup.alpha = 0f; // hide at start
+            exitCanvasGroup.alpha = 0f;
+
+   
+        ShowCaptureCount();
     }
 
     void Update()
     {
-        if (!isRunning) return;
+        if (!isRunning || !showingTimer) return;
 
         currentTime -= Time.deltaTime;
         timerText.text = Mathf.Ceil(currentTime).ToString();
@@ -47,7 +50,25 @@ public class TimerUI : MonoBehaviour
             SpawnExit();
         }
     }
+    public void UpdateCaptureCount(int current, int total)
+    {
+        ShowCaptureCount();
+        if (captureText != null)
+            captureText.text = $"Captured: {current} / {total}";
+    }
 
+    public void ShowCaptureCount()
+    {
+        showingTimer = false;
+        if (timerText != null) timerText.gameObject.SetActive(false);
+        if (captureText != null) captureText.gameObject.SetActive(true);
+    }
+    public void ShowTimer()
+    {
+        showingTimer = true;
+        if (captureText != null) captureText.gameObject.SetActive(false);
+        if (timerText != null) timerText.gameObject.SetActive(true);
+    }
     void ShowExitCanvas()
     {
         if (exitCanvasGroup == null)
@@ -60,9 +81,9 @@ public class TimerUI : MonoBehaviour
         StartCoroutine(FadeExitCanvas());
     }
 
-    IEnumerator FadeExitCanvas()
+    IEnumerator FadeExitCanvas() //Coroutine to fade in
     {
-        // Fade in
+      
         float elapsed = 0f;
         while (elapsed < fadeDuration)
         {
@@ -73,10 +94,10 @@ public class TimerUI : MonoBehaviour
 
         exitCanvasGroup.alpha = 1f;
 
-        // Wait for display duration
+
         yield return new WaitForSeconds(displayDuration);
 
-        // Fade out
+   
         elapsed = 0f;
         while (elapsed < fadeDuration)
         {
@@ -96,10 +117,10 @@ public class TimerUI : MonoBehaviour
             return;
         }
 
-        // Pick a random spawn point
+      
         Transform randomPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
 
-        // Spawn the prefab
+     
         Instantiate(exitPrefab, randomPoint.position, randomPoint.rotation);
         Debug.Log("Exit spawned at: " + randomPoint.name);
     }
@@ -126,8 +147,5 @@ public class TimerUI : MonoBehaviour
             exitCanvasGroup.alpha = 0f;
     }
 
-    public float GetRemainingTime()
-    {
-        return currentTime;
-    }
+    public float GetRemainingTime() => currentTime;
 }

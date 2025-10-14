@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -7,6 +7,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float rotationSpeed = 10f;
+    public float jumpForce = 7f;
+    public float gravity = 2f; 
 
     [Header("References")]
     public Transform playerModel;
@@ -20,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     private bool canTag = true;
     private GameObject activeHitbox;
     private Coroutine tagCoroutine;
+    private bool isGrounded;
 
     void Start()
     {
@@ -29,7 +32,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Input for tagging
+     
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = false;
+        }
+
+    
         if (Input.GetMouseButtonDown(0) && canTag)
         {
             if (tagCoroutine != null)
@@ -42,6 +53,12 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         Move();
+
+ 
+        if (!isGrounded)
+        {
+            rb.AddForce(Physics.gravity * gravity, ForceMode.Acceleration);
+        }
     }
 
     void Move()
@@ -54,7 +71,6 @@ public class PlayerMovement : MonoBehaviour
 
         rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
 
-        // Rotate toward movement direction
         if (inputDir != Vector3.zero && playerModel != null)
         {
             Quaternion targetRotation = Quaternion.LookRotation(inputDir);
@@ -91,7 +107,6 @@ public class PlayerMovement : MonoBehaviour
         tagCoroutine = null;
     }
 
-    // Called by CaptureManager to immediately disable tagging
     public void DisableTagging()
     {
         canTag = false;
@@ -108,15 +123,23 @@ public class PlayerMovement : MonoBehaviour
             activeHitbox = null;
         }
 
-        Debug.Log("Player tagging disabled by CaptureManager.");
+        Debug.Log("Tag disabled");
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.collider.CompareTag("Ground"))
+            isGrounded = true;
+
         if (collision.collider.CompareTag("Tagger"))
         {
             Debug.Log("You Lose");
-            // optional: handle defeat here (restart, end episode, etc.)
         }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.CompareTag("Ground"))
+            isGrounded = false;
     }
 }
