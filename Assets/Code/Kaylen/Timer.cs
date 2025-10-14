@@ -130,6 +130,7 @@ public class TimerUI : MonoBehaviour
         ResetTimer();
         isRunning = true;
         hasTriggeredExit = false;
+        ShowTimer();
     }
 
     public void StopTimer()

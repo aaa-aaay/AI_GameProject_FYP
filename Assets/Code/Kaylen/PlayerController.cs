@@ -22,7 +22,7 @@ public class PlayerMovement : MonoBehaviour
     private bool canTag = true;
     private GameObject activeHitbox;
     private Coroutine tagCoroutine;
-    private bool isGrounded;
+    public bool isGrounded;
 
     void Start()
     {

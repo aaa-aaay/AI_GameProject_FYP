@@ -421,6 +421,12 @@ MonoBehaviour:
   exitCanvasGroup: {fileID: 954845240}
   fadeDuration: 1
   displayDuration: 3
+  exitPrefab: {fileID: 7271770165400105692, guid: 49b990096ac9bd9469610367ede435cc, type: 3}
+  spawnPoints:
+  - {fileID: 1345792060}
+  - {fileID: 1573757207}
+  - {fileID: 191657067}
+  - {fileID: 2006315657}
 --- !u!224 &178478207
 RectTransform:
   m_ObjectHideFlags: 0
@@ -817,7 +823,7 @@ Transform:
   m_GameObject: {fileID: 328457413}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -15, y: 0, z: -15}
+  m_LocalPosition: {x: -15, y: 1, z: -15}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2779,7 +2785,7 @@ Transform:
   m_GameObject: {fileID: 1345792059}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 65, y: 0, z: -15}
+  m_LocalPosition: {x: 65, y: 1, z: -15}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3438,7 +3444,7 @@ GameObject:
   - component: {fileID: 1761150777}
   m_Layer: 0
   m_Name: teleport
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
