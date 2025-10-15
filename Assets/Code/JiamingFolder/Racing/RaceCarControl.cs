@@ -5,16 +5,21 @@ using UnityEngine;
 public class RaceCarControl : MonoBehaviour
 {
 
+    private RaceCarMovement _movement;
     private InputManager _inputManager;
-    private Rigidbody _rb;
     private Vector2 _moveInput;
+    private bool _isDrifting;
 
-    [SerializeField] private float speed = 1.0f;
+ 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        _movement = GetComponent<RaceCarMovement>();
         _inputManager = ServiceLocator.Instance.GetService<InputManager>();
         _inputManager.OnMove += HandleMove;
+        _inputManager.OnMoveEnd += HandleMoveEnd;
+        _inputManager.onDash += HandleDrift;
+        _inputManager.onDashEnd += HandleDriftEnd;
 
     }
 
@@ -24,20 +29,30 @@ public class RaceCarControl : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        _rb = GetComponent<Rigidbody>();
-    }
 
     private void HandleMove(Vector2 direction)
     {
         _moveInput = direction;
     }
 
+    private void HandleDrift()
+    {
+        _isDrifting = true;
+    }
+
+    private void HandleDriftEnd()
+    {
+        _isDrifting = false;
+    }
+
+    private void HandleMoveEnd()
+    {
+        _moveInput = Vector3.zero;
+    }
+
     private void FixedUpdate()
     {
-
-        _rb.MovePosition(transform.position + new Vector3(_moveInput.x,0, _moveInput.y) * speed * Time.deltaTime);
-
+        _movement.MoveCar(_moveInput,_isDrifting);
+        
     }
 }

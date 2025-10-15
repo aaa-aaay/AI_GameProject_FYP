@@ -47,6 +47,7 @@ public class InputManager : MonoBehaviour,IGameService
 
     public event Action onInteract;
     public event Action onDash;
+    public event Action onDashEnd;
 
     private void Awake()
     {
@@ -117,6 +118,10 @@ public class InputManager : MonoBehaviour,IGameService
     {
         onDash?.Invoke();
     }
+    private void DashEnd(InputAction.CallbackContext context)
+    {
+        onDashEnd?.Invoke();
+    }
 
 
 
@@ -130,6 +135,7 @@ public class InputManager : MonoBehaviour,IGameService
         _middleClickReference.action.performed += MiddleClick;
         _interactActionReference.action.performed += Interact;
         _dashActionReference.action.performed += Dash;
+        _dashActionReference.action.canceled += DashEnd;
     }
 
     private void UnbindActions()
@@ -142,6 +148,8 @@ public class InputManager : MonoBehaviour,IGameService
         _rightClickActionReference.action.performed -= RightClick;
         _middleClickReference.action.performed -= MiddleClick;
         _interactActionReference.action.performed -= Interact;
+        _dashActionReference.action.performed -= Dash;
+        _dashActionReference.action.canceled -= DashEnd;
     }
 
     public void EnableActions()

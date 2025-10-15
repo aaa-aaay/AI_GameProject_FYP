@@ -58,14 +58,16 @@ public class UIManager : MonoBehaviour, IGameService
     {
         _levelCompleteCanvas.SetActive(open);
         _levelCompleteCanvasOpen = open;
-        _inputManager.toggleInputActivation(!open);
+        if (_inputManager != null)
+            _inputManager.toggleInputActivation(!open);
 
     }
 
     public void ToggleLevelFailedUI(bool open)
     {
         _levelFailedCanvas.SetActive(open);
-        _inputManager.toggleInputActivation(!open);
+        if(_inputManager != null)
+            _inputManager.toggleInputActivation(!open);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
