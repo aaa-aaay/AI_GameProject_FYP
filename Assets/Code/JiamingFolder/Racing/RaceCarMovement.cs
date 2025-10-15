@@ -65,7 +65,7 @@ public class RaceCarMovement : MonoBehaviour
         _currentSpeed = Mathf.Clamp(_currentSpeed, -_maxSpeed, _maxSpeed);
         var desiredVelocity = displacementDirection.normalized * _currentSpeed;
 
-        desiredVelocity.y = _rb.linearVelocity.y;
+        //desiredVelocity.y = _rb.linearVelocity.y;
 
         _rb.linearVelocity = desiredVelocity;
 

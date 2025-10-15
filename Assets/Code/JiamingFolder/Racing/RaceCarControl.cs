@@ -37,7 +37,10 @@ public class RaceCarControl : MonoBehaviour
 
     private void HandleDrift()
     {
-        _isDrifting = true;
+        if(Mathf.Abs(_moveInput.x) > 0.1) //moving left or right
+        {
+            _isDrifting = true;
+        }
     }
 
     private void HandleDriftEnd()
