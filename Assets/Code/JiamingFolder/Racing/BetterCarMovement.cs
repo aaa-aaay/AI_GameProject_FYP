@@ -1,10 +1,17 @@
 using UnityEngine;
+using DG.Tweening;
+using UnityEditor;
 
 public class BetterCarMovement : MonoBehaviour
 {
     [Header("References")]
     public Transform kartModel;
     public Transform kartNormal;
+    public Transform _rightWheel;
+    public Transform _rightWheelPivot;
+    public Transform _leftWheel;
+    public Transform _leftWheelPivot;
+    public Transform _backWheel;
     public Rigidbody sphere;
 
     [Header("Parameters")]
@@ -18,18 +25,30 @@ public class BetterCarMovement : MonoBehaviour
     private float rotate;
     private float currentRotate;
 
+
+    private bool drifting;
+
+
+    int driftDirection;
+    float driftPower;
+    int driftMode = 0;
+    bool first, second, third;
+
     private void Update()
     {
-        // Currently empty — could be used for camera or VFX updates later
+        // Currently empty â€” could be used for camera or VFX updates later
     }
 
-    public void MoveCar(Vector2 inputDir, bool isDrifting)
+    public void MoveCar(Vector2 inputDir)
     {
         // Position car body with the physics sphere
         transform.position = sphere.transform.position - new Vector3(0, 1.0f, 0);
 
+
         float forwardInput = inputDir.y;
         float turnInput = inputDir.x;
+
+        driftDirection = turnInput > 0? 1 : -1;
 
         // Forward acceleration
         if (forwardInput > 0.1f)
@@ -37,7 +56,6 @@ public class BetterCarMovement : MonoBehaviour
             speed = acceleration;
         }
 
-        // Reverse (disabled for now)
         if (forwardInput < -0.1f)
         {
             speed = -acceleration;
@@ -51,6 +69,21 @@ public class BetterCarMovement : MonoBehaviour
             Steer(dir, amount);
         }
 
+
+
+        if (drifting)
+        {
+            float control = (driftDirection == 1) ? MyMathUtils.Remap(turnInput, -1, 1, 0, 2) : MyMathUtils.Remap(turnInput, -1, 1, 2, 0);
+            float powerControl = (driftDirection == 1) ? MyMathUtils.Remap(turnInput, -1, 1, .2f, 1) : MyMathUtils.Remap(turnInput, -1, 1, 1, .2f);
+            Steer(driftDirection, control);
+            driftPower += powerControl;
+
+            //ColorDrift();
+
+        }
+
+
+
         // Smooth acceleration
         currentSpeed = Mathf.SmoothStep(currentSpeed, speed, Time.deltaTime * 12f);
         speed = 0f;
@@ -60,7 +93,7 @@ public class BetterCarMovement : MonoBehaviour
         rotate = 0f;
 
         // Adjust model tilt if not drifting
-        if (!isDrifting)
+        if (!drifting)
         {
             kartModel.localRotation = Quaternion.Lerp(
                 kartModel.localRotation,
@@ -68,16 +101,50 @@ public class BetterCarMovement : MonoBehaviour
                 0.2f
             );
         }
+        else
+        {
+            kartModel.localRotation = Quaternion.Lerp(
+            kartModel.localRotation,
+            Quaternion.Euler(0f, 10f * driftDirection, 0f ), // roll tilt
+            0.1f );
+        }
+
+        // Calculate steering (applied to pivot)
+        Quaternion steerRot = Quaternion.Euler(0, turnInput * steering * 3, 0);
+        _rightWheelPivot.localRotation = steerRot;
+        _leftWheelPivot.localRotation = steerRot;
+
+        // Calculate rolling
+        float localZVel = transform.InverseTransformDirection(sphere.linearVelocity).z;
+        float wheelRadius = 0.35f;
+        float rotationPerMeter = 360f / (2 * Mathf.PI * wheelRadius);
+        float rotationAmount = localZVel * rotationPerMeter * Time.deltaTime;
+
+        // Apply spin to mesh (not pivot)
+        _rightWheel.Rotate(Vector3.right, rotationAmount, Space.Self);
+        _leftWheel.Rotate(Vector3.right, rotationAmount, Space.Self);
+        _backWheel.Rotate(Vector3.right, rotationAmount, Space.Self);
+
+
     }
 
     private void FixedUpdate()
     {
         // Apply forward and downward forces
-        sphere.AddForce(transform.forward * currentSpeed, ForceMode.Acceleration);
+        if (drifting)
+            sphere.AddForce(-kartModel.transform.right * currentSpeed, ForceMode.Acceleration);
+        else
+            sphere.AddForce(transform.forward * currentSpeed, ForceMode.Acceleration);
+
+        //sphere.AddForce(transform.forward * currentSpeed, ForceMode.Acceleration);
         sphere.AddForce(Vector3.down * gravity, ForceMode.Acceleration);
 
         // Rotate the car properly based on steering input
-        transform.Rotate(0, currentRotate * Time.fixedDeltaTime, 0, Space.World);
+        transform.eulerAngles = Vector3.Lerp(
+            transform.eulerAngles,
+            new Vector3(0, transform.eulerAngles.y + currentRotate, 0),
+            Time.deltaTime * 5f
+        );
 
         // Raycasts for terrain alignment
         Physics.Raycast(transform.position + (transform.up * 0.1f), Vector3.down, out RaycastHit hitOn, 1.5f, layerMask);
@@ -88,7 +155,25 @@ public class BetterCarMovement : MonoBehaviour
         kartNormal.Rotate(0, transform.eulerAngles.y, 0);
     }
 
+    public void ToggleDrifting(bool startDrift, float turnInput = 0)
+    {
 
+
+        if (startDrift && !drifting)
+        {
+            drifting = true;
+            driftDirection = turnInput > 0 ? 1 : -1;
+            kartModel.parent.DOComplete();
+            kartModel.parent.DOPunchPosition(transform.up * .9f, .3f, 5, 1);
+        }
+
+        if (startDrift == false && drifting) {
+            drifting = false;
+            kartModel.parent.DOLocalRotate(Vector3.zero, .5f).SetEase(Ease.OutBack);
+
+        }
+
+    }
     public void Steer(int direction, float amount)
     {
         rotate = steering * direction * amount;
@@ -98,4 +183,6 @@ public class BetterCarMovement : MonoBehaviour
     {
         currentSpeed = x;
     }
+
+
 }
