@@ -45,6 +45,8 @@ public class archery_handler : MonoBehaviour
     private float targetDistance;
     private float lateralDistance;
 
+    public Vector3 estimateLanding { get; private set; }
+
     [Header("AI Training")]
     [SerializeField] private bool isAiTraining = false;
 
@@ -195,7 +197,8 @@ public class archery_handler : MonoBehaviour
             if (point > 0) agent.OnHit(point);
             else
             {
-                agent.OnHit(-Vector3.Distance(targetObject.transform.position, agentObject.transform.position));
+                agent.OnHit(0);
+                //agent.OnHit(-Vector3.Distance(targetObject.transform.position, agentObject.transform.position));
             }
         }
         uiHandler.set_point(playerPoint, agentPoint);
@@ -203,16 +206,15 @@ public class archery_handler : MonoBehaviour
         if (point > 0) Debug.Log($"Hit: {point}");
 
         MiniGameOverHandler gameOverHandler = GetComponent<MiniGameOverHandler>();
+        
         if (playerPoint >= winCond)
         {
             ServiceLocator.Instance.GetService<InputManager>().EnableActions(); //renable actions
             gameOverHandler.HandleGameOver(true, 4, 3);
-            // Win logic
         }
-        else if (agentPoint >= winCond)
+        else if (agentPoint >= winCond && !isAiTraining)
         {
             gameOverHandler.HandleGameOver(false);
-            // Lose logic
         }
 
         StartCoroutine(ReturnCamera());
@@ -221,7 +223,7 @@ public class archery_handler : MonoBehaviour
     public void UpdateUI(float force, float yaw, float pitch)
     {
         uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed, targetDistance, lateralDistance);
-        preview.ShowPath(force, yaw, pitch);
+        estimateLanding = preview.ShowPath(force, yaw, pitch);
     }
 
     private IEnumerator ReturnCamera()

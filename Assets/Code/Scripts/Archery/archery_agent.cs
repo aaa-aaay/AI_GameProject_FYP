@@ -26,6 +26,8 @@ public class archery_agent : Agent
     private float pitch;
     private bool shoot;
 
+    private float lastDistance;
+
     public override void Initialize()
     {
         isTurn = false;
@@ -43,11 +45,13 @@ public class archery_agent : Agent
     public void StartTurn()
     {
         isTurn = true;
+        lastDistance = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding);
         decisionRequester.enabled = true;
     }
 
     public override void OnEpisodeBegin()
     {
+        StopAllCoroutines();
         if (minForce > 10f) force = minForce; else force = 10f;
         yaw = 0f;
         if (minPitch > 0f) pitch = minPitch; else pitch = 0f;
@@ -76,15 +80,15 @@ public class archery_agent : Agent
         sensor.AddObservation(windLocal.normalized);
         sensor.AddObservation(windLocal.magnitude);
 
-        sensor.AddObservation(force);
-        sensor.AddObservation(yaw);
-        sensor.AddObservation(pitch);
-        sensor.AddObservation(shoot);
+        Vector3 toEstimateLanding = handler.estimateLanding - transform.position;
+        Vector3 toEstimateLandingLocal = transform.InverseTransformDirection(toEstimateLanding);
+        sensor.AddObservation(toEstimateLandingLocal.normalized);
+        sensor.AddObservation(toEstimateLandingLocal.magnitude);
     }
 
     public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
     {
-        if (!canShoot) actionMask.SetActionEnabled(branch: 3, actionIndex: 1, isEnabled: false);
+        if (!canShoot /*|| 5f < Vector3.Distance(handler.estimateLanding, transform.position)*/) actionMask.SetActionEnabled(branch: 3, actionIndex: 1, isEnabled: false);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -130,11 +134,20 @@ public class archery_agent : Agent
 
         if (da[3] == 1)
         {
+            if (Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) > 5f)
+                AddReward(-10);
+            else
+                AddReward(10);
+
             decisionRequester.enabled = false;
             isTurn = false;
             shoot = true;
             handler.Shoot(force, yaw, pitch);
         }
+
+        float newDistance = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding);
+        AddReward(lastDistance - newDistance);
+        lastDistance = newDistance;
 
         handler.UpdateUI(force, yaw, pitch);
     }

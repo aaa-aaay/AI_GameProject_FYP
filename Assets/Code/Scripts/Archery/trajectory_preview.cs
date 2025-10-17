@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(LineRenderer))]
 public class trajectory_preview : MonoBehaviour
@@ -22,7 +23,7 @@ public class trajectory_preview : MonoBehaviour
         lr.useWorldSpace = true;
     }
 
-    public void ShowPath(float force, float yaw, float pitch, float windDir = 0, float windSpeed = 0)
+    public Vector3 ShowPath(float force, float yaw, float pitch, float windDir = 0, float windSpeed = 0)
     {
         Vector3 p0 = launchOrigin.position;
         Vector3 dir = Quaternion.Euler(-pitch, yaw, 0f) * Vector3.forward;
@@ -62,6 +63,7 @@ public class trajectory_preview : MonoBehaviour
         lr.positionCount = points.Count;
         lr.SetPositions(points.ToArray());
         lr.enabled = true;
+        return points.ToArray()[points.Count - 1];
     }
 
     public void Hide()
