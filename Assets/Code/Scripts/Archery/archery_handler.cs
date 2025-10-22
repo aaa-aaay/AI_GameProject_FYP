@@ -198,7 +198,6 @@ public class archery_handler : MonoBehaviour
             else
             {
                 agent.OnHit(0);
-                //agent.OnHit(-Vector3.Distance(targetObject.transform.position, agentObject.transform.position));
             }
         }
         uiHandler.set_point(playerPoint, agentPoint);

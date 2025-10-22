@@ -88,7 +88,7 @@ public class archery_agent : Agent
 
     public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
     {
-        if (!canShoot /*|| 5f < Vector3.Distance(handler.estimateLanding, transform.position)*/) actionMask.SetActionEnabled(branch: 3, actionIndex: 1, isEnabled: false);
+        if (!canShoot && Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) > 1.5f) actionMask.SetActionEnabled(branch: 3, actionIndex: 1, isEnabled: false);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -134,10 +134,14 @@ public class archery_agent : Agent
 
         if (da[3] == 1)
         {
-            if (Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) > 5f)
+            if (Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) > 3f)
+            {
                 AddReward(-10);
+            }
             else
+            {
                 AddReward(10);
+            }
 
             decisionRequester.enabled = false;
             isTurn = false;
@@ -146,7 +150,7 @@ public class archery_agent : Agent
         }
 
         float newDistance = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding);
-        AddReward(lastDistance - newDistance);
+        AddReward((lastDistance - newDistance));
         lastDistance = newDistance;
 
         handler.UpdateUI(force, yaw, pitch);
