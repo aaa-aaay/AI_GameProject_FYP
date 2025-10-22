@@ -10,20 +10,27 @@ public class RacingAgent : Agent
     [SerializeField] private Rigidbody _sphere;
 
     private float _raceTimer;
+
+    [SerializeField] private RaceManager _manager;
     public Transform _currentCheckPoint;
+    private float _previousDistanceToCheckpoint;
 
 
 
 
     public override void Initialize()
     {
+        _manager.onRaceOver += HandleRaceOver;
         _carMovement = GetComponent<BetterCarMovement>();
         _goalChecker.onCheckPointHit += HandleCPHit;
     }
 
     public override void OnEpisodeBegin()
     {
+        _raceTimer = 0;
 
+        if (_currentCheckPoint != null)
+            _previousDistanceToCheckpoint = Vector3.Distance(transform.position, _currentCheckPoint.position);
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -42,7 +49,11 @@ public class RacingAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+        _raceTimer += Time.deltaTime;
+
         Movement(actions.DiscreteActions);
+        rewardForGettingCloser();
+        AddReward(-0.001f); //avoid stalling
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -88,12 +99,33 @@ public class RacingAgent : Agent
 
         _carMovement.MoveCar(inputDir);
 
-
     }
 
+    private void rewardForGettingCloser()
+    {
+        if (_currentCheckPoint != null)
+        {
+            float currentDistance = Vector3.Distance(transform.position, _currentCheckPoint.position);
+            float progressReward = _previousDistanceToCheckpoint - currentDistance;
+
+            // Positive if closer, negative if further
+            AddReward(progressReward * 0.05f);
+
+            _previousDistanceToCheckpoint = currentDistance;
+        }
+    }
     private void HandleCPHit(Transform cpTransform)
     {
         _currentCheckPoint = cpTransform;
+        AddReward(1.5f);
+    }
+
+    private void HandleRaceOver()
+    {
+        float timeBonus = Mathf.Clamp(10f - _raceTimer, 0f, 10f);
+        AddReward(timeBonus);
+
+        EndEpisode();
     }
 
 }

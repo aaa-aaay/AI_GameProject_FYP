@@ -7,7 +7,6 @@ public class GoalChecker : MonoBehaviour
 
 
     [SerializeField] RaceManager _raceManager;
-    [SerializeField] GameObject _lastCheckPoint;
 
 
     private int currentLap = 0;
@@ -19,7 +18,7 @@ public class GoalChecker : MonoBehaviour
     private void Start()
     {
         ResetCar();
-        onCheckPointHit?.Invoke(_raceManager.checkPoints[currentCheckPoint]);
+        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -32,7 +31,6 @@ public class GoalChecker : MonoBehaviour
             if (currentCheckPoint < _raceManager.amtofCheckpoints) return; //haven't hit all checkpoints yet
 
             currentLap++;
-            Debug.Log("Goal Reached");
             
             if (currentLap >= _raceManager.lapsPerRace)
             {
@@ -52,9 +50,20 @@ public class GoalChecker : MonoBehaviour
             if(other.gameObject.GetComponent<RacingGoal>().checkPointNo == currentCheckPoint)
             {
                 currentCheckPoint++;
-                onCheckPointHit?.Invoke(_raceManager.checkPoints[currentCheckPoint]);
+                if(_raceManager.checkPoints[currentCheckPoint] != null)
+                {
+                    onCheckPointHit?.Invoke(_raceManager.checkPoints[currentCheckPoint]);
+                }
+                else
+                {
+                    onCheckPointHit?.Invoke(_raceManager.raceGoalTrans);
+                }
+                
+
+                //theres a bug now when there is no next checkpoint (ie finished all checkpoints in lap)
             }
-            else{
+            else
+            {
                 return;
             }
         }
@@ -65,5 +74,6 @@ public class GoalChecker : MonoBehaviour
         _raceOver = false;
         currentLap = 0;
         currentCheckPoint = 0;
+        onCheckPointHit?.Invoke(_raceManager.checkPoints[currentCheckPoint]);
     }
 }
