@@ -10,10 +10,11 @@ public class RacingAgent : Agent
     [SerializeField] private Rigidbody _sphere;
 
     private float _raceTimer;
-
+    [SerializeField] private Transform _firstCheckPoint;
     [SerializeField] private RaceManager _manager;
     public Transform _currentCheckPoint;
     private float _previousDistanceToCheckpoint;
+    private Vector3 _startPosition;
 
 
 
@@ -23,27 +24,24 @@ public class RacingAgent : Agent
         _manager.onRaceOver += HandleRaceOver;
         _carMovement = GetComponent<BetterCarMovement>();
         _goalChecker.onCheckPointHit += HandleCPHit;
+
+        _startPosition = transform.localPosition;
     }
 
     public override void OnEpisodeBegin()
     {
         _raceTimer = 0;
-
+        transform.localPosition = _startPosition;
+        _currentCheckPoint = _firstCheckPoint;
         if (_currentCheckPoint != null)
-            _previousDistanceToCheckpoint = Vector3.Distance(transform.position, _currentCheckPoint.position);
+            _previousDistanceToCheckpoint = Vector3.Distance(transform.localPosition, _currentCheckPoint.localPosition);
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(transform.localPosition);
-        sensor.AddObservation(_sphere.linearVelocity);
+        sensor.AddObservation(transform.InverseTransformPoint(_currentCheckPoint.position)); // 3 floats, direction to checkpoint in local space
+        sensor.AddObservation(transform.InverseTransformDirection(_sphere.linearVelocity));         // 3 floats, local velocity
         sensor.AddObservation(_sphere.linearVelocity.magnitude);
-
-        sensor.AddObservation(transform.forward);   
-        sensor.AddObservation(transform.right);        
-        sensor.AddObservation(transform.up);
-        
-        sensor.AddObservation(_currentCheckPoint.position);    
 
     }
 
@@ -53,7 +51,7 @@ public class RacingAgent : Agent
 
         Movement(actions.DiscreteActions);
         rewardForGettingCloser();
-        AddReward(-0.001f); //avoid stalling
+        AddReward(-0.01f); //avoid stalling
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -105,19 +103,17 @@ public class RacingAgent : Agent
     {
         if (_currentCheckPoint != null)
         {
-            float currentDistance = Vector3.Distance(transform.position, _currentCheckPoint.position);
-            float progressReward = _previousDistanceToCheckpoint - currentDistance;
+            float currentDistance = Vector3.Distance(transform.localPosition, _currentCheckPoint.localPosition);
 
-            // Positive if closer, negative if further
-            AddReward(progressReward * 0.05f);
-
+            float progress = _previousDistanceToCheckpoint - currentDistance;
+            AddReward(progress * 0.01f); // scaled by movement improvement
             _previousDistanceToCheckpoint = currentDistance;
         }
     }
     private void HandleCPHit(Transform cpTransform)
     {
         _currentCheckPoint = cpTransform;
-        AddReward(1.5f);
+        AddReward(3.0f);
     }
 
     private void HandleRaceOver()

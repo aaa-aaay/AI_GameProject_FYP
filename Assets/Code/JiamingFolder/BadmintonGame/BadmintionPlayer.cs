@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class BadmintionPlayer : MonoBehaviour
@@ -7,6 +6,7 @@ public class BadmintionPlayer : MonoBehaviour
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _slowedMoveSpeed = 5f;
     [SerializeField] private float _evenMoreSlowedSpeed = 5f;
+    [SerializeField] private BadmintionGameManager _gameManager;
     private RacketSwing _racketSwing;
     private BadmintionMovement _movement;
     private BadmintonStamina _stamina;
@@ -27,7 +27,7 @@ public class BadmintionPlayer : MonoBehaviour
         InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
 
 
-        //Movements
+        //Movements 
         inputManager.OnMove += HandleMove;
         inputManager.OnMoveEnd += HandleMoveEnd;
 
@@ -61,10 +61,12 @@ public class BadmintionPlayer : MonoBehaviour
     {
         // Store input from InputManager
         _moveInput = direction;
-        _movement.Walk(true);
+
         if (_moveInput.x < 0) _shootingDirection = 1;
         else if (_moveInput.x > 0) _shootingDirection = 2;
 
+        if (_gameManager.serving) return;
+        _movement.Walk(true);
     }
 
     private void HandleMoveEnd()
@@ -105,6 +107,8 @@ public class BadmintionPlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_gameManager.serving) return;
+
         if (_moveInput == Vector2.zero) _stamina.UseStamina(BadmintonStamina.actions.Rest);
         else _stamina.UseStamina(BadmintonStamina.actions.Running);
 

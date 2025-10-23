@@ -50,7 +50,6 @@ public class BadmintonNewAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        transform.localPosition = _startPosition;
         _prevDistToShuttle = float.PositiveInfinity; // reset each episode
 
 
@@ -210,7 +209,7 @@ public class BadmintonNewAgent : Agent
             //_stamina.UseStamina(BadmintonStamina.actions.Running);
             _movement.Walk(true);
         } 
-
+        //if(_gameManager.serving) return;
         transform.localPosition += dir * _finalMoveSpeed * Time.deltaTime;
     }
 
