@@ -6,7 +6,7 @@ public class BadmintonStamina : MonoBehaviour
 {
 
     [SerializeField] private float maxStamina;
-    [SerializeField] private Slider staminaSlider;
+    [SerializeField] private Image staminaFillImage;
 
 
     [Header("Stamina costs for actions")]
@@ -35,7 +35,6 @@ public class BadmintonStamina : MonoBehaviour
     {
 
         currentStamina = maxStamina;
-        staminaSlider.maxValue = maxStamina;
 
         SetNewStamina();
     }
@@ -67,7 +66,7 @@ public class BadmintonStamina : MonoBehaviour
 
     private void SetNewStamina()
     {
-        staminaSlider.value = currentStamina;
+        staminaFillImage.fillAmount = currentStamina / maxStamina;
     }
     public float GetStamina()
     {
