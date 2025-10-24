@@ -5,43 +5,39 @@ using Unity.MLAgents.Sensors;
 
 public class RacingAgent : Agent
 {
-    private BetterCarMovement _carMovement;
-    [SerializeField] private GoalChecker _goalChecker;
-    [SerializeField] private Rigidbody _sphere;
-
-    private float _raceTimer;
-    [SerializeField] private Transform _firstCheckPoint;
     [SerializeField] private RaceManager _manager;
-    public Transform _currentCheckPoint;
+    [SerializeField] private GameObject _car;
+    private Rigidbody _sphere;
+    private BetterCarMovement _carMovement;
+    private GoalChecker _goalChecker;
+    private ResetCarPosition _carPositionResetter;
+    private float _raceTimer;
+
     private float _previousDistanceToCheckpoint;
-    private Vector3 _startPosition;
 
 
 
 
     public override void Initialize()
     {
-        _manager.onRaceOver += HandleRaceOver;
         _carMovement = GetComponent<BetterCarMovement>();
-        _goalChecker.onCheckPointHit += HandleCPHit;
+        _goalChecker = _car.GetComponent<GoalChecker>();
+        _sphere = _car.GetComponent<Rigidbody>();
+        _carPositionResetter = _car.GetComponent<ResetCarPosition>();
 
-        _startPosition = transform.localPosition;
+        _manager.onRaceOver += HandleRaceOver;
+        _goalChecker.onCheckPointHit += HandleCPHit;
     }
 
     public override void OnEpisodeBegin()
     {
         _raceTimer = 0;
-        transform.localPosition = _startPosition;
-        _currentCheckPoint = _firstCheckPoint;
-        if (_currentCheckPoint != null)
-            _previousDistanceToCheckpoint = Vector3.Distance(transform.localPosition, _currentCheckPoint.localPosition);
+        _carPositionResetter.ResetPos();
+        _goalChecker.ResetCar();
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(transform.InverseTransformPoint(_currentCheckPoint.position)); // 3 floats, direction to checkpoint in local space
-        sensor.AddObservation(transform.InverseTransformDirection(_sphere.linearVelocity));         // 3 floats, local velocity
-        sensor.AddObservation(_sphere.linearVelocity.magnitude);
 
     }
 
@@ -101,18 +97,10 @@ public class RacingAgent : Agent
 
     private void rewardForGettingCloser()
     {
-        if (_currentCheckPoint != null)
-        {
-            float currentDistance = Vector3.Distance(transform.localPosition, _currentCheckPoint.localPosition);
 
-            float progress = _previousDistanceToCheckpoint - currentDistance;
-            AddReward(progress * 0.01f); // scaled by movement improvement
-            _previousDistanceToCheckpoint = currentDistance;
-        }
     }
-    private void HandleCPHit(Transform cpTransform)
+    private void HandleCPHit()
     {
-        _currentCheckPoint = cpTransform;
         AddReward(3.0f);
     }
 

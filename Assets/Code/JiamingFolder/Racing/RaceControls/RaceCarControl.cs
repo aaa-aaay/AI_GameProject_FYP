@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class RaceCarControl : MonoBehaviour
 {
+    [SerializeField] RaceManager _manager;
+    [SerializeField] GameObject _car;
 
+    private ResetCarPosition _carPosResetter;
+    private GoalChecker _goalChecker;
     private BetterCarMovement _movement;
     private InputManager _inputManager;
     private Vector2 _moveInput;
@@ -14,12 +18,17 @@ public class RaceCarControl : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        _manager.onRaceOver += RestartRace;
         _movement = GetComponent<BetterCarMovement>();
         _inputManager = ServiceLocator.Instance.GetService<InputManager>();
         _inputManager.OnMove += HandleMove;
         _inputManager.OnMoveEnd += HandleMoveEnd;
         _inputManager.onDash += HandleDrift;
         _inputManager.onDashEnd += HandleDriftEnd;
+
+
+        _carPosResetter = _car.GetComponent<ResetCarPosition>();
+        _goalChecker = _car.GetComponent<GoalChecker>();
 
     }
 
@@ -64,5 +73,12 @@ public class RaceCarControl : MonoBehaviour
     private void Update()
     {
         _movement.MoveCar(_moveInput);
+    }
+
+
+    private void RestartRace()
+    {
+        _carPosResetter.ResetPos();
+        _goalChecker.ResetCar();
     }
 }

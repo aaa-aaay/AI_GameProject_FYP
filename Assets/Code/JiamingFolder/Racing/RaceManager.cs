@@ -79,18 +79,24 @@ public class RaceManager : MonoBehaviour
     {
         finishedRacers = 0;
 
-        foreach (GoalChecker gc in _racers)
-        {
-            gc.ResetCar();
-        }
+
+        //Reset all cars in thier own scripts
 
 
-        foreach(Transform child in _RacersGO.transform)
-        {
-            int index = child.GetSiblingIndex();
-            if (_startPositions[index] != null)
-                child.position = _startPositions[index].position;
-        }
+        //foreach (GoalChecker gc in _racers)
+        //{
+        //    gc.ResetCar();
+        //}
+
+
+
+
+        //foreach(Transform child in _RacersGO.transform)
+        //{
+        //    int index = child.GetSiblingIndex();
+        //    if (_startPositions[index] != null)
+        //        child.position = _startPositions[index].position;
+        //}
 
     }
 

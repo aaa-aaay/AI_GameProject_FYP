@@ -10,10 +10,12 @@ public class GoalChecker : MonoBehaviour
 
 
     private int currentLap = 0;
-    private int currentCheckPoint;
+    private int currentCheckPointNo;
     private bool _raceOver = false;
     public event Action OnRaceFinished;
-    public event Action<Transform> onCheckPointHit;
+    public event Action onCheckPointHit;
+
+    private Transform currentCheckPoint;
 
     private void Start()
     {
@@ -28,7 +30,7 @@ public class GoalChecker : MonoBehaviour
         if (other.CompareTag("RacingGoal"))
         {
 
-            if (currentCheckPoint < _raceManager.amtofCheckpoints) return; //haven't hit all checkpoints yet
+            if (currentCheckPointNo < _raceManager.amtofCheckpoints) return; //haven't hit all checkpoints yet
 
             currentLap++;
             
@@ -36,35 +38,32 @@ public class GoalChecker : MonoBehaviour
             {
                 _raceOver = true;
                 OnRaceFinished?.Invoke();
+                Debug.Log("race over");
                 //race over for this car
             }
 
 
-            currentCheckPoint = 0;
+            currentCheckPointNo = 0;
 
 
         }
 
         if (other.CompareTag("RaceCP"))
         {
-            if(other.gameObject.GetComponent<RacingGoal>().checkPointNo == currentCheckPoint)
+            if(other.gameObject.GetComponent<RacingGoal>().checkPointNo == currentCheckPointNo)
             {
-                currentCheckPoint++;
-                if(_raceManager.checkPoints[currentCheckPoint] != null)
+                currentCheckPointNo++;
+                if(currentCheckPointNo < _raceManager.checkPoints.Count)
                 {
-                    onCheckPointHit?.Invoke(_raceManager.checkPoints[currentCheckPoint]);
+                    currentCheckPoint = _raceManager.checkPoints[currentCheckPointNo];
                 }
                 else
                 {
-                    onCheckPointHit?.Invoke(_raceManager.raceGoalTrans);
+                    currentCheckPoint = _raceManager.raceGoalTrans; //finished all checkpoints in lap
                 }
-                
+                onCheckPointHit?.Invoke();
+                Debug.Log("CP hit");
 
-                //theres a bug now when there is no next checkpoint (ie finished all checkpoints in lap)
-            }
-            else
-            {
-                return;
             }
         }
     }
@@ -73,7 +72,12 @@ public class GoalChecker : MonoBehaviour
     {
         _raceOver = false;
         currentLap = 0;
-        currentCheckPoint = 0;
-        onCheckPointHit?.Invoke(_raceManager.checkPoints[currentCheckPoint]);
+        currentCheckPointNo = 0;
+        currentCheckPoint = _raceManager.checkPoints[currentCheckPointNo];
+    }
+
+    public Transform GetCurrentCheckPoint()
+    {
+        return currentCheckPoint;
     }
 }
