@@ -94,6 +94,7 @@ public class BadmintionGameManager : MonoBehaviour
         _P2ScoreDisplay.text = player2Score.ToString();
         _P1ScoreDisplay.text = player1Score.ToString();
         OnGameOver?.Invoke();
+        StartServe(1);
     }
 
     public void GameOver(int playerNo)
