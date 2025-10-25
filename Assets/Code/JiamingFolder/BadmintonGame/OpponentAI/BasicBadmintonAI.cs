@@ -60,6 +60,14 @@ public class BasicBadmintonAI : MonoBehaviour
         _stamina = GetComponent<BadmintonStamina>();
     }
 
+    private void OnDestroy()
+    {
+        _gameManager.OnGameOver -= HandleGameOver;
+        _gameManager.OnPlayer2Score -= HandleScoring;
+        _gameManager.OnPlayer1Score -= HandleMissing;
+        _lastHitChecker.OnHitByRacker -= CheckWhoHit;
+    }
+
     void Update()
     {
         if (_shuttle == null || _net == null) return;

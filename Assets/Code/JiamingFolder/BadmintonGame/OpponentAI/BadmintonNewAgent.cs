@@ -24,7 +24,7 @@ public class BadmintonNewAgent : Agent
     [SerializeField] private Transform _shotMarker;
 
     private BadmintionMovement _movement;
-    private BadmintonStamina _stamina;
+    //private BadmintonStamina _stamina;
 
     private Vector3 _startPosition;
     private float _prevDistToShuttle;
@@ -45,14 +45,14 @@ public class BadmintonNewAgent : Agent
         _gameManager.OnPlayer2Score += EnemyScores;
 
         _movement = GetComponent<BadmintionMovement>();
-        _stamina = GetComponent<BadmintonStamina>();
+        //_stamina = GetComponent<BadmintonStamina>();
     }
 
     public override void OnEpisodeBegin()
     {
         _prevDistToShuttle = float.PositiveInfinity; // reset each episode
 
-
+        transform.localPosition = _startPosition;
         // Reset previous position for velocity calc
         _prevShuttlePos = _shuttle.localPosition;
         _shuttleVelocity = Vector3.zero;
@@ -173,7 +173,7 @@ public class BadmintonNewAgent : Agent
         //    //punish the AI for dashing and wasting stamina;
         //    AddReward(-0.1f);
         //}
-        
+
     }
 
     private void AdjustMovement()
@@ -205,10 +205,11 @@ public class BadmintonNewAgent : Agent
             _movement.Walk(false);
             Debug.Log("resting");
         }
-        else {
+        else
+        {
             //_stamina.UseStamina(BadmintonStamina.actions.Running);
             _movement.Walk(true);
-        } 
+        }
         //if(_gameManager.serving) return;
         transform.localPosition += dir * _finalMoveSpeed * Time.deltaTime;
     }
