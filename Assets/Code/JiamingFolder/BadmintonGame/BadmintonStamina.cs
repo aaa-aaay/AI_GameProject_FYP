@@ -66,6 +66,7 @@ public class BadmintonStamina : MonoBehaviour
 
     private void SetNewStamina()
     {
+        if(staminaFillImage != null)
         staminaFillImage.fillAmount = currentStamina / maxStamina;
     }
     public float GetStamina()
