@@ -12,13 +12,13 @@ public class CheckCourt : MonoBehaviour
             if(redCourt)
             {
                 Debug.Log("In Red Court");
-                //_gameManager.InRedCourt = true;
+                _gameManager.InRedCourt = true;
                 //the ball is not in red court
             }
             else
             {
                 Debug.Log("In Green Court");
-                //_gameManager.InRedCourt = false;
+                _gameManager.InRedCourt = false;
                 //the ball is not in blue court
             }
         }
