@@ -29,7 +29,7 @@ public class DialogueManager : MonoBehaviour, IGameService
 
     private void OnDisable()
     {
-        ServiceLocator.Instance.RemoveService<InputManager>(false);
+        //ServiceLocator.Instance.RemoveService<DialogueManager>(false);
     }
 
 
@@ -77,7 +77,7 @@ public class DialogueManager : MonoBehaviour, IGameService
         }
     }
 
-    void EndDialogue()
+    public void EndDialogue()
     {
         haveDialouge = false;
         canvas.SetActive(false);

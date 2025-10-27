@@ -1,7 +1,9 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
+[DefaultExecutionOrder(-1)]
 public class InputManager : MonoBehaviour,IGameService
 {
 
@@ -29,6 +31,9 @@ public class InputManager : MonoBehaviour,IGameService
     [SerializeField]
     private InputActionReference _interactActionReference;
 
+    [SerializeField]
+    private InputActionReference _dashActionReference;
+
 
     public event Action<Vector2> OnMove;
     public event Action OnMoveEnd;
@@ -41,65 +46,35 @@ public class InputManager : MonoBehaviour,IGameService
     public event Action onMiddleClick;
 
     public event Action onInteract;
+    public event Action onDash;
+    public event Action onDashEnd;
 
-
-
-    private void OnEnable()
+    private void Awake()
     {
         ServiceLocator.Instance.AddService(this, false);
-
+    }
+    private void OnEnable()
+    {
         _inputActionAsset.Enable();
-        _moveActionReference.action.Enable();
-        _moveActionReference.action.performed += Move;
-        _moveActionReference.action.canceled += MoveEnd;
 
-        _jumpActionReference.action.Enable();
-        _jumpActionReference.action.performed += Jump;
-
-        _clickActionReference.action.Enable();
-        _clickActionReference.action.performed += Click;
-
-        _rightClickActionReference.action.Enable();
-        _rightClickActionReference.action.performed += RightClick;
-
-        _middleClickReference.action.Enable();
-        _middleClickReference.action.performed += MiddleClick;
-
-        _interactActionReference.action.Enable();
-        _interactActionReference.action.performed += Interact;
+        BindActions();
 
     }
     private void OnDisable()
     {
-        ServiceLocator.Instance.RemoveService<InputManager>(false);
+        //Debug.Log("InputManager OnDisable called");
+        //UnbindActions();
 
-
-        _inputActionAsset.Disable();
-        _moveActionReference.action.Disable();
-        _moveActionReference.action.performed -= Move;
-        _moveActionReference.action.canceled -= MoveEnd;
-
-        _jumpActionReference.action.Disable();
-        _jumpActionReference.action.performed -= Jump;
-
-
-
-        _clickActionReference.action.Disable();
-        _clickActionReference.action.performed -= Click;
-
-        _rightClickActionReference.action.Disable();
-        _rightClickActionReference.action.performed -= RightClick;
-
-        _middleClickReference.action.Disable();
-        _middleClickReference.action.performed -= MiddleClick;
-
-        _interactActionReference.action.Disable();
-        _interactActionReference.action.performed -= Interact;
+        //_inputActionAsset.Disable();
 
 
 
     }
 
+    private void OnDestroy()
+    {
+        //ServiceLocator.Instance.RemoveService<InputManager>(false);
+    }
 
     private void Move(InputAction.CallbackContext context)
     {
@@ -114,6 +89,7 @@ public class InputManager : MonoBehaviour,IGameService
     private void Jump(InputAction.CallbackContext context)
     {
         OnJump?.Invoke();
+        Debug.Log("Jumped");
     }
 
     private void Click(InputAction.CallbackContext context)
@@ -136,5 +112,59 @@ public class InputManager : MonoBehaviour,IGameService
         
         Debug.Log("Interact action fired: " + context.phase);
         onInteract?.Invoke();
+    }
+
+    private void Dash(InputAction.CallbackContext context)
+    {
+        onDash?.Invoke();
+    }
+    private void DashEnd(InputAction.CallbackContext context)
+    {
+        onDashEnd?.Invoke();
+    }
+
+
+
+    private void BindActions()
+    {
+        _moveActionReference.action.performed += Move;
+        _moveActionReference.action.canceled += MoveEnd;
+        _jumpActionReference.action.performed += Jump;
+        _clickActionReference.action.performed += Click;
+        _rightClickActionReference.action.performed += RightClick;
+        _middleClickReference.action.performed += MiddleClick;
+        _interactActionReference.action.performed += Interact;
+        _dashActionReference.action.performed += Dash;
+        _dashActionReference.action.canceled += DashEnd;
+    }
+
+    private void UnbindActions()
+    {
+        _moveActionReference.action.performed -= Move;
+        _moveActionReference.action.canceled -= MoveEnd;
+
+        _jumpActionReference.action.performed -= Jump;
+        _clickActionReference.action.performed -= Click;
+        _rightClickActionReference.action.performed -= RightClick;
+        _middleClickReference.action.performed -= MiddleClick;
+        _interactActionReference.action.performed -= Interact;
+        _dashActionReference.action.performed -= Dash;
+        _dashActionReference.action.canceled -= DashEnd;
+    }
+
+    public void EnableActions()
+    {
+        _moveActionReference.action.Enable();
+        _jumpActionReference.action.Enable();
+        _clickActionReference.action.Enable();
+        _rightClickActionReference.action.Enable();
+        _middleClickReference.action.Enable();
+        _interactActionReference.action.Enable();
+        _dashActionReference.action.Enable();
+    }
+
+    public void toggleInputActivation(bool enable) {
+        if (enable) { _inputActionAsset.Enable(); }
+        else { _inputActionAsset.Disable(); }
     }
 }

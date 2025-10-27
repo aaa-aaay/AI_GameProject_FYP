@@ -48,7 +48,7 @@ public class AudioManager : MonoBehaviour, IGameService
 
     private void OnDisable()
     {
-        ServiceLocator.Instance.RemoveService<AudioManager>(false);
+        //ServiceLocator.Instance.RemoveService<AudioManager>(false);
     }
 
 

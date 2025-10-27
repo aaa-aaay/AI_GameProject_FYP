@@ -9,6 +9,8 @@ public class LobbyNPC : MonoBehaviour
 
     private DialogueManager dialogueManager;
 
+    private LobbyPlayerMovement player;
+
     private void Start()
     {
         InputManager inputManager = ServiceLocator.Instance.GetService<InputManager>();
@@ -26,6 +28,8 @@ public class LobbyNPC : MonoBehaviour
         {
             dialogueManager.StartDialogue(dialouge);
             dialougeStarted = true;
+            player = other.gameObject.GetComponent<LobbyPlayerMovement>();
+            player.ForceIdle(true);
         }
     }
 
@@ -37,12 +41,16 @@ public class LobbyNPC : MonoBehaviour
         {
             dialogueManager.DisplayNextSentence();
         }
-        else
+    }
+
+    private void Update()
+    {
+        if (!dialougeStarted) return;
+
+        if (!dialogueManager.StillHaveDialogue())
         {
+            player.ForceIdle(false);
             dialougeStarted = false;
         }
-        
-
-
     }
 }

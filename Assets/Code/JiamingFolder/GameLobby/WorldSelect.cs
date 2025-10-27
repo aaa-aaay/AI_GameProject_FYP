@@ -5,34 +5,44 @@ using UnityEngine.SceneManagement;
 public class WorldSelect : MonoBehaviour
 {
     [SerializeField]
-    private int _nextSceneNumber;
+    private string _nextSceneName;
 
     [SerializeField]
-    private GameObject popUpCanvas;
+    private string _levelName;
 
     private InputManager _inputManager;
-
+    private UIManager _uiManager;
     private bool playerInRange = false;
+    private Collider _collider;
 
+
+    private void Awake()
+    {
+        _collider = GetComponent<Collider>();
+    }
     private void Start()
     {
 
        
         _inputManager = ServiceLocator.Instance.GetService<InputManager>();
         _inputManager.onInteract += HandleInteract;
-        Debug.Log("InputManager found: " + (_inputManager != null));
+
+        _uiManager = ServiceLocator.Instance.GetService<UIManager>();
 
         playerInRange = false;
-        popUpCanvas.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        _inputManager.onInteract -= HandleInteract;
     }
 
     private void HandleInteract()
     {
-        Debug.Log("interacted");
 
         if(playerInRange)
         {
-            SceneManager.LoadScene(_nextSceneNumber);
+            ServiceLocator.Instance.GetService<MySceneManager>().LoadScene(_nextSceneName);
         }
     }
 
@@ -41,11 +51,8 @@ public class WorldSelect : MonoBehaviour
         if (other.CompareTag("Player"))
         {
 
-            //show pop up UI to ask player if they want to enter next scene
             playerInRange = true;
-            popUpCanvas.SetActive(true);
-            
-
+            _uiManager.OpenLevelSelectUI(_levelName, 1);
 
         }
     }
@@ -57,9 +64,22 @@ public class WorldSelect : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            popUpCanvas.SetActive(false);
+            _uiManager.HideLevelSelectUI();
            
 
+        }
+    }
+
+    public void Activate(bool activate)
+    {
+        if (activate) {
+
+            _collider.enabled = true;
+
+        }
+        else
+        {
+            _collider.enabled = false;
         }
     }
 }

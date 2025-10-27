@@ -16,11 +16,11 @@ public class BadmintionGameManager : MonoBehaviour
 
     [SerializeField] private Transform shutterSpawnPoint1;
     [SerializeField] private Transform shutterSpawnPoint2;
-
     public event Action OnGameOver;
 
     public event Action OnPlayer1Score;
     public event Action OnPlayer2Score;
+
 
     public bool InRedCourt { get; set; } = true;
 
@@ -33,6 +33,8 @@ public class BadmintionGameManager : MonoBehaviour
         shutter.transform.position = shutterSpawnPoint1.position;
         InRedCourt = true;
     }
+
+
     public void PlayerScores(int playerNo)
     {
 
@@ -68,14 +70,18 @@ public class BadmintionGameManager : MonoBehaviour
 
     private void CheckForWin()
     {
-       if(player1Score >= ScoreToWin)
-       {
+        if (player1Score >= ScoreToWin)
+        {
             ResetGame();
-       }
+            GameOver(1);
+            
+        }
        else if(player2Score >= ScoreToWin)
        {
             ResetGame();
-        }
+            GameOver(2);
+            
+       }
     }
 
     public void ResetGame()
@@ -83,6 +89,23 @@ public class BadmintionGameManager : MonoBehaviour
         player1Score = player2Score = 0;
         _P2ScoreDisplay.text = player2Score.ToString();
         _P1ScoreDisplay.text = player1Score.ToString();
+        shutter.transform.position = shutterSpawnPoint1.position;
         OnGameOver?.Invoke();
+    }
+
+    public void GameOver(int playerNo)
+    {
+        MiniGameOverHandler handler = GetComponent<MiniGameOverHandler>();
+
+        if (playerNo == 1) {
+
+
+            handler.HandleGameOver(false);
+        }
+        else
+        {
+            handler.HandleGameOver(true, 2, 3);
+            
+        }
     }
 }

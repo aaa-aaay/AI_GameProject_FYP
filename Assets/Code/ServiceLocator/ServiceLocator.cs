@@ -18,16 +18,29 @@ public class ServiceLocator : MonoBehaviour
 
     public void AddService<T>(T service, bool isAbstract = true) where T : IGameService
     {
+        Type keyType;
+
         if (isAbstract)
         {
-            Type baseType = typeof(T).BaseType;
-            if (baseType != null) _serviceDictionary.Add(baseType, service);
-            else Debug.Log("service type is null");
+            keyType = typeof(T).BaseType;
+            if (keyType == null)
+            {
+                Debug.LogWarning($"[ServiceLocator] {typeof(T).Name} has no base type to register as abstract.");
+                return;
+            }
         }
         else
         {
-            _serviceDictionary.Add(typeof(T), service);
+            keyType = typeof(T);
         }
+
+        if (_serviceDictionary.ContainsKey(keyType))
+        {
+            Debug.LogWarning($"[ServiceLocator] Service of type {keyType.Name} is already registered.");
+            return;
+        }
+
+        _serviceDictionary.Add(keyType, service);
     }
 
     public void RemoveService<T>(bool isAbstract = true) where T : IGameService
