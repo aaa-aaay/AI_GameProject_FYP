@@ -5,7 +5,7 @@ using UnityEngine;
 public class RaceCarControl : MonoBehaviour
 {
 
-    private RaceCarMovement _movement;
+    private BetterCarMovement _movement;
     private InputManager _inputManager;
     private Vector2 _moveInput;
     private bool _isDrifting;
@@ -14,7 +14,7 @@ public class RaceCarControl : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _movement = GetComponent<RaceCarMovement>();
+        _movement = GetComponent<BetterCarMovement>();
         _inputManager = ServiceLocator.Instance.GetService<InputManager>();
         _inputManager.OnMove += HandleMove;
         _inputManager.OnMoveEnd += HandleMoveEnd;
@@ -37,15 +37,22 @@ public class RaceCarControl : MonoBehaviour
 
     private void HandleDrift()
     {
-        if(Mathf.Abs(_moveInput.x) > 0.1) //moving left or right
+        if(_isDrifting) return;
+
+
+        if (Mathf.Abs(_moveInput.x) > 0.1) //moving left or right
         {
             _isDrifting = true;
+            _movement.ToggleDrifting(_isDrifting, _moveInput.x);
+            Debug.Log("caleed");
+
         }
     }
 
     private void HandleDriftEnd()
     {
         _isDrifting = false;
+        _movement.ToggleDrifting(_isDrifting);
     }
 
     private void HandleMoveEnd()
@@ -53,9 +60,9 @@ public class RaceCarControl : MonoBehaviour
         _moveInput = Vector3.zero;
     }
 
-    private void FixedUpdate()
+
+    private void Update()
     {
-        _movement.MoveCar(_moveInput,_isDrifting);
-        
+        _movement.MoveCar(_moveInput);
     }
 }
