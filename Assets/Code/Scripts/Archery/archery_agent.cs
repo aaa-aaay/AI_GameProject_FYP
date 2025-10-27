@@ -88,7 +88,7 @@ public class archery_agent : Agent
 
     public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
     {
-        if (!canShoot && Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) > 1.5f) actionMask.SetActionEnabled(branch: 3, actionIndex: 1, isEnabled: false);
+        if (!canShoot && Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) > 1f) actionMask.SetActionEnabled(branch: 3, actionIndex: 1, isEnabled: false);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -137,10 +137,6 @@ public class archery_agent : Agent
             if (Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) > 3f)
             {
                 AddReward(-10);
-            }
-            else
-            {
-                AddReward(10);
             }
 
             decisionRequester.enabled = false;

@@ -140,8 +140,9 @@ public class archery_handler : MonoBehaviour
     private IEnumerator PlayerTurn()
     {
         playerCamera.Target.TrackingTarget = playerObject.transform;
-        
-        windDirection = Random.Range(0f, 360f);
+
+        windDirection = Random.Range(0, 360);
+        if (windDirection <= 180) windDirection = 90f; else windDirection = 270f;
         windSpeed = Random.Range(0f, settings.maxWindSpeed);
 
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
@@ -159,14 +160,12 @@ public class archery_handler : MonoBehaviour
     {
         playerCamera.Target.TrackingTarget = agentObject.transform;
         
-        windDirection = Random.Range(0f, 360f);
+        windDirection = Random.Range(0, 360);
+        if (windDirection <= 180) windDirection = 90f; else windDirection = 270f;
         windSpeed = Random.Range(0f, settings.maxWindSpeed);
 
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
-
-        windDirection = 0;
-        windSpeed = 0;
 
         targetObject.transform.position = agentObject.transform.position + new Vector3(lateralDistance, 1, targetDistance);
 
@@ -222,7 +221,7 @@ public class archery_handler : MonoBehaviour
     public void UpdateUI(float force, float yaw, float pitch)
     {
         uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed, targetDistance, lateralDistance);
-        estimateLanding = preview.ShowPath(force, yaw, pitch);
+        estimateLanding = preview.ShowPath(force, yaw, pitch, windDirection, windSpeed);
     }
 
     private IEnumerator ReturnCamera()

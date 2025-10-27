@@ -650,12 +650,12 @@ MonoBehaviour:
   playerObject: {fileID: 1854095903}
   agentObject: {fileID: 1854095903}
   <targetObject>k__BackingField: {fileID: 1868584998}
-  numArrows: 30
+  numArrows: 5
   arrowPrefab: {fileID: 1180116414938798258, guid: 3497321ecc578b449b560fd9005ae3cb, type: 3}
   preview: {fileID: 835533699}
   uiHandler: {fileID: 1267131732}
   <settings>k__BackingField: {fileID: 11400000, guid: 59061e2cdcbd404478f909b40313dac8, type: 2}
-  isAiTraining: 0
+  isAiTraining: 1
 --- !u!114 &835533699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1471,7 +1471,7 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
-  minAimTime: 20
+  minAimTime: 10
 --- !u!1 &1868584998
 GameObject:
   m_ObjectHideFlags: 0
