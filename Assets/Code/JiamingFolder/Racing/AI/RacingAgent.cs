@@ -85,7 +85,7 @@ public class RacingAgent : Agent
     private void HandleCPHit()
     {
         Debug.Log("rewarded for hiting cp");
-        AddReward(0.5f/ _manager.checkPoints.Count);
+        AddReward(1.0f/ _manager.checkPoints.Count);
         _raceTimer = TimeToReachNextCheckpoint;
     }
 
