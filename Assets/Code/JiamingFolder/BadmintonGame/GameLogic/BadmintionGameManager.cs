@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +18,13 @@ public class BadmintionGameManager : MonoBehaviour
 
     [SerializeField] private Transform shutterSpawnPoint1;
     [SerializeField] private Transform shutterSpawnPoint2;
+
+
+    [Header("Serve refs")]
+    [SerializeField] private GameObject serveUIGO;
+    [SerializeField] private Transform serverHolder1;
+    [SerializeField] private Transform serverHolder2;
+    [SerializeField] private List<Racket> _rackets;
     public event Action OnGameOver;
 
     public event Action OnPlayer1Score;
@@ -30,8 +39,15 @@ public class BadmintionGameManager : MonoBehaviour
         _P1ScoreDisplay.text = 0.ToString();
         _P2ScoreDisplay.text = 0.ToString();
 
-        shutter.transform.position = shutterSpawnPoint1.position;
+
+        ToggleServe(1);
         InRedCourt = true;
+
+        foreach (Racket r in _rackets)
+        {
+            r.OnHitShutter += FinishedServing;
+        }
+
     }
 
 
@@ -43,7 +59,7 @@ public class BadmintionGameManager : MonoBehaviour
             player1Score++;
             _P1ScoreDisplay.text = player1Score.ToString();
 
-            shutter.transform.position = shutterSpawnPoint1.position;
+            ToggleServe(1);
             InRedCourt = false;
 
             OnPlayer1Score?.Invoke();
@@ -54,7 +70,8 @@ public class BadmintionGameManager : MonoBehaviour
             player2Score++;
             _P2ScoreDisplay.text = player2Score.ToString();
 
-            shutter.transform.position = shutterSpawnPoint2.position;
+
+            ToggleServe(2);
             InRedCourt = true;
 
             OnPlayer2Score?.Invoke();
@@ -101,11 +118,43 @@ public class BadmintionGameManager : MonoBehaviour
 
 
             handler.HandleGameOver(false);
+
         }
         else
         {
             handler.HandleGameOver(true, 2, 3);
             
         }
+    }
+
+    private void ToggleServe(int servePlayer = 0)
+    {
+        if (servePlayer != 1 && servePlayer != 2) return;
+
+
+        serveUIGO.SetActive(true);
+        Transform newParent = null;
+
+        if (servePlayer == 1)
+        {
+            newParent = serverHolder1;
+            shutter.transform.position = shutterSpawnPoint1.position;
+        }
+        else if (servePlayer == 2)
+        {
+            newParent = serverHolder2;
+            shutter.transform.position = shutterSpawnPoint2.position;
+        }
+
+
+        RectTransform rect = serveUIGO.GetComponent<RectTransform>();
+        rect.SetParent(newParent, false);
+        rect.localPosition = Vector3.zero;
+        rect.localRotation = Quaternion.identity;
+    }
+
+    private void FinishedServing()
+    {
+        serveUIGO.SetActive(false);
     }
 }

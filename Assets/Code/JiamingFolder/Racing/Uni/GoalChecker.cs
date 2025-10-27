@@ -10,12 +10,12 @@ public class GoalChecker : MonoBehaviour
 
 
     private int currentLap = 0;
-    private int currentCheckPointNo;
+    public int currentCheckPointNo;
     private bool _raceOver = false;
     public event Action OnRaceFinished;
     public event Action onCheckPointHit;
 
-    private Transform currentCheckPoint;
+    public Transform currentCheckPoint;
 
     private void Start()
     {
@@ -41,8 +41,6 @@ public class GoalChecker : MonoBehaviour
                 Debug.Log("race over");
                 //race over for this car
             }
-
-
             currentCheckPointNo = 0;
 
 
@@ -62,7 +60,6 @@ public class GoalChecker : MonoBehaviour
                     currentCheckPoint = _raceManager.raceGoalTrans; //finished all checkpoints in lap
                 }
                 onCheckPointHit?.Invoke();
-                Debug.Log("CP hit");
 
             }
         }

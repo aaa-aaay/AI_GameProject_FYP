@@ -12,7 +12,7 @@ public class RaceManager : MonoBehaviour
     public int lapsPerRace = 3;
     public int amtofCheckpoints;
     private List<GoalChecker> _racers = new List<GoalChecker>();
-    [HideInInspector] public List<Transform> checkPoints = new List<Transform>();
+    [HideInInspector]public List<Transform> checkPoints = new List<Transform>();
 
    
     private int finishedRacers = 0;
@@ -41,8 +41,11 @@ public class RaceManager : MonoBehaviour
 
         foreach(Transform cp in _checkPointHolderGO.transform)
         {
-            amtofCheckpoints++;
+
             checkPoints.Add(cp);
+            RacingGoal goal = cp.GetComponent<RacingGoal>();
+            goal.checkPointNo = amtofCheckpoints;
+            amtofCheckpoints++;
         }
 
         finishedRacers = 0;
@@ -62,17 +65,16 @@ public class RaceManager : MonoBehaviour
 
     private void handleCarFinsih()
     {
-        Debug.Log("car finished");
-        finishedRacers++;
+        //finishedRacers++;
 
-        if (finishedRacers >= _racers.Count)
-        {
+        //if (finishedRacers >= _racers.Count)
+        //{
 
-            onRaceOver?.Invoke();
-            //restart or end    
-            Restart();
+        //    onRaceOver?.Invoke();
+        //    //restart or end    
+        //    Restart();
 
-        }
+        //}
     }
 
     private void Restart()
@@ -98,6 +100,12 @@ public class RaceManager : MonoBehaviour
         //        child.position = _startPositions[index].position;
         //}
 
+    }
+
+    public void EndRace()
+    {
+        onRaceOver?.Invoke();
+        Restart();
     }
 
 

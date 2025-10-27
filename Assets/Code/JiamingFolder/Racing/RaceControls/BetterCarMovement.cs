@@ -18,6 +18,7 @@ public class BetterCarMovement : MonoBehaviour
     public float acceleration = 30f;
     public float steering = 80f;
     public float gravity = 10f;
+    [SerializeField] private Vector3 offsetPos = new Vector3(0, 1.0f, 0);
     public LayerMask layerMask;
 
     private float speed;
@@ -42,7 +43,7 @@ public class BetterCarMovement : MonoBehaviour
     public void MoveCar(Vector2 inputDir)
     {
         // Position car body with the physics sphere
-        transform.position = sphere.transform.position - new Vector3(0, 1.0f, 0);
+        transform.position = sphere.transform.position - offsetPos;
 
 
         float forwardInput = inputDir.y;
@@ -62,7 +63,7 @@ public class BetterCarMovement : MonoBehaviour
         }
 
         // Steering
-        if (Mathf.Abs(turnInput) > 0.1f)
+        if (Mathf.Abs(turnInput) > 0.01f)
         {
             int dir = turnInput > 0 ? 1 : -1;
             float amount = Mathf.Abs(turnInput);
