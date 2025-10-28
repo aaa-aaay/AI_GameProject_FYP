@@ -6,8 +6,9 @@ public class RaceManager : MonoBehaviour
 {
     [SerializeField] GameObject _RacersGO;
     [SerializeField] GameObject _checkPointHolderGO;
+    [SerializeField] GameObject _startPosHolderGO;
     public Transform raceGoalTrans;
-    [SerializeField] private List<Transform> _startPositions = new List<Transform>();
+    private List<Transform> _startPositions = new List<Transform>();
 
     public int lapsPerRace = 3;
     public int amtofCheckpoints;
@@ -22,6 +23,10 @@ public class RaceManager : MonoBehaviour
     private void Awake()
     {
 
+        foreach (Transform sp in _startPosHolderGO.transform)
+        {
+            _startPositions.Add(sp);
+        }
 
         //get all racers' goal checkers
         foreach (Transform child in _RacersGO.transform)
@@ -47,6 +52,8 @@ public class RaceManager : MonoBehaviour
             goal.checkPointNo = amtofCheckpoints;
             amtofCheckpoints++;
         }
+
+
 
         finishedRacers = 0;
 
