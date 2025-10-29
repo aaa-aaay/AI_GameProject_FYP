@@ -4,12 +4,12 @@
 public class CaptureZone : MonoBehaviour
 {
     [Header("References")]
-    public CaptureManager captureManager;
+    public CaptureCheck captureManager;
 
     private void Start()
     {
         if (captureManager == null)
-            captureManager = FindFirstObjectByType<CaptureManager>();
+            captureManager = FindFirstObjectByType<CaptureCheck>();
 
         Collider col = GetComponent<Collider>();
         col.isTrigger = true;

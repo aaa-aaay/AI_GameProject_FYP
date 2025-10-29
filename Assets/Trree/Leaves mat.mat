@@ -7,13 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Border_mat
-  m_Shader: {fileID: -6465566751694194690, guid: 9fe9cbcd72d64f84786b45c46cf62253, type: 3}
+  m_Name: Leaves mat
+  m_Shader: {fileID: -6465566751694194690, guid: 16fa565e08bf2cf41bc8e0c3d6e0cea2, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -24,8 +24,16 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _SampleTexture2D_350f87d3445a4ba2b03b40af4318657d_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 438adda0b9afac54ba91eb7dd05f2dc9, type: 3}
+    - _Main_texture:
+        m_Texture: {fileID: 2800000, guid: bb880510f2e2b5743aa7cdcbc4aec859, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Roughness:
+        m_Texture: {fileID: 2800000, guid: 47058e84234d01f4eb0f29688cb4f80f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -42,19 +50,23 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: 0.000000114231135
-    - _Angle: 140.2
-    - _Offset_Speed: 0.2
-    - _Offset_amount: 20
+    - _Alpha: 1
+    - _Checkerboard_color_1: 1
+    - _Checkerboard_color_2: 1
+    - _Darken_Strength: 0.5
+    - _Float: 0.291
+    - _Float_1: 0.312
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Tiling: 50
-    - _Tiling_Scale: 33.59
+    - _Specular_Roughness: 1.25
+    - _Tiling: 70
     m_Colors:
-    - _Color: {r: 0, g: 0.6219192, b: 1.2830187, a: 1}
+    - _Checkerboard: {r: 0.7, g: 0.4, b: 0, a: 0}
+    - _Checkerboard_color_1: {r: 0.8584906, g: 0.8584906, b: 0.8584906, a: 0}
+    - _Checkerboard_color_2: {r: 0.9528302, g: 0.9528302, b: 0.9528302, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &8711773149330559447
+--- !u!114 &1510704411814708781
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

@@ -66,18 +66,19 @@ public class TimerUI : MonoBehaviour
         // Normalize progress: 1 = full time, 0 = timer finished
         float progress = Mathf.Clamp01(currentTime / maxTime);
 
-        // Top = 0°, Left = 90° (anti-clockwise)
-        float startAngle = 0f;    // Top
-        float endAngle = 90f;     // Left
+        // Start at 270°, end at 360° (or 0°)
+        float startAngle = 0f;
+        float endAngle = 90f;
 
         // Interpolate anti-clockwise
-        float angle = Mathf.Lerp(startAngle, endAngle, 1f - progress);
+        float angle = Mathf.Lerp(startAngle, endAngle, progress); // invert progress for countdown
 
-        // Clamp to prevent overshooting
+        // Clamp to prevent overshoot
         angle = Mathf.Clamp(angle, startAngle, endAngle);
 
         arrowUI.localEulerAngles = new Vector3(0, 0, angle);
     }
+
 
     void ShowExitCanvas()
     {

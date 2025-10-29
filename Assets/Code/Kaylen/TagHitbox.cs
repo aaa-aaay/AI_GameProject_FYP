@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -40,8 +40,8 @@ public class TagHitbox : MonoBehaviour
             return;
         }
 
-        // notify CaptureManager if you still want counting (optional)
-        CaptureManager cm = FindFirstObjectByType<CaptureManager>();
+        // notify CaptureCheck if you still want counting (optional)
+        CaptureCheck cm = FindFirstObjectByType<CaptureCheck>();
         if (cm != null)
         {
             // if you want to count capture when picked up, uncomment:
