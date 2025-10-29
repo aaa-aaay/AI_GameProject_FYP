@@ -7,6 +7,7 @@ using UnityEngine;
 public class BadmintionGameManager : MonoBehaviour
 {
     [SerializeField] private int ScoreToWin = 21;
+    [SerializeField] private int _whoServesFirst = 1;
     public int player1Score = 0;
     public int player2Score = 0;
 
@@ -40,7 +41,7 @@ public class BadmintionGameManager : MonoBehaviour
         _P2ScoreDisplay.text = 0.ToString();
 
 
-        ToggleServe(1);
+        ToggleServe(_whoServesFirst);
         InRedCourt = true;
 
         foreach (Racket r in _rackets)
@@ -106,7 +107,7 @@ public class BadmintionGameManager : MonoBehaviour
         player1Score = player2Score = 0;
         _P2ScoreDisplay.text = player2Score.ToString();
         _P1ScoreDisplay.text = player1Score.ToString();
-        shutter.transform.position = shutterSpawnPoint1.position;
+        ToggleServe(_whoServesFirst);
         OnGameOver?.Invoke();
     }
 

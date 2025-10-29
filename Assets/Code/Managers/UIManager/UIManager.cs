@@ -19,6 +19,7 @@ public class UIManager : MonoBehaviour, IGameService
     private bool _levelCompleteCanvasOpen;
 
     private InputManager _inputManager;
+    private MiniGameSO _miniGame;
 
 
     private void OnEnable()
@@ -82,6 +83,15 @@ public class UIManager : MonoBehaviour, IGameService
         _levelFailedCanvas.SetActive(false);
         MySceneManager sManager = ServiceLocator.Instance.GetService<MySceneManager>();
         sManager.restartScene();
+    }
+
+    public void SetMiniGameForTutorial(MiniGameSO minigame)
+    {
+        _miniGame = minigame;
+    }
+    public MiniGameSO GetMiniGameForTutorial()
+    {
+        return _miniGame;
     }
 
 

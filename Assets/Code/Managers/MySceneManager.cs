@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class MySceneManager : MonoBehaviour, IGameService
 {
     [SerializeField] private string _gameLobbyName;
+    [SerializeField] private string _tutorialSceneName = "Tutorial";
 
 
     private void OnEnable()
@@ -23,10 +24,15 @@ public class MySceneManager : MonoBehaviour, IGameService
         ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
     }
 
+    public void LoadMiniGameWithTutorial(MiniGameSO minigame)
+    {
+        ServiceLocator.Instance.GetService<UIManager>().SetMiniGameForTutorial(minigame);
+        EventHolder.InvokeStartLoadScene(_tutorialSceneName);
+        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
+    }
+
     public void restartScene()
     {
-        //Debug.Log(SceneManager.GetActiveScene().name);
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
         EventHolder.InvokeStartLoadScene(SceneManager.GetActiveScene().name);
     }
