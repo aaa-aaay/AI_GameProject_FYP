@@ -1,79 +1,89 @@
 ﻿using UnityEngine;
-using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 
 public class TimerUI : MonoBehaviour
 {
     [Header("Timer Settings")]
-    public float maxTime = 30f;  
-    public TMP_Text timerText;    
-    public TMP_Text captureText;
+    public float maxTime = 30f;
+
     [Header("Exit UI")]
-    public CanvasGroup exitCanvasGroup;  
-    public float fadeDuration = 1f;      
-    public float displayDuration = 3f;   
+    public CanvasGroup exitCanvasGroup;
+    public float fadeDuration = 1f;
+    public float displayDuration = 3f;
 
     [Header("Exit Spawn Settings")]
-    public GameObject exitPrefab;       
-    public List<Transform> spawnPoints;   
+    public GameObject exitPrefab;
+    public List<Transform> spawnPoints;
+
+    [Header("Arrow UI")]
+    public RectTransform arrowUI;          // Rotating arrow
+    public List<GameObject> timerUIObjects;
 
     private float currentTime;
     private bool isRunning = false;
     private bool hasTriggeredExit = false;
-    private bool showingTimer = false;
+
     void Start()
     {
         ResetTimer();
-
         if (exitCanvasGroup != null)
             exitCanvasGroup.alpha = 0f;
 
-   
-        ShowCaptureCount();
+        SetTimerUIActive(false);
+        UpdateArrowRotation();
     }
 
     void Update()
     {
-        if (!isRunning || !showingTimer) return;
+        if (!isRunning)
+            return;
 
         currentTime -= Time.deltaTime;
-        timerText.text = Mathf.Ceil(currentTime).ToString();
+        if (currentTime < 0f) currentTime = 0f;
 
+        UpdateArrowRotation();
+
+        // Debug function
+        DebugCurrentTime();
+
+        // Trigger exit UI only once
         if (currentTime <= 0f && !hasTriggeredExit)
         {
-            currentTime = 0f;
-            isRunning = false;
             hasTriggeredExit = true;
+            isRunning = false;
 
             ShowExitCanvas();
             SpawnExit();
         }
     }
-    public void UpdateCaptureCount(int current, int total)
+
+    void UpdateArrowRotation()
     {
-        ShowCaptureCount();
-        if (captureText != null)
-            captureText.text = $"Captured: {current} / {total}";
+        if (arrowUI == null || maxTime <= 0f)
+            return;
+
+        // Normalize progress: 1 = full time, 0 = timer finished
+        float progress = Mathf.Clamp01(currentTime / maxTime);
+
+        // Top = 0°, Left = 90° (anti-clockwise)
+        float startAngle = 0f;    // Top
+        float endAngle = 90f;     // Left
+
+        // Interpolate anti-clockwise
+        float angle = Mathf.Lerp(startAngle, endAngle, 1f - progress);
+
+        // Clamp to prevent overshooting
+        angle = Mathf.Clamp(angle, startAngle, endAngle);
+
+        arrowUI.localEulerAngles = new Vector3(0, 0, angle);
     }
 
-    public void ShowCaptureCount()
-    {
-        showingTimer = false;
-        if (timerText != null) timerText.gameObject.SetActive(false);
-        if (captureText != null) captureText.gameObject.SetActive(true);
-    }
-    public void ShowTimer()
-    {
-        showingTimer = true;
-        if (captureText != null) captureText.gameObject.SetActive(false);
-        if (timerText != null) timerText.gameObject.SetActive(true);
-    }
     void ShowExitCanvas()
     {
         if (exitCanvasGroup == null)
         {
-            Debug.LogWarning("Exit CanvasGroup is not assigned!");
+            Debug.LogWarning("Exit CanvasGroup not assigned!");
             return;
         }
 
@@ -81,9 +91,8 @@ public class TimerUI : MonoBehaviour
         StartCoroutine(FadeExitCanvas());
     }
 
-    IEnumerator FadeExitCanvas() //Coroutine to fade in
+    IEnumerator FadeExitCanvas()
     {
-      
         float elapsed = 0f;
         while (elapsed < fadeDuration)
         {
@@ -93,11 +102,8 @@ public class TimerUI : MonoBehaviour
         }
 
         exitCanvasGroup.alpha = 1f;
-
-
         yield return new WaitForSeconds(displayDuration);
 
-   
         elapsed = 0f;
         while (elapsed < fadeDuration)
         {
@@ -117,10 +123,7 @@ public class TimerUI : MonoBehaviour
             return;
         }
 
-      
         Transform randomPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
-
-     
         Instantiate(exitPrefab, randomPoint.position, randomPoint.rotation);
         Debug.Log("Exit spawned at: " + randomPoint.name);
     }
@@ -129,8 +132,7 @@ public class TimerUI : MonoBehaviour
     {
         ResetTimer();
         isRunning = true;
-        hasTriggeredExit = false;
-        ShowTimer();
+        SetTimerUIActive(true);
     }
 
     public void StopTimer()
@@ -141,12 +143,28 @@ public class TimerUI : MonoBehaviour
     public void ResetTimer()
     {
         currentTime = maxTime;
-        timerText.text = Mathf.Ceil(currentTime).ToString();
         hasTriggeredExit = false;
 
         if (exitCanvasGroup != null)
             exitCanvasGroup.alpha = 0f;
+
+        UpdateArrowRotation();
     }
 
-    public float GetRemainingTime() => currentTime;
+    void SetTimerUIActive(bool state)
+    {
+        foreach (var obj in timerUIObjects)
+        {
+            if (obj != null)
+                obj.SetActive(state);
+        }
+    }
+
+    // Debug function to print current time
+    public void DebugCurrentTime()
+    {
+        Debug.Log($"[TimerUI] Current Time: {currentTime:F2}");
+    }
+
+public float GetRemainingTime() => currentTime;
 }

@@ -1,4 +1,4 @@
-using Unity.MLAgents;
+﻿using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
@@ -110,6 +110,7 @@ public class TaggerAgent : Agent
         float moveRight = actions.ContinuousActions[1];
         float jumpInput = actions.ContinuousActions[2];
 
+        // Rotation toward target (only visual)
         Vector3 direction = (target.position - transform.position).normalized;
         direction.y = 0f;
         if (direction.sqrMagnitude > 0.001f)
@@ -118,8 +119,20 @@ public class TaggerAgent : Agent
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.fixedDeltaTime * 10f);
         }
 
-        Vector3 move = (transform.forward * moveForward + transform.right * moveRight) * moveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(transform.position + move);
+        // Movement input
+        Vector3 moveDir = (transform.forward * moveForward + transform.right * moveRight).normalized;
+        Vector3 move = moveDir * moveSpeed;
+
+        if (agentMode == AgentMode.Inference)
+        {
+            // ✅ Use velocity-based movement for real physics collisions
+            rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
+        }
+        else
+        {
+            // ✅ Use MovePosition only during training for smoother results
+            rb.MovePosition(transform.position + move * Time.fixedDeltaTime);
+        }
 
         // Jump
         if (jumpInput > 0.5f && isGrounded)
@@ -128,13 +141,19 @@ public class TaggerAgent : Agent
             isGrounded = false;
         }
 
+        // Apply custom gravity if not grounded
+        if (!isGrounded)
+        {
+            rb.AddForce(Physics.gravity * gravity, ForceMode.Acceleration);
+        }
+
+        // ===== REWARDS (Training Only) =====
         if (agentMode == AgentMode.Training)
         {
             float prevDistance = Vector3.Distance(lastPosition, target.position);
             float newDistance = Vector3.Distance(transform.position, target.position);
             AddReward(approachReward * (prevDistance - newDistance));
 
-            // Reward for being at similar height
             float heightDiff = Mathf.Abs(transform.position.y - target.position.y);
             if (heightDiff < 0.5f)
                 AddReward(sameHeightReward);
@@ -149,6 +168,7 @@ public class TaggerAgent : Agent
 
         lastPosition = transform.position;
     }
+
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {

@@ -1,28 +1,30 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Teleporter : MonoBehaviour
 {
     [Header("Teleport Target")]
-    public Transform targetPosition; 
+    public Transform targetPosition;
 
-    [Header("UI Reference")]
-    public GameObject captureText; 
+    [Header("Objects to Show/Hide")]
+    public List<GameObject> objectsToActivate; // List of objects to activate
 
     private bool hasActivated = false;
 
     private void Start()
     {
-        
-        if (captureText != null)
-            captureText.SetActive(false);
+        // Ensure everything starts hidden if desired
+        foreach (var obj in objectsToActivate)
+        {
+            if (obj != null)
+                obj.SetActive(false);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-     
         if (hasActivated) return;
 
-        
         if (other.CompareTag("Runner"))
         {
             // Teleport Runner
@@ -32,12 +34,14 @@ public class Teleporter : MonoBehaviour
                 Debug.Log($"{other.name} teleported to {targetPosition.position}");
             }
 
-          
-            if (captureText != null)
+            // Activate all assigned objects
+            foreach (var obj in objectsToActivate)
             {
-                captureText.SetActive(true);
+                if (obj != null)
+                    obj.SetActive(true);
             }
 
+         
             hasActivated = true;
         }
     }
