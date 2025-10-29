@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,7 +39,11 @@ public class GoalChecker : MonoBehaviour
             {
                 _raceOver = true;
                 OnRaceFinished?.Invoke();
-                Debug.Log("race over");
+
+                if (_raceManager.isDebugMood)
+                {
+                    HideCarAfterAwhile();
+                }
                 //race over for this car
             }
             currentCheckPointNo = 0;
@@ -76,5 +81,11 @@ public class GoalChecker : MonoBehaviour
     public Transform GetCurrentCheckPoint()
     {
         return currentCheckPoint;
+    }
+
+    IEnumerator HideCarAfterAwhile()
+    {
+        yield return new WaitForSeconds(2f);
+        transform.parent.gameObject.SetActive(false);
     }
 }

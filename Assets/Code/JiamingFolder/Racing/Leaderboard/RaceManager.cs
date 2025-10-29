@@ -10,8 +10,10 @@ public class RaceManager : MonoBehaviour
     public Transform raceGoalTrans;
     private List<Transform> _startPositions = new List<Transform>();
 
+    [Header("Race Settings")]
+    public bool isDebugMood;
     public int lapsPerRace = 3;
-    public int amtofCheckpoints;
+    [HideInInspector] public int amtofCheckpoints;
     private List<GoalChecker> _racers = new List<GoalChecker>();
     [HideInInspector]public List<Transform> checkPoints = new List<Transform>();
 
@@ -79,16 +81,19 @@ public class RaceManager : MonoBehaviour
 
     private void handleCarFinsih()
     {
-        //finishedRacers++;
 
-        //if (finishedRacers >= _racers.Count)
-        //{
+        if (!isDebugMood) return;
 
-        //    onRaceOver?.Invoke();
-        //    //restart or end    
-        //    Restart();
+        finishedRacers++;
 
-        //}
+        if (finishedRacers >= _racers.Count)
+        {
+
+            onRaceOver?.Invoke();
+            //restart or end    
+            Restart();
+
+        }
     }
 
     private void Restart()
@@ -116,11 +121,6 @@ public class RaceManager : MonoBehaviour
 
     }
 
-    public void EndRace()
-    {
-        onRaceOver?.Invoke();
-        Restart();
-    }
 
 
 }
