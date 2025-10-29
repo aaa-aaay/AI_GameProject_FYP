@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 public class archery_player : MonoBehaviour
 {
     [Header("Input")]
     [SerializeField] private InputActionAsset inputActions;
+
+    private archery_handler handler;
+    private archery_settings settings;
 
     private bool isTurn;
 
@@ -20,8 +24,13 @@ public class archery_player : MonoBehaviour
     private float minPitch;
     private float maxPitch;
 
-    private archery_handler handler;
-    private archery_settings settings;
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private AnimationClip aimAnim;
+    [SerializeField] private PositionConstraint stringConstraint;
+    [SerializeField] private Transform spine;
+
+    private Vector3 spineRotation;
 
     public float force { get; private set; }
     public float yaw { get; private set; }
@@ -57,6 +66,8 @@ public class archery_player : MonoBehaviour
             Debug.LogWarning("maxPitch (" + maxPitch + ") less than minPitch (" + minPitch + "). maxPitch set to minPitch.");
             maxPitch = minPitch;
         }
+
+        spineRotation = spine.rotation.eulerAngles;
 
         StartTurn();
     }
@@ -97,5 +108,15 @@ public class archery_player : MonoBehaviour
         }
 
         handler.UpdateUI(force, yaw, pitch);
+
+        animator.enabled = true;
+        stringConstraint.constraintActive = true;
+        float normalizedForce = Mathf.InverseLerp(minForce, maxForce, force);
+        animator.speed = 0f;
+        animator.Play(aimAnim.name, 0, normalizedForce);
+        animator.Update(0f);
+        animator.enabled = false;
+
+        spine.localRotation = Quaternion.Euler(spineRotation.x, spineRotation.y + 20f + yaw, spineRotation.z - pitch);
     }
 }
