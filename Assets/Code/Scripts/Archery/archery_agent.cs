@@ -143,6 +143,7 @@ public class archery_agent : Agent
             isTurn = false;
             shoot = true;
             handler.Shoot(force, yaw, pitch);
+            return;
         }
 
         float newDistance = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding);

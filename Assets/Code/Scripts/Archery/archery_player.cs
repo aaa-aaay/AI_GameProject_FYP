@@ -105,6 +105,7 @@ public class archery_player : MonoBehaviour
             handler.Shoot(force, yaw, pitch);
             isTurn = false;
             archeryMap.Disable();
+            return;
         }
 
         handler.UpdateUI(force, yaw, pitch);
