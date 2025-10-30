@@ -29,6 +29,9 @@ public class CaptureCheck : MonoBehaviour
     public float fadeDuration = 1.5f;
     public float blackHoldDuration = 3f;
 
+    [Header("Tagger Settings")]
+    public float playerHeadStartTime = 3f; // seconds before taggers start moving
+
     private bool movementWasDisabled = false;
 
     void Start()
@@ -90,34 +93,48 @@ public class CaptureCheck : MonoBehaviour
         foreach (var obj in objectsToShow)
             if (obj != null) obj.SetActive(true);
 
-        // Fade transition
+        // Fade to black first
         if (fadeScreen != null)
         {
             Debug.Log("Fading to black...");
             yield return StartCoroutine(FadeToBlack());
-            yield return new WaitForSeconds(blackHoldDuration);
+        }
+
+        // Spawn taggers while screen is black
+        yield return StartCoroutine(SpawnTaggers());
+
+        // Keep screen black for a bit (blackHoldDuration)
+        yield return new WaitForSeconds(blackHoldDuration);
+
+        // Fade back in
+        if (fadeScreen != null)
+        {
             Debug.Log("Fading back in...");
             yield return StartCoroutine(FadeFromBlack());
         }
 
-        // Spawn taggers after fade
-        yield return StartCoroutine(SpawnTaggers());
-
-        // Re-enable player & start timer
+        // Re-enable player movement and start timer immediately
         DisablePlayerMovement(false);
 
         if (timerUI != null)
         {
             timerUI.StartTimer();
-            Debug.Log("Timer started after taggers spawned");
+            Debug.Log("Timer started after fade-in");
         }
+
+        // Give player head start before taggers move
+        Debug.Log($"Player head start for {playerHeadStartTime} seconds...");
+        yield return new WaitForSeconds(playerHeadStartTime);
+
+        // Enable taggers after head start
+        EnableAllTaggers();
     }
+
 
     private void DisablePlayerMovement(bool disable)
     {
         if (playerMovement == null) return;
 
-        // Try to find a known flag or fallback to enabling/disabling component
         var moveComponent = playerMovement.GetComponent<PlayerMovement>();
         if (moveComponent != null)
         {
@@ -179,8 +196,25 @@ public class CaptureCheck : MonoBehaviour
 
             GameObject spawned = Instantiate(taggerPrefab, spawnPos, spawnRot);
             spawned.SetActive(true);
+
+            // Temporarily disable movement or AI
+            var ai = spawned.GetComponent<TaggerAgent>();
+            if (ai != null)
+                ai.enabled = false;
+
             Debug.Log($"Spawned tagger {i + 1} at {spawnPos}");
             yield return null;
         }
     }
+
+    private void EnableAllTaggers()
+    {
+        TaggerAgent[] taggers = FindObjectsByType<TaggerAgent>(FindObjectsSortMode.None);
+        foreach (var tagger in taggers)
+        {   
+            tagger.enabled = true;
+        }
+        Debug.Log("All taggers activated after head start");
+    }
+
 }
