@@ -5,6 +5,7 @@ public class LeaderboardEntry : MonoBehaviour
 {
     [SerializeField] private TMP_Text displayName;
     [SerializeField] private TMP_Text displayTimer;
+    [SerializeField] private TMP_Text displayRank;
 
 
     private void SetEntryData(string displayName, float timer)
