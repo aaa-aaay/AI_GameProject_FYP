@@ -4,8 +4,8 @@ using TMPro; // For TextMeshPro
 public class Trigger : MonoBehaviour
 {
     [TextArea]
-    public string tutorialMessage;
-    public TextMeshProUGUI tutorialText; 
+    public string tutorialMessage; // Different message for each trigger
+    public TextMeshProUGUI tutorialText; // Reference to UI text
 
     private void OnTriggerEnter(Collider other)
     {

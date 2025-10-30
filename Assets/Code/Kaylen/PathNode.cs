@@ -7,16 +7,16 @@ public class PathNode : MonoBehaviour
     public List<PathNode> neighbors = new List<PathNode>();
 
     [Header("Gizmo Settings")]
-    public Color idleColor = Color.gray;      
-    public Color activeColor = Color.green;  
+    public Color idleColor = Color.gray;      // Default color
+    public Color activeColor = Color.green;   // Runner is heading here
     public float nodeRadius = 0.3f;
 
     private void OnDrawGizmos()
     {
-     
+        // Find the runner in the scene
         Runner runner = FindFirstObjectByType<Runner>();
 
-   
+        // Decide color
         Color drawColor = idleColor;
         if (runner != null && runner.path != null && runner.pathIndex < runner.path.Count)
         {
@@ -26,7 +26,7 @@ public class PathNode : MonoBehaviour
             }
         }
 
-     
+        // Draw this node
         Gizmos.color = drawColor;
         Gizmos.DrawSphere(transform.position, nodeRadius);
 
