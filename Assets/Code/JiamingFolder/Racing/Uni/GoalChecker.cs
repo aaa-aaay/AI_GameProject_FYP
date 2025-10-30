@@ -8,18 +8,20 @@ public class GoalChecker : MonoBehaviour
 
 
     [SerializeField] RaceManager _raceManager;
+    [SerializeField] private string  _name = "hello";
 
-
+    private Timer _timer;
     private int currentLap = 0;
     public int currentCheckPointNo;
     private bool _raceOver = false;
-    public event Action OnRaceFinished;
+    public event Action<string, float> OnRaceFinished;
     public event Action onCheckPointHit;
 
     public Transform currentCheckPoint;
 
     private void Start()
     {
+        _timer = GetComponent<Timer>();
         ResetCar();
         
     }
@@ -38,9 +40,9 @@ public class GoalChecker : MonoBehaviour
             if (currentLap >= _raceManager.lapsPerRace)
             {
                 _raceOver = true;
-                OnRaceFinished?.Invoke();
+                OnRaceFinished?.Invoke(_name, _timer.StopTimer());
 
-                if (_raceManager.isDebugMood)
+                if (!_raceManager.isDebugMood)
                 {
                     HideCarAfterAwhile();
                 }
@@ -76,6 +78,7 @@ public class GoalChecker : MonoBehaviour
         currentLap = 0;
         currentCheckPointNo = 0;
         currentCheckPoint = _raceManager.checkPoints[currentCheckPointNo];
+        _timer.StartTimer();
     }
 
     public Transform GetCurrentCheckPoint()

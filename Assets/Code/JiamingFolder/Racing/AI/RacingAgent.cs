@@ -28,7 +28,7 @@ public class RacingAgent : Agent
         _carPositionResetter = _car.GetComponent<ResetCarPosition>();
 
         //_manager.onRaceOver += HandleRaceOver;
-        _goalChecker.OnRaceFinished += HandleRaceOver;
+        _goalChecker.OnRaceFinished += AiFinishedRace;
         _goalChecker.onCheckPointHit += HandleCPHit;
 
         
@@ -89,7 +89,7 @@ public class RacingAgent : Agent
         _raceTimer = TimeToReachNextCheckpoint;
     }
 
-    private void HandleRaceOver()
+    private void AiFinishedRace(string name, float timetaken)
     {
         Debug.Log("rewarded for ending the race");
         AddReward(0.5f);

@@ -7,6 +7,7 @@ public class RaceManager : MonoBehaviour
     [SerializeField] GameObject _RacersGO;
     [SerializeField] GameObject _checkPointHolderGO;
     [SerializeField] GameObject _startPosHolderGO;
+    [SerializeField] private RacingLeaderboard _leaderboard;
     public Transform raceGoalTrans;
     private List<Transform> _startPositions = new List<Transform>();
 
@@ -20,7 +21,7 @@ public class RaceManager : MonoBehaviour
    
     private int finishedRacers = 0;
 
-    public event Action onRaceOver;
+    public event Action OnResetRace;
 
     private void Awake()
     {
@@ -37,7 +38,7 @@ public class RaceManager : MonoBehaviour
             if(gc != null)
             {
                 _racers.Add(gc);
-                gc.OnRaceFinished += handleCarFinsih;
+                gc.OnRaceFinished += HandleCarfinishRace;
             }
 
             //set start positions
@@ -74,23 +75,21 @@ public class RaceManager : MonoBehaviour
     {
         foreach(GoalChecker gc in _racers)
         {
-            gc.OnRaceFinished -= handleCarFinsih;
+            gc.OnRaceFinished -= HandleCarfinishRace;
         }
         _racers.Clear();
     }
 
-    private void handleCarFinsih()
+    private void HandleCarfinishRace(string name, float timeTaken)
     {
 
-        if (!isDebugMood) return;
+        if (isDebugMood) return;
 
         finishedRacers++;
-
+        _leaderboard.AddLeaderboardData(name, timeTaken);
         if (finishedRacers >= _racers.Count)
         {
-
-            onRaceOver?.Invoke();
-            //restart or end    
+            //restart or end
             Restart();
 
         }
@@ -98,29 +97,14 @@ public class RaceManager : MonoBehaviour
 
     private void Restart()
     {
+        OnResetRace?.Invoke();
         finishedRacers = 0;
-
-
-        //Reset all cars in thier own scripts
-
-
-        //foreach (GoalChecker gc in _racers)
-        //{
-        //    gc.ResetCar();
-        //}
-
-
-
-
-        //foreach(Transform child in _RacersGO.transform)
-        //{
-        //    int index = child.GetSiblingIndex();
-        //    if (_startPositions[index] != null)
-        //        child.position = _startPositions[index].position;
-        //}
 
     }
 
-
+    public void OpenLeaderBoard()
+    {
+       _leaderboard.ShowLeaderBoard();
+    }
 
 }

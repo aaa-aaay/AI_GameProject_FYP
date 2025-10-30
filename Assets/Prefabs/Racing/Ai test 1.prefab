@@ -204,6 +204,7 @@ GameObject:
   - component: {fileID: 2003670635404999203}
   - component: {fileID: 2631119172837093133}
   - component: {fileID: 7076317629059755043}
+  - component: {fileID: 3279122110747853017}
   m_Layer: 2
   m_Name: Collider
   m_TagString: Untagged
@@ -287,6 +288,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _raceManager: {fileID: 0}
+  _name: AI
   currentCheckPointNo: 0
   currentCheckPoint: {fileID: 0}
 --- !u!114 &7076317629059755043
@@ -302,6 +304,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _carMesh: {fileID: 5002010312035608921}
+--- !u!114 &3279122110747853017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3310366995779990104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34425793c75ac8d429aa8a89ad1e3b7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3324147677758647370
 GameObject:
   m_ObjectHideFlags: 0
