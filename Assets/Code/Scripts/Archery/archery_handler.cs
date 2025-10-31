@@ -156,7 +156,7 @@ public class archery_handler : MonoBehaviour
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
 
-        targetObject.transform.position = playerObject.transform.position + new Vector3(lateralDistance, 1, targetDistance);
+        targetObject.transform.position = playerObject.transform.position + new Vector3(lateralDistance, 2.5f, targetDistance);
 
         yield return new WaitForSeconds(3f + cameraStay);
 
@@ -177,7 +177,7 @@ public class archery_handler : MonoBehaviour
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
 
-        targetObject.transform.position = agentObject.transform.position + new Vector3(lateralDistance, 1, targetDistance);
+        targetObject.transform.position = agentObject.transform.position + new Vector3(lateralDistance, 2.5f, targetDistance);
 
         yield return new WaitForSeconds(3f + cameraStay);
 
