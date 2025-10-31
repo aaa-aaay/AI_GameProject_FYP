@@ -29,6 +29,7 @@ public class archery_player : MonoBehaviour
     [SerializeField] private AnimationClip aimAnim;
     [SerializeField] private PositionConstraint stringConstraint;
     [SerializeField] private Transform spine;
+    [SerializeField] private Transform bow;
     [SerializeField] private Transform arrow;
 
     private Vector3 spineRotation;
@@ -107,7 +108,7 @@ public class archery_player : MonoBehaviour
 
         if (shoot.triggered)
         {
-            handler.Shoot(force, yaw, pitch);
+            handler.Shoot(bow.position, force, yaw, pitch);
             isTurn = false;
             archeryMap.Disable();
             stringConstraint.constraintActive = false;
@@ -116,7 +117,7 @@ public class archery_player : MonoBehaviour
             return;
         }
 
-        handler.UpdateUI(force, yaw, pitch);
+        handler.UpdateUI(bow.position, force, yaw, pitch);
 
         animator.enabled = true;
         float normalizedForce = Mathf.InverseLerp(minForce, maxForce, force);

@@ -147,6 +147,28 @@ public class archery_handler : MonoBehaviour
         Debug.Log($"Force: {force}\tYaw: {yaw}\tPitch: {pitch}");
     }
 
+    public void Shoot(Vector3 position, float force, float yaw, float pitch)
+    {
+        if (!canShoot) return;
+        canShoot = false;
+
+        playerLeftCamera.enabled = false;
+        playerRightCamera.enabled = false;
+
+        arrows[currentArrow].transform.position = position;
+
+        arrows[currentArrow].transform.rotation = Quaternion.identity;
+        arrows[currentArrow].gameObject.SetActive(true);
+
+        arrows[currentArrow].Shoot(force, yaw, pitch, windDirection, windSpeed);
+
+        arrowCamera.Target.TrackingTarget = arrows[currentArrow].transform;
+        arrowCamera.enabled = true;
+
+        preview.Hide();
+        Debug.Log($"Force: {force}\tYaw: {yaw}\tPitch: {pitch}");
+    }
+
     private IEnumerator PlayerTurn()
     {
         playerLeftCamera.Target.TrackingTarget = playerObject.transform;
@@ -248,6 +270,24 @@ public class archery_handler : MonoBehaviour
         }
 
         estimateLanding = preview.ShowPath(force, yaw, pitch, windDirection, windSpeed);
+    }
+
+    public void UpdateUI(Vector3 position, float force, float yaw, float pitch)
+    {
+        uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed, targetDistance, lateralDistance);
+
+        if (yaw >= 0)
+        {
+            playerLeftCamera.enabled = false;
+            playerRightCamera.enabled = true;
+        }
+        else
+        {
+            playerRightCamera.enabled = false;
+            playerLeftCamera.enabled = true;
+        }
+
+        estimateLanding = preview.ShowPath(position, force, yaw, pitch, windDirection, windSpeed);
     }
 
     private IEnumerator ReturnCamera()
