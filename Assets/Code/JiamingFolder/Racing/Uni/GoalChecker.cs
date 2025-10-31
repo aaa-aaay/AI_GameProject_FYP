@@ -40,6 +40,7 @@ public class GoalChecker : MonoBehaviour
             if (currentLap >= _raceManager.lapsPerRace)
             {
                 _raceOver = true;
+                Debug.Log(_timer.StopTimer());
                 OnRaceFinished?.Invoke(_name, _timer.StopTimer());
 
                 if (!_raceManager.isDebugMood)

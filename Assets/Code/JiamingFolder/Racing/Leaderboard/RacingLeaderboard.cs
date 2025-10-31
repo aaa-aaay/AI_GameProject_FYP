@@ -1,12 +1,14 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RacingLeaderboard : MonoBehaviour
 {
     [SerializeField] private GameObject leaderboardUI;
     [SerializeField] private GameObject LeaderboardPanelEntries;
+    [SerializeField] private Color _playerPanelColor;
     private List<LeaderboardEntry> _entries;
+
 
     private int displayCounter = 0;
 
@@ -28,6 +30,13 @@ public class RacingLeaderboard : MonoBehaviour
 
         if (displayCounter > _entries.Count) return;
         _entries[displayCounter].SetEntryData(racerName, raceTime);
+
+        if (racerName.Contains("you"))
+        {
+            _entries[displayCounter].gameObject.GetComponent<Image>().color = _playerPanelColor;
+
+        }
+
         displayCounter++;
     }
 

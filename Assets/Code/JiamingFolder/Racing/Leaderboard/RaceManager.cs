@@ -46,12 +46,6 @@ public class RaceManager : MonoBehaviour
             child.position = _startPositions[_racers.Count - 1].position;
 
 
-            //playing SFX 
-            ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("TestSound", transform.position);
-            //playing BGM
-            ServiceLocator.Instance.GetService<AudioManager>().PlayBackgroundMusic("TestSound");
-
-
         }
 
         foreach(Transform cp in _checkPointHolderGO.transform)
