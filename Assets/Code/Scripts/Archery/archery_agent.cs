@@ -3,9 +3,11 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using System.Collections;
+using UnityEngine.Animations;
 
 public class archery_agent : Agent
 {
+    [Header("AI")]
     [SerializeField] private float minAimTime = 2f;
     private bool isTurn;
 
@@ -28,6 +30,17 @@ public class archery_agent : Agent
 
     private float lastDistance;
 
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private AnimationClip aimAnim;
+    [SerializeField] private PositionConstraint stringConstraint;
+    [SerializeField] private Transform spine;
+    [SerializeField] private Transform bow;
+    [SerializeField] private Transform arrow;
+
+    private Vector3 spineRotation;
+    private Vector3 stringOrigin;
+
     public override void Initialize()
     {
         isTurn = false;
@@ -40,12 +53,17 @@ public class archery_agent : Agent
         maxYaw = settings.maxYaw;
         minPitch = settings.minPitch;
         maxPitch = settings.maxPitch;
+
+        spineRotation = spine.rotation.eulerAngles;
+        stringOrigin = stringConstraint.transform.localPosition;
     }
 
     public void StartTurn()
     {
         isTurn = true;
         lastDistance = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding);
+        stringConstraint.constraintActive = true;
+        arrow.gameObject.SetActive(true);
         decisionRequester.enabled = true;
     }
 
@@ -141,8 +159,11 @@ public class archery_agent : Agent
 
             decisionRequester.enabled = false;
             isTurn = false;
+            stringConstraint.constraintActive = false;
+            stringConstraint.transform.localPosition = stringOrigin;
+            arrow.gameObject.SetActive(false);
             shoot = true;
-            handler.Shoot(force, yaw, pitch);
+            handler.Shoot(bow.position, force, yaw, pitch);
             return;
         }
 
@@ -150,7 +171,16 @@ public class archery_agent : Agent
         AddReward((lastDistance - newDistance));
         lastDistance = newDistance;
 
-        handler.UpdateUI(force, yaw, pitch);
+        handler.UpdateUI(bow.position, force, yaw, pitch);
+
+        animator.enabled = true;
+        float normalizedForce = Mathf.InverseLerp(minForce, maxForce, force);
+        animator.speed = 0f;
+        animator.Play(aimAnim.name, 0, normalizedForce);
+        animator.Update(0f);
+        animator.enabled = false;
+
+        spine.localRotation = Quaternion.Euler(spineRotation.x, spineRotation.y + 20f + yaw, spineRotation.z - pitch);
     }
 
     public void OnHit(float point)
