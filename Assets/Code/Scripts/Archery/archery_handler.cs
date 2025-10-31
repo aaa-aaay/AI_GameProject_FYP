@@ -1,7 +1,6 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections;
-using UnityEngine.Rendering;
 
 public class archery_handler : MonoBehaviour
 {
@@ -122,31 +121,6 @@ public class archery_handler : MonoBehaviour
         }
     }
 
-    public void Shoot(float force, float yaw, float pitch)
-    {
-        if (!canShoot) return;
-        canShoot = false;
-
-        playerLeftCamera.enabled = false;
-        playerRightCamera.enabled = false;
-
-        if (isPlayerTurn)
-            arrows[currentArrow].transform.position = playerObject.transform.position;
-        else
-            arrows[currentArrow].transform.position = agentObject.transform.position;
-
-        arrows[currentArrow].transform.rotation = Quaternion.identity;
-        arrows[currentArrow].gameObject.SetActive(true);
-
-        arrows[currentArrow].Shoot(force, yaw, pitch, windDirection, windSpeed);
-
-        arrowCamera.Target.TrackingTarget = arrows[currentArrow].transform;
-        arrowCamera.enabled = true;
-
-        preview.Hide();
-        Debug.Log($"Force: {force}\tYaw: {yaw}\tPitch: {pitch}");
-    }
-
     public void Shoot(Vector3 position, float force, float yaw, float pitch)
     {
         if (!canShoot) return;
@@ -252,24 +226,6 @@ public class archery_handler : MonoBehaviour
         }
 
         StartCoroutine(ReturnCamera());
-    }
-
-    public void UpdateUI(float force, float yaw, float pitch)
-    {
-        uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed, targetDistance, lateralDistance);
-
-        if (yaw >= 0)
-        {
-            playerLeftCamera.enabled = false;
-            playerRightCamera.enabled = true;
-        }
-        else
-        {
-            playerRightCamera.enabled = false;
-            playerLeftCamera.enabled = true;
-        }
-
-        estimateLanding = preview.ShowPath(force, yaw, pitch, windDirection, windSpeed);
     }
 
     public void UpdateUI(Vector3 position, float force, float yaw, float pitch)
