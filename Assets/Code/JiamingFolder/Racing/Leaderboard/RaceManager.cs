@@ -81,6 +81,7 @@ public class RaceManager : MonoBehaviour
 
         finishedRacers++;
         _leaderboard.AddLeaderboardData(name, timeTaken);
+        Debug.Log("racers finished");
         if (finishedRacers >= _racers.Count)
         {
             //restart or end
@@ -98,7 +99,7 @@ public class RaceManager : MonoBehaviour
 
     public void OpenLeaderBoard()
     {
-       _leaderboard.ShowLeaderBoard();
+        if(!isDebugMood) _leaderboard.ShowLeaderBoard();
     }
 
 }

@@ -2,6 +2,8 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 
 public class RacingAgent : Agent
 {
@@ -75,7 +77,7 @@ public class RacingAgent : Agent
     {
 
         //Movement(actions.DiscreteActions);
-        Movement(actions.ContinuousActions);
+        Movement(actions.ContinuousActions, actions.DiscreteActions);
         //rewardForGettingCloser();
         AddReward(-0.001f); //avoid stalling
     }
@@ -98,14 +100,24 @@ public class RacingAgent : Agent
 
 
 
-    private void Movement(ActionSegment<float> act)
+    private void Movement(ActionSegment<float> act, ActionSegment<int> disAct)
     {
         float horizontal = Mathf.Clamp(act[0], -1f, 1f);
         float vertical = Mathf.Clamp01(act[1]);
         Vector2 inputDir = new Vector2(horizontal, vertical);
         inputDir = Vector2.ClampMagnitude(inputDir, 1f); // normalize if needed
 
+
         _carMovement.MoveCar(inputDir);
+
+
+        if (Mathf.Abs(inputDir.x) > 0.01f)
+        {
+            bool toDrift = disAct[0] == 1;
+            if (disAct[0] == 0) toDrift = false;
+            else if (disAct[0] == 1) toDrift = true;
+            _carMovement.ToggleDrifting(toDrift, inputDir.x);
+        }
 
     }
 
@@ -114,12 +126,23 @@ public class RacingAgent : Agent
     {
 
         var continuousActions = actionsOut.ContinuousActions;
+        var DiscreteActions = actionsOut.DiscreteActions;
 
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
         continuousActions[0] = horizontal;
         continuousActions[1] = Input.GetKey(KeyCode.W)? 1f: 0f;
+
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+
+            DiscreteActions[0] = 1;
+        }
+        else
+        {
+            DiscreteActions[0] = 0;
+        }
 
     }
 

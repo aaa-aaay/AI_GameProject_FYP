@@ -35,10 +35,6 @@ public class BetterCarMovement : MonoBehaviour
     int driftMode = 0;
     bool first, second, third;
 
-    private void Update()
-    {
-        // Currently empty — could be used for camera or VFX updates later
-    }
 
     public void MoveCar(Vector2 inputDir)
     {
@@ -133,7 +129,7 @@ public class BetterCarMovement : MonoBehaviour
     {
         // Apply forward and downward forces
         if (drifting)
-            sphere.AddForce(-kartModel.transform.right * currentSpeed, ForceMode.Acceleration);
+            sphere.AddForce(kartModel.transform.right * -driftDirection * currentSpeed, ForceMode.Acceleration);
         else
             sphere.AddForce(transform.forward * currentSpeed, ForceMode.Acceleration);
 
