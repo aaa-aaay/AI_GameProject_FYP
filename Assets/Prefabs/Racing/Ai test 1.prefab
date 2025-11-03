@@ -539,7 +539,7 @@ MonoBehaviour:
   _leftWheelPivot: {fileID: 8372085118313157737}
   _backWheel: {fileID: 9147586903062449905}
   sphere: {fileID: 2003670635404999203}
-  acceleration: 30
+  acceleration: 40
   steering: 10
   gravity: 10
   offsetPos: {x: 0, y: 0.7, z: 0}
@@ -563,12 +563,12 @@ MonoBehaviour:
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
-      BranchSizes: 02000000
-    VectorActionSize: 
+      BranchSizes: 
+    VectorActionSize: 02000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: 2cd8bc4ce37ec5e40b601450ddc8aa2e, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: RacingBehaviour

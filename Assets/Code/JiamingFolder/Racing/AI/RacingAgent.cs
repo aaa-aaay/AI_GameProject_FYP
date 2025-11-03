@@ -111,13 +111,13 @@ public class RacingAgent : Agent
         _carMovement.MoveCar(inputDir);
 
 
-        if (Mathf.Abs(inputDir.x) > 0.01f)
-        {
-            bool toDrift = disAct[0] == 1;
-            if (disAct[0] == 0) toDrift = false;
-            else if (disAct[0] == 1) toDrift = true;
-            _carMovement.ToggleDrifting(toDrift, inputDir.x);
-        }
+        //if (Mathf.Abs(inputDir.x) > 0.01f)
+        //{
+        //    bool toDrift = disAct[0] == 1;
+        //    if (disAct[0] == 0) toDrift = false;
+        //    else if (disAct[0] == 1) toDrift = true;
+        //    _carMovement.ToggleDrifting(toDrift, inputDir.x);
+        //}
 
     }
 
@@ -134,15 +134,15 @@ public class RacingAgent : Agent
         continuousActions[0] = horizontal;
         continuousActions[1] = Input.GetKey(KeyCode.W)? 1f: 0f;
 
-        if(Input.GetKey(KeyCode.LeftShift))
-        {
+        //if(Input.GetKey(KeyCode.LeftShift))
+        //{
 
-            DiscreteActions[0] = 1;
-        }
-        else
-        {
-            DiscreteActions[0] = 0;
-        }
+        //    DiscreteActions[0] = 1;
+        //}
+        //else
+        //{
+        //    DiscreteActions[0] = 0;
+        //}
 
     }
 

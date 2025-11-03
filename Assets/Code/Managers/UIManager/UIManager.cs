@@ -18,6 +18,10 @@ public class UIManager : MonoBehaviour, IGameService
     [SerializeField] private GameObject _levelFailedCanvas;
     private bool _levelCompleteCanvasOpen;
 
+    [Header("UI References")]
+    [SerializeField] private CountDownTimer _countDownTimer;
+
+
     private InputManager _inputManager;
     private MiniGameSO _miniGame;
 
@@ -92,6 +96,12 @@ public class UIManager : MonoBehaviour, IGameService
     public MiniGameSO GetMiniGameForTutorial()
     {
         return _miniGame;
+    }
+
+
+    public void StartCountDownTimer()
+    {
+        _countDownTimer.StartCountDown();
     }
 
 
