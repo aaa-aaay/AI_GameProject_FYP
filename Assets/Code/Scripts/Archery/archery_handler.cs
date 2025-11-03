@@ -108,6 +108,7 @@ public class archery_handler : MonoBehaviour
 
         player.Initialize();
         agent.enabled = true;
+        uiHandler.init_value(settings.maxForce, settings.minForce, settings.winningPoint);
 
         if (!isAiTraining)
         {
@@ -230,7 +231,7 @@ public class archery_handler : MonoBehaviour
 
     public void UpdateUI(Vector3 position, float force, float yaw, float pitch)
     {
-        uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed, targetDistance, lateralDistance);
+        uiHandler.set_value(force);
 
         if (yaw >= 0)
         {
