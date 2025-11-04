@@ -12,11 +12,9 @@ GameObject:
   - component: {fileID: 7117327408746972205}
   - component: {fileID: 2710140942353838642}
   - component: {fileID: 5735393070133259025}
-  - component: {fileID: 7257861191574786740}
   - component: {fileID: 5035428469042578162}
-  - component: {fileID: 3910872509164491652}
   m_Layer: 0
-  m_Name: Runner
+  m_Name: RunnerModel
   m_TagString: Runner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -111,31 +109,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!143 &7257861191574786740
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8473630158800863427}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 1
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &5035428469042578162
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -163,21 +136,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3910872509164491652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8473630158800863427}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a4c5cebe3cf4d540b0396a0bbe04463, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentState: 0
-  moveSpeed: 5
-  nodeReachThreshold: 0.5
-  dangerRadius: 5
-  tagger: {fileID: 9122570940303592355, guid: d5a187f12ef84ad41bf6aeb319bc5004, type: 3}
-  allNodes: []

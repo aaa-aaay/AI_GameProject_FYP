@@ -86,30 +86,30 @@ public class PongFSM : MonoBehaviour
         return distance;
     }
 
-    protected Vector3 PredictPositionAtZ(Vector3 other, Vector3 velocity, float expected_z)
+    protected Vector3 PredictPositionAtZ(Vector3 other, Vector3 linearVelocity, float expected_z)
     {
         Vector3 temp = Vector3.zero;
 
-        float time_taken = (expected_z - other.z) / velocity.z;
+        float time_taken = (expected_z - other.z) / linearVelocity.z;
 
-        temp.x = other.x + velocity.x * time_taken;
+        temp.x = other.x + linearVelocity.x * time_taken;
         temp.y = other.y;
         temp.z = expected_z;
 
         return temp;
     }
 
-    protected Vector3 PredictPositionAtX(Vector3 other, Vector3 velocity, float expected_x)
+    protected Vector3 PredictPositionAtX(Vector3 other, Vector3 linearVelocity, float expected_x)
     {
         Vector3 temp = Vector3.zero;
 
-        velocity = velocity.normalized;
+        linearVelocity = linearVelocity.normalized;
 
-        float time_taken = (expected_x - other.x) / velocity.x;
+        float time_taken = (expected_x - other.x) / linearVelocity.x;
 
         temp.x = expected_x;
         temp.y = other.y;
-        temp.z = other.z + velocity.z * time_taken;
+        temp.z = other.z + linearVelocity.z * time_taken;
 
         return temp;
     }

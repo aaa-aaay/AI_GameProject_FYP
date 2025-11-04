@@ -65,7 +65,7 @@ public class BasicBadmintonAI : MonoBehaviour
         if (_shuttle == null || _net == null) return;
 
 
-        // --- Track shuttle velocity ---
+        // --- Track shuttle linearVelocity ---
         _shuttleVelocity = (_shuttle.position - _lastShuttlePos) / Time.deltaTime;
         _lastShuttlePos = _shuttle.position;
 
@@ -148,7 +148,7 @@ public class BasicBadmintonAI : MonoBehaviour
     {
         if (_shuttleVelocity.sqrMagnitude < 0.01f) return; // shuttle barely moving
 
-        // Opposite of shuttle's velocity (where it's coming from)
+        // Opposite of shuttle's linearVelocity (where it's coming from)
         Vector3 incomingDir = -_shuttleVelocity;
         incomingDir.y = 0f; // ignore tilt so AI only rotates on ground plane
 
