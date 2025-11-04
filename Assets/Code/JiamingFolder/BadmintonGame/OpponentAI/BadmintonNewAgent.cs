@@ -54,7 +54,7 @@ public class BadmintonNewAgent : Agent
         _prevDistToShuttle = float.PositiveInfinity; // reset each episode
 
 
-        // Reset previous position for velocity calc
+        // Reset previous position for linearVelocity calc
         _prevShuttlePos = _shuttle.localPosition;
         _shuttleVelocity = Vector3.zero;
     }
@@ -216,7 +216,7 @@ public class BadmintonNewAgent : Agent
 
     private void Update()
     {
-        // Compute pseudo-velocity manually
+        // Compute pseudo-linearVelocity manually
         _shuttleVelocity = (_shuttle.localPosition - _prevShuttlePos) / Time.deltaTime;
         _prevShuttlePos = _shuttle.localPosition;
     }

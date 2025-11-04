@@ -8,14 +8,14 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private Transform target;
 
     private Vector3 camera_start_position;
-    private Vector3 velocity;
+    private Vector3 linearVelocity;
 
     // Start is called before the first frame update
     void Start()
     {
         camera_start_position = transform.position;
 
-        velocity = Vector3.zero;
+        linearVelocity = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -23,7 +23,7 @@ public class CameraFollow : MonoBehaviour
     {
         if (target != null)
         {
-            transform.position = Vector3.SmoothDamp(transform.position, camera_start_position + target.transform.position, ref velocity, smooth_time);
+            transform.position = Vector3.SmoothDamp(transform.position, camera_start_position + target.transform.position, ref linearVelocity, smooth_time);
         }
     }
 

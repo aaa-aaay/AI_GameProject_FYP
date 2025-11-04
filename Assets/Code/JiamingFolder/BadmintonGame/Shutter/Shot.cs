@@ -98,13 +98,13 @@ public abstract class Shot : MonoBehaviour
             return;
         }
 
-        Vector3 velocity = (currentPos - prevPos).normalized;
+        Vector3 linearVelocity = (currentPos - prevPos).normalized;
         prevPos = currentPos;
 
-        if (velocity.sqrMagnitude > 0.0001f)
+        if (linearVelocity.sqrMagnitude > 0.0001f)
         {
-            // Align -Y axis of shuttle with velocity
-            Quaternion rotation = Quaternion.LookRotation(velocity, Vector3.forward);
+            // Align -Y axis of shuttle with linearVelocity
+            Quaternion rotation = Quaternion.LookRotation(linearVelocity, Vector3.forward);
             transform.rotation = rotation * Quaternion.Euler(-90f, 0f, 0f);
         }
     }

@@ -21,8 +21,10 @@ public class CameraFade : MonoBehaviour
         HashSet<Renderer> overlappedRenderers = new HashSet<Renderer>();
 
         // Handle overlapping renderers
+
         foreach (var hit in hits)
         {
+
             Renderer rend = hit.GetComponent<Renderer>();
             if (rend == null) continue;
             overlappedRenderers.Add(rend);

@@ -75,7 +75,7 @@
         </member>
         <member name="M:DG.Tweening.Core.Easing.Bounce.EaseIn(System.Single,System.Single,System.Single,System.Single)">
             <summary>
-            Easing equation function for a bounce (exponentially decaying parabolic bounce) easing in: accelerating from zero velocity.
+            Easing equation function for a bounce (exponentially decaying parabolic bounce) easing in: accelerating from zero linearVelocity.
             </summary>
             <param name="time">
             Current time (in frames or seconds).
@@ -91,7 +91,7 @@
         </member>
         <member name="M:DG.Tweening.Core.Easing.Bounce.EaseOut(System.Single,System.Single,System.Single,System.Single)">
             <summary>
-            Easing equation function for a bounce (exponentially decaying parabolic bounce) easing out: decelerating from zero velocity.
+            Easing equation function for a bounce (exponentially decaying parabolic bounce) easing out: decelerating from zero linearVelocity.
             </summary>
             <param name="time">
             Current time (in frames or seconds).
