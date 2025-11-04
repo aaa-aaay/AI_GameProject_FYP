@@ -62,6 +62,12 @@ public class archery_agent : Agent
     {
         StopAllCoroutines();
         isTurn = true;
+        if (minForce > 10f) force = minForce; else force = 10f;
+        yaw = 0f;
+        if (minPitch > 0f) pitch = minPitch; else pitch = 0f;
+        handler.UpdateUI(bow.position, force, yaw, pitch);
+        canShoot = false;
+        shoot = false;
         lastDistance = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding);
         stringConstraint.constraintActive = true;
         arrow.gameObject.SetActive(true);
@@ -71,11 +77,6 @@ public class archery_agent : Agent
 
     public override void OnEpisodeBegin()
     {
-        if (minForce > 10f) force = minForce; else force = 10f;
-        yaw = 0f;
-        if (minPitch > 0f) pitch = minPitch; else pitch = 0f;
-        canShoot = false;
-        shoot = false;
     }
 
     private IEnumerator ShootTimer()
@@ -106,7 +107,7 @@ public class archery_agent : Agent
 
     public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
     {
-        if (!canShoot && Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) > 1f) actionMask.SetActionEnabled(branch: 3, actionIndex: 1, isEnabled: false);
+        if (!canShoot) actionMask.SetActionEnabled(branch: 3, actionIndex: 1, isEnabled: false);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -150,7 +151,7 @@ public class archery_agent : Agent
                 break;
         }
 
-        if (da[3] == 1)
+        if (da[3] == 1 && canShoot)
         {
             if (Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) > 3f)
             {
@@ -172,6 +173,7 @@ public class archery_agent : Agent
         lastDistance = newDistance;
 
         handler.UpdateUI(bow.position, force, yaw, pitch);
+        canShoot = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) < 1f;
 
         animator.enabled = true;
         float normalizedForce = Mathf.InverseLerp(minForce, maxForce, force);
