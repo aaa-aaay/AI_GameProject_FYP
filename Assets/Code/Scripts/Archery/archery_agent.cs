@@ -60,21 +60,21 @@ public class archery_agent : Agent
 
     public void StartTurn()
     {
+        StopAllCoroutines();
         isTurn = true;
         lastDistance = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding);
         stringConstraint.constraintActive = true;
         arrow.gameObject.SetActive(true);
         decisionRequester.enabled = true;
+        StartCoroutine(ShootTimer());
     }
 
     public override void OnEpisodeBegin()
     {
-        StopAllCoroutines();
         if (minForce > 10f) force = minForce; else force = 10f;
         yaw = 0f;
         if (minPitch > 0f) pitch = minPitch; else pitch = 0f;
         canShoot = false;
-        StartCoroutine(ShootTimer());
         shoot = false;
     }
 

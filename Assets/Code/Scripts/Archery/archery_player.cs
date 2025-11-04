@@ -72,8 +72,6 @@ public class archery_player : MonoBehaviour
 
         spineRotation = spine.rotation.eulerAngles;
         stringOrigin = stringConstraint.transform.localPosition;
-
-        StartTurn();
     }
 
     public void StartTurn()

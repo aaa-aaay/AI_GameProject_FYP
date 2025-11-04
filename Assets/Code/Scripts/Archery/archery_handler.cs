@@ -226,6 +226,7 @@ public class archery_handler : MonoBehaviour
             gameOverHandler.HandleGameOver(false);
         }
 
+        StopAllCoroutines();
         StartCoroutine(ReturnCamera());
     }
 
