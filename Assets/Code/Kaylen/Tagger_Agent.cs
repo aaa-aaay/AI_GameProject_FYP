@@ -125,7 +125,7 @@ public class TaggerAgent : Agent
 
         if (agentMode == AgentMode.Inference)
         {
-            // ✅ Use velocity-based movement for real physics collisions
+            // ✅ Use linearVelocity-based movement for real physics collisions
             rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
         }
         else

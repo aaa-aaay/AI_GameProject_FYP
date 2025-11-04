@@ -42,7 +42,7 @@ public class trajectory_preview : MonoBehaviour
 
         for (int i = 1; i < numSamples; i++)
         {
-            // Integrate velocity & position
+            // Integrate linearVelocity & position
             v += a * timePerSample;
             Vector3 pNext = p + v * timePerSample;
 
