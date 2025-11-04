@@ -35,6 +35,7 @@ public class archery_handler : MonoBehaviour
 
     private bool isPlayerTurn;
     private bool canShoot;
+    private bool hasHit;
 
     public float windDirection{ get; private set; }
     public float windSpeed { get; private set; }
@@ -126,6 +127,7 @@ public class archery_handler : MonoBehaviour
     {
         if (!canShoot) return;
         canShoot = false;
+        hasHit = false;
 
         playerLeftCamera.enabled = false;
         playerRightCamera.enabled = false;
@@ -188,6 +190,9 @@ public class archery_handler : MonoBehaviour
 
     public void OnHit(int point)
     {
+        if (hasHit) return;
+        hasHit = true;
+
         currentArrow++;
         if (currentArrow == numArrows)
             currentArrow = 0;
