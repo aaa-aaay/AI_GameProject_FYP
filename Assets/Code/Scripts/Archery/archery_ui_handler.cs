@@ -51,7 +51,7 @@ public class archery_ui_handler : MonoBehaviour
         float forcePercent = Mathf.Clamp01((force - minForce) / (maxForce - minForce));
 
         Vector4 padding = powerMask.padding;
-        padding.z = maxPowerMask - (maxPowerMask * forcePercent);
+        padding.x = maxPowerMask * forcePercent;
         powerMask.padding = padding;
 
         playerPointSlider.value = playerPoint;
