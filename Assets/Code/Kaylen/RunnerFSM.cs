@@ -13,23 +13,33 @@ public class Runner : MonoBehaviour
     public float dangerRadius = 5f;
 
     [Header("References")]
-    public List<PathNode> allNodes;     // Assign all PathNodes in the arena
+    public List<PathNode> allNodes;    
 
     private Rigidbody rb;
     public List<PathNode> path = new List<PathNode>();
     public int pathIndex = 0;
-
-    // Track the closest danger for Gizmo line
+    bool isGrounded;
+ 
     private Transform closestDanger;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        rb.constraints = RigidbodyConstraints.FreezeRotation; // keep rotation locked
+        rb.useGravity = true; // enable gravity
 
         PickNewIdleTarget(); // start by idling
     }
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Ground"))
+            isGrounded = true;
+        }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.CompareTag("Ground"))
+            isGrounded = false;
+    }
     void Update()
     {
         // Detect any object with tag "Runner" or "Tagger" in danger radius
@@ -54,7 +64,7 @@ public class Runner : MonoBehaviour
 
         closestDanger = closest; // store for Gizmo
 
-        // Switch state based on detection
+       
         if (dangerDetected)
         {
             if (currentState != State.Run)
@@ -69,7 +79,7 @@ public class Runner : MonoBehaviour
             PickNewIdleTarget();
         }
 
-        // Execute behavior
+      
         switch (currentState)
         {
             case State.Idle: IdleBehaviour(); break;
@@ -77,7 +87,7 @@ public class Runner : MonoBehaviour
         }
     }
 
-    // -------------------------------
+
     void IdleBehaviour()
     {
         MoveAlongPath();
@@ -135,7 +145,7 @@ public class Runner : MonoBehaviour
             }
         }
 
-        // Fallback: just the furthest node
+     
         if (bestNode == null)
         {
             float maxDist = -Mathf.Infinity;
@@ -166,20 +176,25 @@ public class Runner : MonoBehaviour
         Vector3 dir = targetPos - transform.position;
         float dist = dir.magnitude;
 
-        if (dist < nodeReachThreshold)
+        // Jump if Y difference is significant
+        if (targetPos.y > transform.position.y && isGrounded)
         {
-            pathIndex++;
-            return;
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 5f, rb.linearVelocity.z); // jump up
         }
 
-        dir.Normalize();
-        rb.MovePosition(transform.position + dir * moveSpeed * Time.deltaTime);
-
-        if (dir.sqrMagnitude > 0.001f)
+        // Move horizontally only
+        Vector3 horizontalDir = new Vector3(dir.x, 0, dir.z);
+        if (horizontalDir.magnitude > 0.01f)
         {
-            Quaternion targetRot = Quaternion.LookRotation(dir);
+            Vector3 move = horizontalDir.normalized * moveSpeed * Time.deltaTime;
+            rb.MovePosition(transform.position + move);
+
+            Quaternion targetRot = Quaternion.LookRotation(horizontalDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
         }
+
+        if (dist < nodeReachThreshold)
+            pathIndex++;
     }
 
     PathNode FindClosestNode()
