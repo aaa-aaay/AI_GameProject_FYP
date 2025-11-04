@@ -4,15 +4,15 @@ using UnityEngine.UI;
 
 public class archery_ui_handler : MonoBehaviour
 {
-    [SerializeField] private TMP_Text textbox;
     [SerializeField] private RectMask2D powerMask;
     [SerializeField] private float maxPowerMask;
+    [SerializeField] private Slider playerPointSlider;
+    [SerializeField] private Slider agentPointSlider;
 
     private float maxForce;
     private float minForce;
     private float force;
 
-    private int maxPoint;
     private int playerPoint;
     private int agentPoint;
 
@@ -20,7 +20,15 @@ public class archery_ui_handler : MonoBehaviour
     {
         this.maxForce = maxForce;
         this.minForce = minForce;
-        this.maxPoint = maxPoint;
+        force = 0;
+        
+        playerPointSlider.maxValue = maxPoint;
+        agentPointSlider.maxValue = maxPoint;
+
+        playerPoint = 0;
+        agentPoint = 0;
+
+        UpdateUI();
     }
 
     public void set_value(float force)
@@ -45,5 +53,8 @@ public class archery_ui_handler : MonoBehaviour
         Vector4 padding = powerMask.padding;
         padding.z = maxPowerMask - (maxPowerMask * forcePercent);
         powerMask.padding = padding;
+
+        playerPointSlider.value = playerPoint;
+        agentPointSlider.value = agentPoint;
     }
 }
