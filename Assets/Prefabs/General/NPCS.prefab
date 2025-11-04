@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8999107545043519299
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2632916521504756486}
+  - component: {fileID: 399951225890686760}
+  m_Layer: 0
+  m_Name: NPCS
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2632916521504756486
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8999107545043519299}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &399951225890686760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8999107545043519299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dad35738f78f7645834ab4a956a7fac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _clothesMatts:
+  - {fileID: 2100000, guid: aee76f4d83b1ce1438c65acc414e86da, type: 2}
+  - {fileID: 2100000, guid: a6bd8bfb9975a4548a94d292115e40cd, type: 2}
+  - {fileID: 2100000, guid: c49eab9cea5e077409962cdca95cf02d, type: 2}
+  - {fileID: 2100000, guid: 632f03a7078ed6741a76baccbe65a76b, type: 2}
+  - {fileID: 2100000, guid: 6312e0d2a7afb6745b657ab1205330d9, type: 2}
+  - {fileID: 2100000, guid: 160d5f31e02308c4ba59e0a775df1e93, type: 2}
+  - {fileID: 2100000, guid: 26f528423a50fd94aa22fff02563871a, type: 2}
+  _skinMatts:
+  - {fileID: 2100000, guid: 0d3e5a75be174b7468529b32644c143a, type: 2}
+  - {fileID: 2100000, guid: 77014d2bfbf963a488a4be3c0bb848e0, type: 2}
+  - {fileID: 2100000, guid: be766b1e080f9f34592e62d3c85489ef, type: 2}
+  - {fileID: 2100000, guid: 83ce2dc8fcbab1143abf336ab1e6867e, type: 2}
+  _NpcHolderGO: {fileID: 8999107545043519299}

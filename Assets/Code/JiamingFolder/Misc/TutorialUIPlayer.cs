@@ -28,7 +28,10 @@ public class TutorialUIPlayer : MonoBehaviour
         _clips = _minigameSO.tutorialVideoClips;
         _gameTitleText.text = _minigameSO.gameName;
 
-        if (_clips.Count <= 0) GoGameScene();
+        if (_clips.Count <= 0){
+            GoGameScene();
+            return;
+        } 
 
         _currentClipIndex = 0;
         _videoPlayer.clip = _clips[_currentClipIndex];

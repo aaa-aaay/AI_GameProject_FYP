@@ -57,12 +57,16 @@ public class RaceManager : MonoBehaviour
             amtofCheckpoints++;
         }
 
-
-
         finishedRacers = 0;
 
+       
 
 
+    }
+
+    private void Start()
+    {
+        ServiceLocator.Instance.GetService<UIManager>().StartCountDownTimer();
     }
 
     private void OnDestroy()

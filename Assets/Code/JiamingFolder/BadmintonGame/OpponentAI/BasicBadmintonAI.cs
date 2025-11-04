@@ -54,7 +54,7 @@ public class BasicBadmintonAI : MonoBehaviour
         _lastHitChecker.OnHitByRacker += CheckWhoHit;
 
         attacking = false;
-        serving = false;
+        serving = true;
 
         _shotTracker = _shuttle.gameObject.GetComponent<ShotTypeTracker>();
         _stamina = GetComponent<BadmintonStamina>();
