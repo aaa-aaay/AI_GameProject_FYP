@@ -11,7 +11,7 @@ public class GoalChecker : MonoBehaviour
     [SerializeField] private string  _name = "hello";
 
     private Timer _timer;
-    private int currentLap = 0;
+    public int currentLap = 0;
     public int currentCheckPointNo;
     private bool _raceOver = false;
     public event Action<string, float> OnRaceFinished;
@@ -85,6 +85,11 @@ public class GoalChecker : MonoBehaviour
     public Transform GetCurrentCheckPoint()
     {
         return currentCheckPoint;
+    }
+
+    public string GetRacerName()
+    {
+        return _name;
     }
 
     IEnumerator HideCarAfterAwhile()

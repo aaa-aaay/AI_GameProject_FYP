@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class RaceManager : MonoBehaviour
@@ -8,6 +10,7 @@ public class RaceManager : MonoBehaviour
     [SerializeField] GameObject _checkPointHolderGO;
     [SerializeField] GameObject _startPosHolderGO;
     [SerializeField] private RacingLeaderboard _leaderboard;
+    [SerializeField] private TMP_Text _rankingText;
     public Transform raceGoalTrans;
     private List<Transform> _startPositions = new List<Transform>();
 
@@ -78,6 +81,20 @@ public class RaceManager : MonoBehaviour
         _racers.Clear();
     }
 
+
+    private void Update()
+    {
+        _racers = _racers.OrderByDescending(r => r.currentLap)
+            .ThenByDescending(r => r.currentCheckPointNo)
+            .ThenBy(r => Vector3.Distance(r.transform.position, r.currentCheckPoint.position)).ToList();
+
+        foreach(GoalChecker racers in _racers)
+        {
+            if (racers.GetRacerName().Contains("you")){
+                _rankingText.text = (_racers.IndexOf(racers) + 1).ToString();
+            }
+        }
+    }
     private void HandleCarfinishRace(string name, float timeTaken)
     {
 
