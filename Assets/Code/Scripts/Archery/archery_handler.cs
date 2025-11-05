@@ -204,11 +204,6 @@ public class archery_handler : MonoBehaviour
         if (hasHit) return;
         hasHit = true;
 
-        currentArrow++;
-        if (currentArrow == numArrows)
-            currentArrow = 0;
-        arrows[currentArrow].gameObject.SetActive(false);
-
         if (isPlayerTurn)
         {
             playerPoint += point;
@@ -243,7 +238,12 @@ public class archery_handler : MonoBehaviour
         }
 
         StopAllCoroutines();
-        StartCoroutine(ReturnCamera());
+        StartCoroutine(ReturnCamera(currentArrow));
+
+        currentArrow++;
+        if (currentArrow == numArrows)
+            currentArrow = 0;
+        arrows[currentArrow].gameObject.SetActive(false);
     }
 
     public void UpdateUI(Vector3 position, float force, float yaw, float pitch)
@@ -264,14 +264,19 @@ public class archery_handler : MonoBehaviour
         estimateLanding = preview.ShowPath(position, force, yaw, pitch, windDirection, windSpeed);
     }
 
-    private IEnumerator ReturnCamera()
+    private IEnumerator ReturnCamera(int arrowIndex)
     {
+        Transform position = new GameObject().transform;
+        position.position = arrows[arrowIndex].transform.position;
+        arrowCamera.Target.TrackingTarget = position;
+
         yield return new WaitForSeconds(cameraStay);
 
         if (isPlayerTurn) StartCoroutine(PlayerTurn()); else StartCoroutine(AgentTurn());
 
         arrowCamera.enabled = false;
         turnCamera.enabled = true;
+        Destroy(position.gameObject);
 
         yield return new WaitForSeconds(cameraStay);
 
