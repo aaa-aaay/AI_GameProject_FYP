@@ -12,12 +12,9 @@ public class ShutterFX : MonoBehaviour
         if (vfx != null)
         {
             vfx.Play();
+            //vfx.SendEvent("OnPlay");
             Debug.Log("Vfx Played");
         }
-            
-
-
-
     }
 
     public void StopHitEffects()
