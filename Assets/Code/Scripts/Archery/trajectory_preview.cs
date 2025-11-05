@@ -22,9 +22,9 @@ public class trajectory_preview : MonoBehaviour
         lr.useWorldSpace = true;
     }
 
-    public void ShowPath(float force, float yaw, float pitch, float windDir = 0, float windSpeed = 0)
+    public Vector3 ShowPath(Vector3 position, float force, float yaw, float pitch, float windDir = 0, float windSpeed = 0)
     {
-        Vector3 p0 = launchOrigin.position;
+        Vector3 p0 = position;
         Vector3 dir = Quaternion.Euler(-pitch, yaw, 0f) * Vector3.forward;
         Vector3 v = dir.normalized * (forceToSpeed * force);
 
@@ -62,6 +62,7 @@ public class trajectory_preview : MonoBehaviour
         lr.positionCount = points.Count;
         lr.SetPositions(points.ToArray());
         lr.enabled = true;
+        return points.ToArray()[points.Count - 1];
     }
 
     public void Hide()
