@@ -49,6 +49,8 @@ public class Damageable : MonoBehaviour
 
             current_health -= damage;
 
+            print(gameObject.name + " " + current_health);
+
             if (current_health <= 0)
             {
                 EventHolder.InvokeOnKill(hitter, target);
@@ -60,8 +62,7 @@ public class Damageable : MonoBehaviour
     {
         if (player == gameObject)
         {
-            time_passed = 0;
-            current_health = max_health;
+            DamageableStart();
         }
     }
 
