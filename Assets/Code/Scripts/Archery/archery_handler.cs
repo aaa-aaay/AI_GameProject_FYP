@@ -33,6 +33,11 @@ public class archery_handler : MonoBehaviour
     [SerializeField] private archery_ui_handler uiHandler;
     [field: SerializeField] public archery_settings settings { get; private set; }
 
+    [Header("Positions")]
+    [SerializeField] private Transform shootPosition;
+    [SerializeField] private Transform playerIdlePosition;
+    [SerializeField] private Transform agentIdlePosition;
+
     private bool isPlayerTurn;
     private bool canShoot;
     private bool hasHit;
@@ -148,6 +153,9 @@ public class archery_handler : MonoBehaviour
 
     private IEnumerator PlayerTurn()
     {
+        playerObject.transform.position = shootPosition.position;
+        agentObject.transform.position = agentIdlePosition.position;
+
         playerLeftCamera.Target.TrackingTarget = playerObject.transform;
         playerRightCamera.Target.TrackingTarget = playerObject.transform;
         turnCamera.Target.TrackingTarget = playerObject.transform;
@@ -169,6 +177,9 @@ public class archery_handler : MonoBehaviour
 
     private IEnumerator AgentTurn()
     {
+        playerObject.transform.position = playerIdlePosition.position;
+        agentObject.transform.position = shootPosition.position;
+
         playerLeftCamera.Target.TrackingTarget = agentObject.transform;
         playerRightCamera.Target.TrackingTarget = agentObject.transform;
         turnCamera.Target.TrackingTarget = agentObject.transform;
@@ -206,7 +217,7 @@ public class archery_handler : MonoBehaviour
         else
         {
             agentPoint += point;
-            
+
             if (!isAiTraining) isPlayerTurn = true;
 
             if (point > 0) agent.OnHit(point);

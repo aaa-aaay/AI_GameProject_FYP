@@ -173,7 +173,7 @@ public class archery_agent : Agent
         lastDistance = newDistance;
 
         handler.UpdateUI(bow.position, force, yaw, pitch);
-        canShoot = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) < 1f;
+        if (!canShoot) canShoot = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) < 1f;
 
         animator.enabled = true;
         float normalizedForce = Mathf.InverseLerp(minForce, maxForce, force);
