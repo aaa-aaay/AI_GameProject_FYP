@@ -88,12 +88,12 @@ public class PongUI : MonoBehaviour
     {
         for (int i = 0; i < powers.Count; i++)
         {
-            if (powers[i].GetOwner() == owner)
+            if (powers[i].GetOwner() == owner && powers[i].GetAnimator().gameObject.activeSelf)
             {
                 if (value == 0)
                 {
+                    count--;
                     powers[i].GetAnimator().gameObject.SetActive(false);
-                    count -= 1;
                 }
 
                 break;

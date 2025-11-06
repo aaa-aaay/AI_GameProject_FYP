@@ -718,7 +718,7 @@ GameObject:
   - component: {fileID: 3055760814120679032}
   - component: {fileID: 2358593928772354854}
   m_Layer: 0
-  m_Name: Panel
+  m_Name: Name Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1337,10 +1337,10 @@ RectTransform:
   - {fileID: 5822504393009535666}
   m_Father: {fileID: 8565307172347512069}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 600.5725, y: -208}
+  m_SizeDelta: {x: 1000, y: 58}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &468850793009829496
 CanvasRenderer:
@@ -1423,7 +1423,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1205308455156768135}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 451615800993002800}
+        m_TargetAssemblyTypeName: DialogueManager, Assembly-CSharp
+        m_MethodName: ReplyPressed
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 4
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2591055802080271664
 GameObject:
   m_ObjectHideFlags: 0
@@ -2522,7 +2534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8565307172347512069
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2544,8 +2556,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -70.70477, y: 0.000030517578}
-  m_SizeDelta: {x: -431.5527, y: -50.0364}
+  m_AnchoredPosition: {x: -119.432495, y: 0}
+  m_SizeDelta: {x: -238.855, y: -50.0364}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8188591160769908220
 CanvasRenderer:
@@ -3036,7 +3048,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &526129252601436072
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3961,10 +3973,10 @@ RectTransform:
   - {fileID: 899684291099529414}
   m_Father: {fileID: 8565307172347512069}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 600.5725, y: -266}
+  m_SizeDelta: {x: 1000, y: 58}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6000966177802501621
 CanvasRenderer:
@@ -4047,7 +4059,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4199136115819294566}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 451615800993002800}
+        m_TargetAssemblyTypeName: DialogueManager, Assembly-CSharp
+        m_MethodName: ReplyPressed
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 5
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6943062271838700456
 GameObject:
   m_ObjectHideFlags: 0
@@ -4157,8 +4181,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -6.4932, y: -31.521103}
-  m_SizeDelta: {x: 1139.0083, y: 136.2821}
+  m_AnchoredPosition: {x: -33.601536, y: 2.8092}
+  m_SizeDelta: {x: 1193.2251, y: 181.6162}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3473456324164254624
 CanvasRenderer:
@@ -4504,10 +4528,10 @@ RectTransform:
   - {fileID: 4501919620417299393}
   m_Father: {fileID: 8565307172347512069}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 600.5725, y: -34}
+  m_SizeDelta: {x: 1000, y: 58}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8304087489362116358
 CanvasRenderer:
@@ -4590,7 +4614,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6173977610689123386}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 451615800993002800}
+        m_TargetAssemblyTypeName: DialogueManager, Assembly-CSharp
+        m_MethodName: ReplyPressed
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7744137177571273633
 GameObject:
   m_ObjectHideFlags: 0
@@ -4672,10 +4708,10 @@ RectTransform:
   - {fileID: 6050493483490313561}
   m_Father: {fileID: 8565307172347512069}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 600.5725, y: -150}
+  m_SizeDelta: {x: 1000, y: 58}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3659484524763728555
 CanvasRenderer:
@@ -4758,7 +4794,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5756901098173992163}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 451615800993002800}
+        m_TargetAssemblyTypeName: DialogueManager, Assembly-CSharp
+        m_MethodName: ReplyPressed
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8602815235347886332
 GameObject:
   m_ObjectHideFlags: 0
@@ -4929,10 +4977,10 @@ RectTransform:
   - {fileID: 5252631902104786209}
   m_Father: {fileID: 8565307172347512069}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 600.5725, y: -92}
+  m_SizeDelta: {x: 1000, y: 58}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &412566178432542158
 CanvasRenderer:
@@ -5015,4 +5063,16 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1398046901574060592}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 451615800993002800}
+        m_TargetAssemblyTypeName: DialogueManager, Assembly-CSharp
+        m_MethodName: ReplyPressed
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
