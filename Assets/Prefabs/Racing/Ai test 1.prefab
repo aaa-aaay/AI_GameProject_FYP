@@ -560,7 +560,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 6
+    VectorObservationSize: 8
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -569,7 +569,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 7941dfdc179b7794eb7b82f73bf6d0bc, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 2cd8bc4ce37ec5e40b601450ddc8aa2e, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: RacingBehaviour
@@ -596,7 +596,7 @@ MonoBehaviour:
   MaxStep: 100000
   _manager: {fileID: 0}
   _car: {fileID: 3310366995779990104}
-  TimeToReachNextCheckpoint: 40
+  TimeToReachNextCheckpoint: 10
 --- !u!114 &3835948384118606211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -609,7 +609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DecisionPeriod: 5
+  DecisionPeriod: 3
   DecisionStep: 0
   TakeActionsBetweenDecisions: 1
 --- !u!114 &6991968842244539503
