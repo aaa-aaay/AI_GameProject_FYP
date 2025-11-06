@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -18,13 +19,9 @@ public class CountDownTimer : MonoBehaviour
     {
         _canvasGroup = _countDownCanvasGO.GetComponent<CanvasGroup>();
     }
-    public void StartCountDown()
+    public void StartCountDown(float _startTimerAfterSeconds = 0)
     {
-
-        _countDownCount = _countDownStartNumber;
-        _countDownCanvasGO.SetActive(true);
-        Time.timeScale = 0f; //pause the game
-        StartCoroutine(CountDown());
+        StartCoroutine(StartCountDownAfterWait(_startTimerAfterSeconds));
     }
 
     private IEnumerator CountDown()
@@ -61,5 +58,15 @@ public class CountDownTimer : MonoBehaviour
         _canvasGroup.DOFade(0, 0.3f).SetUpdate(true).SetDelay(0.3f);
         _countDownText.rectTransform.DOScale(Vector3.zero, 0.3f).SetUpdate(true).SetDelay(.3f);
 
+    }
+
+    private IEnumerator StartCountDownAfterWait(float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        _countDownCount = _countDownStartNumber;
+        _countDownCanvasGO.SetActive(true);
+        Time.timeScale = 0f; //pause the game
+        StartCoroutine(CountDown());
     }
 }
