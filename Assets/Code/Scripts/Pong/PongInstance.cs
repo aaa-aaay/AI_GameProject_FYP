@@ -44,7 +44,7 @@ public class PongInstance : MonoBehaviour
         {
             if (power_time_passed > power_up_time)
             {
-                Instantiate(power_ups[Random.Range(0, power_ups.Count)]).transform.position = new Vector3(Random.Range(left_bound, right_bound) * 0.9f, 1.5f, Random.Range(lower_score_bounds, upper_score_bounds) * 0.6f);
+                //Instantiate(power_ups[Random.Range(0, power_ups.Count)]).transform.position = new Vector3(Random.Range(left_bound, right_bound) * 0.9f, 1.5f, Random.Range(lower_score_bounds, upper_score_bounds) * 0.6f);
 
                 PongUI.instance.AddCount();
                 power_time_passed = 0;

@@ -75,37 +75,37 @@ public class PongAI : AgentDLC
 
         Move?.Invoke(direction);
 
-        Rigidbody closest = GetClosest();
+        //Rigidbody closest = GetClosest();
 
-        predicted_pos = PredictPositionAtZ(closest.transform.localPosition, closest.linearVelocity, transform.localPosition.z);
+        //predicted_pos = PredictPositionAtZ(closest.transform.localPosition, closest.linearVelocity, transform.localPosition.z);
 
-        if (predicted_pos.x > instance.GetRightBound())
-        {
-            Vector3 new_vel = closest.linearVelocity;
-            new_vel.x *= -1;
-            predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, instance.GetRightBound()), new_vel, transform.localPosition.z);
-        }
-        else if (predicted_pos.x < instance.GetLeftBound())
-        {
-            Vector3 new_vel = closest.linearVelocity;
-            new_vel.x *= -1;
-            predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, instance.GetLeftBound()), new_vel, transform.localPosition.z);
-        }
+        //if (predicted_pos.x > instance.GetRightBound())
+        //{
+        //    Vector3 new_vel = closest.linearVelocity;
+        //    new_vel.x *= -1;
+        //    predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, instance.GetRightBound()), new_vel, transform.localPosition.z);
+        //}
+        //else if (predicted_pos.x < instance.GetLeftBound())
+        //{
+        //    Vector3 new_vel = closest.linearVelocity;
+        //    new_vel.x *= -1;
+        //    predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, instance.GetLeftBound()), new_vel, transform.localPosition.z);
+        //}
 
-        if (predicted_pos.x < transform.localPosition.x + offset && predicted_pos.x > transform.localPosition.x - offset)
-        {
-            AddReward(0.25f);
-        }
-        if ((predicted_pos.x - transform.localPosition.x) > 0 && direction.x > 0)
-        {
-            AddReward(0.1f);
-        }
-        else if ((predicted_pos.x - transform.localPosition.x) < 0 && direction.x < 0)
-        {
-            AddReward(0.1f);
-        }
+        //if (predicted_pos.x < transform.localPosition.x + offset && predicted_pos.x > transform.localPosition.x - offset)
+        //{
+        //    AddReward(0.25f);
+        //}
+        //if ((predicted_pos.x - transform.localPosition.x) > 0 && direction.x > 0)
+        //{
+        //    AddReward(0.1f);
+        //}
+        //else if ((predicted_pos.x - transform.localPosition.x) < 0 && direction.x < 0)
+        //{
+        //    AddReward(0.1f);
+        //}
 
-        AddReward(-0.01f); // To prevent stalling
+        //AddReward(-0.01f); // To prevent stalling
     }
 
     protected override void OnWin(GameObject player)
