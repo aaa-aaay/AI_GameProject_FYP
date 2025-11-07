@@ -33,9 +33,12 @@ public class BadmintionGameManager : MonoBehaviour
 
     public bool InRedCourt { get; set; } = true;
 
+    private AudioManager audioManager;
+
 
     private void Start()
     {
+        audioManager = ServiceLocator.Instance.GetService<AudioManager>();
         _P1ScoreDisplay.text = 0.ToString();
         _P2ScoreDisplay.text = 0.ToString();
 
@@ -45,16 +48,23 @@ public class BadmintionGameManager : MonoBehaviour
 
         foreach (Racket r in _rackets)
         {
-            r.OnHitShutter += FinishedServing;
+            r.OnHitShutter += ShutterHit;
         }
 
+    }
+    private void OnDestroy()
+    {
+        foreach (Racket r in _rackets)
+        {
+            r.OnHitShutter -= ShutterHit;
+        }
     }
 
 
     public void PlayerScores(int playerNo)
     {
-
-        if(playerNo == 1)
+        audioManager.PlaySFX("BMT_Score",Camera.main.transform.position);
+        if (playerNo == 1)
         {
             player1Score++;
             _P1ScoreDisplay.text = player1Score.ToString();
@@ -153,7 +163,7 @@ public class BadmintionGameManager : MonoBehaviour
         rect.localRotation = Quaternion.identity;
     }
 
-    private void FinishedServing()
+    private void ShutterHit()
     {
         serveUIGO.SetActive(false);
     }
