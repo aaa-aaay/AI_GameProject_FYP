@@ -1,4 +1,3 @@
-using IGCC;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +43,8 @@ public class AudioManager : MonoBehaviour, IGameService
         _backgroundMusicSource.loop = true;
         _backgroundMusicSource.spatialBlend = 0.0f;
         _backgroundMusicSource.playOnAwake = false;
+
+        Debug.Log(_audioSourcePool.Count);
     }
 
     private void OnDisable()
@@ -54,6 +55,8 @@ public class AudioManager : MonoBehaviour, IGameService
 
     public void PlaySFX(string name, Vector3 position)
     {
+        Debug.Log(_audioSourcePool.Count);
+
         foreach (Sound sound in sounds)
         {
             if (sound.audioName == name)
