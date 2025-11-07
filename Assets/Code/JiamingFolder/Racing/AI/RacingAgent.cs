@@ -19,8 +19,8 @@ public class RacingAgent : Agent
 
     private float _previousDistanceToCheckpoint;
 
-
-
+    private Vector3 _lastPosition;
+    private float _lastSpeed;
 
     public override void Initialize()
     {
@@ -54,8 +54,24 @@ public class RacingAgent : Agent
 
         float dist = Vector3.Distance(_car.transform.position, _goalChecker.GetCurrentCheckPoint().position);
         float progress = _previousDistanceToCheckpoint - dist;
-        AddReward(progress * 0.01f); // reward moving closer
+        AddReward(progress * 0.05f); // reward moving closer
+
+
+
+        float currentSpeed = _sphere.linearVelocity.magnitude;
+        AddReward((currentSpeed - _lastSpeed) * 0.002f); // encourage acceleration
+        _lastSpeed = currentSpeed;
+
+        // Penalize being too slow
+        if (currentSpeed < 2f)
+            AddReward(-0.001f);
+
+
         _previousDistanceToCheckpoint = dist;
+
+
+
+
 
 
         if (_raceTimer <= 0f)
@@ -67,10 +83,13 @@ public class RacingAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        Vector3 diff = _goalChecker.GetCurrentCheckPoint().position - _car.transform.position;
-        sensor.AddObservation(diff / 20f);
-        sensor.AddObservation(_sphere.linearVelocity / 20f);
+        Vector3 toCheckpoint = _goalChecker.GetCurrentCheckPoint().position - _car.transform.position;
+        Vector3 forward = _car.transform.forward;
 
+        sensor.AddObservation(toCheckpoint.normalized);          // where to go
+        sensor.AddObservation(Vector3.Dot(forward, toCheckpoint.normalized)); // alignment
+        sensor.AddObservation(_sphere.linearVelocity.magnitude / 30f); // speed
+        sensor.AddObservation(_sphere.linearVelocity.normalized); // direction of motion
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -86,14 +105,14 @@ public class RacingAgent : Agent
 
     private void HandleCPHit()
     {
-        Debug.Log("rewarded for hiting cp");
-        AddReward(1.0f/ _manager.checkPoints.Count);
+        float checkpointSpeed = _sphere.linearVelocity.magnitude;
+        float speedBonus = Mathf.Clamp01(checkpointSpeed / 30f); // normalize to 0–1
+        AddReward(1.0f / _manager.checkPoints.Count + speedBonus * 0.2f);
         _raceTimer = TimeToReachNextCheckpoint;
     }
 
     private void AiFinishedRace(string name, float timetaken)
     {
-        Debug.Log("rewarded for ending the race");
         AddReward(0.5f);
         EndEpisode();
     }
