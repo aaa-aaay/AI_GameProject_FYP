@@ -43,8 +43,6 @@ public class AudioManager : MonoBehaviour, IGameService
         _backgroundMusicSource.loop = true;
         _backgroundMusicSource.spatialBlend = 0.0f;
         _backgroundMusicSource.playOnAwake = false;
-
-        Debug.Log(_audioSourcePool.Count);
     }
 
     private void OnDisable()

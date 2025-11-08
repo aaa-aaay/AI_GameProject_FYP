@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class WallFrictionHandler : MonoBehaviour
@@ -9,6 +10,9 @@ public class WallFrictionHandler : MonoBehaviour
     [SerializeField][Range(0, 1)] private float _onWallVelocityRatio = 0.95f;
     [SerializeField] private string wallTagName= "Wall";
 
+    public event Action OnHitWall;
+    public event Action OnWallStay;
+
     private Rigidbody _rb;
     private void Start()
     {
@@ -19,12 +23,13 @@ public class WallFrictionHandler : MonoBehaviour
         if (collision.gameObject.CompareTag(wallTagName))
         {
             float impact = collision.relativeVelocity.magnitude;
-            Debug.Log("Impact: " +  impact);
-            if (impact > 5f) // tweak threshold
+            if (impact > _impactToCountAsCrash) // tweak threshold
             {
                 // Drop velocity (instant deceleration)
                 Rigidbody rb = GetComponent<Rigidbody>();
-                rb.linearVelocity *= 0.5f; // or even lower
+                rb.linearVelocity *= _endVelocityRatio; // or even lower
+
+                OnHitWall?.Invoke();
             }
         }
     }
@@ -34,6 +39,7 @@ public class WallFrictionHandler : MonoBehaviour
         if (collision.gameObject.CompareTag(wallTagName))
         {
             _rb.linearVelocity *= _onWallVelocityRatio;
+            OnWallStay?.Invoke();
         }
     }
 }

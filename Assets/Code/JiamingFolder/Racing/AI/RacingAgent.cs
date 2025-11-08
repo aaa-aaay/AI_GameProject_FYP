@@ -13,6 +13,7 @@ public class RacingAgent : Agent
     private Rigidbody _sphere;
     private BetterCarMovement _carMovement;
     private GoalChecker _goalChecker;
+    private WallFrictionHandler _wallFrictionHandler;
     private ResetCarPosition _carPositionResetter;
     private float _raceTimer;
     public float TimeToReachNextCheckpoint = 50f;
@@ -28,12 +29,14 @@ public class RacingAgent : Agent
         _goalChecker = _car.GetComponent<GoalChecker>();
         _sphere = _car.GetComponent<Rigidbody>();
         _carPositionResetter = _car.GetComponent<ResetCarPosition>();
+        _wallFrictionHandler = _car.GetComponent<WallFrictionHandler>();
 
         //_manager.onRaceOver += HandleRaceOver;
         _goalChecker.OnRaceFinished += AiFinishedRace;
         _goalChecker.onCheckPointHit += HandleCPHit;
 
-        
+        _wallFrictionHandler.OnHitWall += HitWall;
+        _wallFrictionHandler.OnWallStay += stayingOnWall;
     }
 
     public override void OnEpisodeBegin()
@@ -54,25 +57,23 @@ public class RacingAgent : Agent
 
         float dist = Vector3.Distance(_car.transform.position, _goalChecker.GetCurrentCheckPoint().position);
         float progress = _previousDistanceToCheckpoint - dist;
-        AddReward(progress * 0.05f); // reward moving closer
+        AddReward(progress * 0.002f); // reward moving closer
 
 
 
         float currentSpeed = _sphere.linearVelocity.magnitude;
-        AddReward((currentSpeed - _lastSpeed) * 0.002f); // encourage acceleration
-        _lastSpeed = currentSpeed;
+        //AddReward((currentSpeed - _lastSpeed) * 0.005f); // encourage acceleration
+        //_lastSpeed = currentSpeed;
 
         // Penalize being too slow
-        if (currentSpeed < 2f)
-            AddReward(-0.001f);
+        if (currentSpeed < 5f)
+            AddReward(-0.005f);
+
+
+        AddReward(currentSpeed / 30f * 0.02f);
 
 
         _previousDistanceToCheckpoint = dist;
-
-
-
-
-
 
         if (_raceTimer <= 0f)
         {
@@ -98,7 +99,7 @@ public class RacingAgent : Agent
         //Movement(actions.DiscreteActions);
         Movement(actions.ContinuousActions, actions.DiscreteActions);
         //rewardForGettingCloser();
-        AddReward(-0.001f); //avoid stalling
+        AddReward(-0.002f); //avoid stalling
     }
 
 
@@ -106,8 +107,6 @@ public class RacingAgent : Agent
     private void HandleCPHit()
     {
         float checkpointSpeed = _sphere.linearVelocity.magnitude;
-        float speedBonus = Mathf.Clamp01(checkpointSpeed / 30f); // normalize to 0–1
-        AddReward(1.0f / _manager.checkPoints.Count + speedBonus * 0.2f);
         _raceTimer = TimeToReachNextCheckpoint;
     }
 
@@ -163,6 +162,16 @@ public class RacingAgent : Agent
         //    DiscreteActions[0] = 0;
         //}
 
+    }
+
+
+    private void HitWall()
+    {
+        AddReward(-0.05f);
+    }
+    private void stayingOnWall()
+    {
+        AddReward(-0.01f);
     }
 
 

@@ -12,6 +12,7 @@ public class RacingLeaderboard : MonoBehaviour
 
     private int displayCounter = 0;
 
+
     private void Start()
     {
         _entries = new List<LeaderboardEntry>();
@@ -24,12 +25,16 @@ public class RacingLeaderboard : MonoBehaviour
                 _entries.Add(entry);
             }
         }
+
+
+
     }
     public void AddLeaderboardData(string racerName, float raceTime)
     {
 
         if (displayCounter > _entries.Count) return;
         _entries[displayCounter].SetEntryData(racerName, raceTime);
+
 
         if (racerName.Contains("you"))
         {

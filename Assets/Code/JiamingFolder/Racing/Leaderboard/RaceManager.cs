@@ -22,6 +22,7 @@ public class RaceManager : MonoBehaviour
 
     [Header("Race Settings")]
     public bool isDebugMood;
+    private float _finishTimeDebug;
     public int lapsPerRace = 3;
     [HideInInspector] public int amtofCheckpoints;
     private List<GoalChecker> _racers = new List<GoalChecker>();
@@ -76,6 +77,7 @@ public class RaceManager : MonoBehaviour
     private void Start()
     {
         ServiceLocator.Instance.GetService<UIManager>().StartCountDownTimer();
+        _finishTimeDebug = 1000;
     }
 
     private void OnDestroy()
@@ -103,6 +105,12 @@ public class RaceManager : MonoBehaviour
     }
     private void HandleCarfinishRace(string name, float timeTaken)
     {
+
+        if (timeTaken < _finishTimeDebug)
+        {
+            _finishTimeDebug = timeTaken;
+            Debug.Log(_finishTimeDebug);
+        }
 
         if (isDebugMood) return;
 
