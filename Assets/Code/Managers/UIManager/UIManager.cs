@@ -21,6 +21,9 @@ public class UIManager : MonoBehaviour, IGameService
     [Header("UI References")]
     [SerializeField] private CountDownTimer _countDownTimer;
 
+    [Header("Settings References")]
+    [SerializeField] private SettingsManager _settingsManager;
+
 
     private InputManager _inputManager;
     private MiniGameSO _miniGame;
@@ -30,6 +33,7 @@ public class UIManager : MonoBehaviour, IGameService
     {
         ServiceLocator.Instance.AddService(this, false);
         _levelSelectCanvasGO.SetActive(false);
+        _settingsManager.ToggleSettings(false);
         _levelCompleteCanvasOpen = false;
 
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -45,6 +49,7 @@ public class UIManager : MonoBehaviour, IGameService
     private void Start()
     {
         _inputManager = ServiceLocator.Instance.GetService<InputManager>();
+        _inputManager.onOpenSettings += ToggleSettingsPage;
     }
 
     public void OpenLevelSelectUI(string levelName, int StarUnlocked)
@@ -102,6 +107,13 @@ public class UIManager : MonoBehaviour, IGameService
     public void StartCountDownTimer()
     {
         _countDownTimer.StartCountDown();
+    }
+
+    public void ToggleSettingsPage()
+    {
+        if (_settingsManager._isSettingsOpen) _settingsManager.ToggleSettings(false);
+        else _settingsManager.ToggleSettings(true);
+
     }
 
 
