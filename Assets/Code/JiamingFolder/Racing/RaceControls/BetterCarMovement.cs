@@ -26,7 +26,7 @@ public class BetterCarMovement : MonoBehaviour
     private float rotate;
     private float currentRotate;
 
-
+    [SerializeField][Range(0, 1)] private float lateralSlip = 0.9f;
     private bool drifting;
 
 
@@ -155,7 +155,7 @@ public class BetterCarMovement : MonoBehaviour
 
         // Reduce sideways sliding
         Vector3 localVel = transform.InverseTransformDirection(sphere.linearVelocity);
-        localVel.x *= 0.9f; // reduce lateral slip (grip)
+        localVel.x *= lateralSlip; // reduce lateral slip (grip)
         sphere.linearVelocity = transform.TransformDirection(localVel);
 
     }
