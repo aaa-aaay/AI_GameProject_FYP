@@ -37,7 +37,7 @@ public class BadmintionMovement : MonoBehaviour
         _isDashing = true;
         _dashTimer = dashDuration;
 
-        // reset velocity so dash is consistent
+        // reset linearVelocity so dash is consistent
         _rb.linearVelocity = Vector3.zero;
 
         // apply instant impulse

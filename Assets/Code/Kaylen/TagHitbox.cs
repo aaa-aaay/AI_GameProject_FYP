@@ -1,43 +1,73 @@
-using UnityEngine;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class TagHitbox : MonoBehaviour
 {
-    // Keep track of which runners were already tagged this frame
-    private HashSet<GameObject> taggedRunners = new HashSet<GameObject>();
+    [Tooltip("Assigned at spawn time by PlayerMovement.DoTag()")]
+    public PlayerMovement owner;
+
+    // allow only one pickup per runner collision
+    private HashSet<GameObject> processed = new HashSet<GameObject>();
+
+    // lifetime fallback (set by PlayerMovement too, but safe guard)
+    public float autoDestroyAfter = 0.6f;
+
+    void Start()
+    {
+        // safety auto-destruct
+        Destroy(gameObject, autoDestroyAfter);
+    }
+
+    private void TryPickup(Collider other)
+    {
+        if (!other.CompareTag("Runner")) return;
+        if (owner == null)
+        {
+            Debug.LogWarning("TagHitbox: owner is null, cannot pickup.");
+            return;
+        }
+
+        GameObject go = other.gameObject;
+        if (processed.Contains(go)) return;
+
+        processed.Add(go);
+
+        Runner runner = other.GetComponent<Runner>();
+        if (runner == null)
+        {
+            Debug.LogWarning($"TagHitbox: {other.name} has Runner tag but no RunnerAgent component.");
+            return;
+        }
+
+        // notify CaptureCheck if you still want counting (optional)
+        CaptureCheck cm = FindFirstObjectByType<CaptureCheck>();
+        if (cm != null)
+        {
+            // if you want to count capture when picked up, uncomment:
+            // cm.RunnerCaptured();
+        }
+
+        owner.PickUpRunner(runner);
+        Debug.Log($"TagHitbox: picked up runner {runner.name}");
+
+        // destroy hitbox immediately on pickup
+        Destroy(gameObject);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Runner"))
-        {
-            Debug.Log($"[TagHitbox] Ignored non-runner: {other.name}");
-            return;
-        }
+        TryPickup(other);
+    }
 
-        // Skip if this Runner was already tagged
-        if (taggedRunners.Contains(other.gameObject))
-        {
-            Debug.Log($"[TagHitbox] Ignored duplicate collider from {other.gameObject.name}");
-            return;
-        }
-
-        taggedRunners.Add(other.gameObject);
-
-        Debug.Log($"[TagHitbox] Runner captured: {other.gameObject.name} (First hit)");
-
-        // Notify capture manager
-        CaptureManager cm = FindFirstObjectByType<CaptureManager>();
-        if (cm != null)
-        {
-            cm.RunnerCaptured();
-        }
-
-        Destroy(other.gameObject);
+    // fallback so a brief overlap won't miss the pickup if physics timing is odd
+    private void OnTriggerStay(Collider other)
+    {
+        TryPickup(other);
     }
 
     private void OnDestroy()
     {
-        // Clear references to prevent memory leaks
-        taggedRunners.Clear();
+        processed.Clear();
     }
 }

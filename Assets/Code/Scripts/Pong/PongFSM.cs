@@ -27,18 +27,18 @@ public class PongFSM : MonoBehaviour
 
         Vector3 predicted_pos = PredictPositionAtZ(closest.transform.localPosition, closest.linearVelocity, transform.localPosition.z);
 
-        //if (predicted_pos.x > 40)
-        //{
-        //    Vector3 new_vel = closest.linearVelocity;
-        //    new_vel.x *= -1;
-        //    predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, 40), new_vel, transform.localPosition.z);
-        //}
-        //else if (predicted_pos.x < -40)
-        //{
-        //    Vector3 new_vel = closest.linearVelocity;
-        //    new_vel.x *= -1;
-        //    predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, -40), new_vel, transform.localPosition.z);
-        //}
+        if (predicted_pos.x > instance.GetRightBound())
+        {
+            Vector3 new_vel = closest.linearVelocity;
+            new_vel.x *= -1;
+            predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, 40), new_vel, transform.localPosition.z);
+        }
+        else if (predicted_pos.x < instance.GetLeftBound())
+        {
+            Vector3 new_vel = closest.linearVelocity;
+            new_vel.x *= -1;
+            predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, -40), new_vel, transform.localPosition.z);
+        }
 
         if (predicted_pos.x > transform.localPosition.x + tolerance)
         {

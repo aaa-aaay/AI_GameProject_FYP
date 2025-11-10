@@ -8,7 +8,7 @@ public class SaveLoadManager : MonoBehaviour,IGameService
     {
         ServiceLocator.Instance.AddService(this, false);
         progress = new GameProgress();
-        CreateNewSaveData();
+        //CreateNewSaveData();
         LoadData();
     }
 
@@ -82,7 +82,7 @@ public class SaveLoadManager : MonoBehaviour,IGameService
         newSave.levels.Add(new LevelProgress { levelIndex = 2, stars = 0, unlocked = false });
         newSave.levels.Add(new LevelProgress { levelIndex = 3, stars = 0, unlocked = false });
         newSave.levels.Add(new LevelProgress { levelIndex = 4, stars = 0, unlocked = false });
-        //newSave.levels.Add(new LevelProgress { levelIndex = 5, stars = 0, unlocked = false });
+        newSave.levels.Add(new LevelProgress { levelIndex = 5, stars = 0, unlocked = false });
 
         string json = JsonUtility.ToJson(newSave);
         PlayerPrefs.SetString("GameProgress", json);

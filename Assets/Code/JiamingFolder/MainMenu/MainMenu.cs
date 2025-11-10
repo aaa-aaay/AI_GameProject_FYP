@@ -13,6 +13,11 @@ public class MainMenu : MonoBehaviour
         ServiceLocator.Instance.GetService<MySceneManager>().GoBacktoGameLobby();
     }
 
+    public void OpenSettings()
+    {
+        ServiceLocator.Instance.GetService<UIManager>().ToggleSettingsPage();
+    }
+
 
 
 }

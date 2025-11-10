@@ -1,4 +1,3 @@
-using IGCC;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,6 +53,7 @@ public class AudioManager : MonoBehaviour, IGameService
 
     public void PlaySFX(string name, Vector3 position)
     {
+
         foreach (Sound sound in sounds)
         {
             if (sound.audioName == name)
@@ -138,6 +138,20 @@ public class AudioManager : MonoBehaviour, IGameService
             {
                 Debug.LogWarning($"Duplicate sound name found: {sound.name}. Skipping.");
             }
+        }
+    }
+
+
+    public void SetBGMVol(float bgmVolume)
+    {
+        _backgroundMusicSource.volume = bgmVolume;
+    }
+
+    public void SetSFXVol(float sfxVolume)
+    {
+        foreach (var source in _audioSourcePool)
+        {
+            source.volume = sfxVolume;
         }
     }
 }

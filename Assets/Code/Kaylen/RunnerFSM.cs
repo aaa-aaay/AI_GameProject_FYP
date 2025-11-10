@@ -13,23 +13,43 @@ public class Runner : MonoBehaviour
     public float dangerRadius = 5f;
 
     [Header("References")]
-    public List<PathNode> allNodes;     // Assign all PathNodes in the arena
+    public List<PathNode> allNodes;
+
+    [Header("Jump Settings")]
+    public float minJumpForce = 3f;
+    public float maxJumpForce = 6f;
+    public float minJumpCooldown = 3f;
+    public float maxJumpCooldown = 10f;
+
+    private float jumpCooldownTimer = 0f;
+
 
     private Rigidbody rb;
     public List<PathNode> path = new List<PathNode>();
     public int pathIndex = 0;
-
-    // Track the closest danger for Gizmo line
+    bool isGrounded;
+ 
     private Transform closestDanger;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        rb.constraints = RigidbodyConstraints.FreezeRotation; // keep rotation locked
+        rb.useGravity = true; // enable gravity
+        jumpCooldownTimer = Random.Range(minJumpCooldown, maxJumpCooldown);
 
         PickNewIdleTarget(); // start by idling
     }
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Ground"))
+            isGrounded = true;
+        }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.CompareTag("Ground"))
+            isGrounded = false;
+    }
     void Update()
     {
         // Detect any object with tag "Runner" or "Tagger" in danger radius
@@ -54,7 +74,7 @@ public class Runner : MonoBehaviour
 
         closestDanger = closest; // store for Gizmo
 
-        // Switch state based on detection
+       
         if (dangerDetected)
         {
             if (currentState != State.Run)
@@ -69,7 +89,7 @@ public class Runner : MonoBehaviour
             PickNewIdleTarget();
         }
 
-        // Execute behavior
+      
         switch (currentState)
         {
             case State.Idle: IdleBehaviour(); break;
@@ -77,7 +97,7 @@ public class Runner : MonoBehaviour
         }
     }
 
-    // -------------------------------
+
     void IdleBehaviour()
     {
         MoveAlongPath();
@@ -135,7 +155,7 @@ public class Runner : MonoBehaviour
             }
         }
 
-        // Fallback: just the furthest node
+     
         if (bestNode == null)
         {
             float maxDist = -Mathf.Infinity;
@@ -159,28 +179,51 @@ public class Runner : MonoBehaviour
 
     void MoveAlongPath()
     {
-        if (path == null || path.Count == 0) return;
-        if (pathIndex >= path.Count) return;
+        if (path == null || pathIndex >= path.Count) return;
 
         Vector3 targetPos = path[pathIndex].transform.position;
         Vector3 dir = targetPos - transform.position;
         float dist = dir.magnitude;
 
-        if (dist < nodeReachThreshold)
+        // --- Horizontal movement ---
+        Vector3 horizontalDir = new Vector3(dir.x, 0, dir.z);
+        if (horizontalDir.magnitude > 0.01f)
         {
-            pathIndex++;
-            return;
-        }
+            Vector3 move = horizontalDir.normalized * moveSpeed * Time.deltaTime;
+            rb.MovePosition(transform.position + move);
 
-        dir.Normalize();
-        rb.MovePosition(transform.position + dir * moveSpeed * Time.deltaTime);
-
-        if (dir.sqrMagnitude > 0.001f)
-        {
-            Quaternion targetRot = Quaternion.LookRotation(dir);
+            Quaternion targetRot = Quaternion.LookRotation(horizontalDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
         }
+
+        // --- Jump toward higher nodes ---
+        float yDiff = targetPos.y - transform.position.y;
+        if (yDiff > 0.1f)
+        {
+            Vector3 newVelocity = rb.linearVelocity;
+            // Jump to reach the node’s height
+            newVelocity.y = Mathf.Sqrt(2f * 5f * yDiff); // 5f = desired jump height coefficient
+            rb.linearVelocity = newVelocity;
+        }
+
+        // --- Random jumps ---
+        jumpCooldownTimer -= Time.deltaTime;
+        if (jumpCooldownTimer <= 0f)
+        {
+            float jumpForce = Random.Range(minJumpForce, maxJumpForce);
+            Vector3 newVelocity = rb.linearVelocity;
+            newVelocity.y = jumpForce;
+            rb.linearVelocity = newVelocity;
+
+            jumpCooldownTimer = Random.Range(minJumpCooldown, maxJumpCooldown);
+        }
+
+        // --- Node reach check ---
+        if (dist < nodeReachThreshold)
+            pathIndex++;
     }
+
+
 
     PathNode FindClosestNode()
     {

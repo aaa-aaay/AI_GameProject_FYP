@@ -4,11 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class WorldSelect : MonoBehaviour
 {
-    [SerializeField]
-    private string _nextSceneName;
 
-    [SerializeField]
-    private string _levelName;
+    [SerializeField] private MiniGameSO _miniGame;
 
     private InputManager _inputManager;
     private UIManager _uiManager;
@@ -42,7 +39,7 @@ public class WorldSelect : MonoBehaviour
 
         if(playerInRange)
         {
-            ServiceLocator.Instance.GetService<MySceneManager>().LoadScene(_nextSceneName);
+            ServiceLocator.Instance.GetService<MySceneManager>().LoadMiniGameWithTutorial(_miniGame);
         }
     }
 
@@ -52,7 +49,7 @@ public class WorldSelect : MonoBehaviour
         {
 
             playerInRange = true;
-            _uiManager.OpenLevelSelectUI(_levelName, 1);
+            _uiManager.OpenLevelSelectUI(_miniGame.gameName, 1);
 
         }
     }
