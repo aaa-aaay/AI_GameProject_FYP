@@ -106,8 +106,8 @@ public class PongInstance : MonoBehaviour
 
     private void Restart()
     {
-        UIManager uiManager = ServiceLocator.Instance.GetService<UIManager>();
-        SaveLoadManager slManager = ServiceLocator.Instance.GetService<SaveLoadManager>();
+
+        MiniGameOverHandler gameOverHandler = GetComponent<MiniGameOverHandler>();
 
         if (player_points == opponent_points)
         {
@@ -121,13 +121,11 @@ public class PongInstance : MonoBehaviour
             EventHolder.InvokeOnLose(player);
             EventHolder.InvokeOnWin(opponent);
 
-            uiManager.ToggleLevelFailedUI(true);
-
+            gameOverHandler.HandleGameOver(false);
         }
         else
         {
-            uiManager.ToggleLevelCompleteUI(true);
-            slManager.SaveData(3, 3);
+            gameOverHandler.HandleGameOver(true,3,3);
             EventHolder.InvokeOnWin(player);
             EventHolder.InvokeOnLose(opponent);
         }

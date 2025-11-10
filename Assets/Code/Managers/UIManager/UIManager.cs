@@ -14,9 +14,9 @@ public class UIManager : MonoBehaviour, IGameService
     private int starCount;
 
     [Header("Level Select UI")]
+    [SerializeField] private LevelCompleteManager _levelCompleteManager;
     [SerializeField] private GameObject _levelCompleteCanvas;
     [SerializeField] private GameObject _levelFailedCanvas;
-    private bool _levelCompleteCanvasOpen;
 
     [Header("UI References")]
     [SerializeField] private CountDownTimer _countDownTimer;
@@ -34,7 +34,6 @@ public class UIManager : MonoBehaviour, IGameService
         ServiceLocator.Instance.AddService(this, false);
         _levelSelectCanvasGO.SetActive(false);
         _settingsManager.ToggleSettings(false);
-        _levelCompleteCanvasOpen = false;
 
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -64,10 +63,9 @@ public class UIManager : MonoBehaviour, IGameService
     }
 
 
-    public void ToggleLevelCompleteUI(bool open)
+    public void ToggleLevelCompleteUI(bool open,int starCount = 0)
     {
-        _levelCompleteCanvas.SetActive(open);
-        _levelCompleteCanvasOpen = open;
+        _levelCompleteManager.ToggleLevelCompleteCanvas(open,starCount);
         if (_inputManager != null)
             _inputManager.toggleInputActivation(!open);
 
@@ -75,7 +73,7 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void ToggleLevelFailedUI(bool open)
     {
-        _levelFailedCanvas.SetActive(open);
+        _levelCompleteManager.ToggleLevelFailedCanvas(open);
         if(_inputManager != null)
             _inputManager.toggleInputActivation(!open);
     }
@@ -89,7 +87,8 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void RestartScene()
     {
-        _levelFailedCanvas.SetActive(false);
+        ToggleLevelFailedUI(false);
+        ToggleLevelCompleteUI(false);
         MySceneManager sManager = ServiceLocator.Instance.GetService<MySceneManager>();
         sManager.restartScene();
     }

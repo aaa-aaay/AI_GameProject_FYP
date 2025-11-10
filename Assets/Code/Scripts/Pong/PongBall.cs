@@ -50,11 +50,11 @@ public class PongBall : MonoBehaviour
         {
             if (Random.Range(0, 2) == 0)
             {
-                ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("Explosion", Camera.main.transform.position);
+                ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("Fireball", Camera.main.transform.position);
             }
             else
             {
-                ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("Explosion2", Camera.main.transform.position);
+                ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("Fireball2", Camera.main.transform.position);
             }
             rigid_body.AddForce((transform.position - collision.transform.position).normalized * bounce_force, ForceMode.Impulse);
         }
