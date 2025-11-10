@@ -4,14 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(CapsuleCollider))]
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
-    public float holdMoveSpeed = 2.5f; // slower speed while holding a rabbit
+    public float holdMoveSpeed = 2.5f;
     public float rotationSpeed = 10f;
-    public float jumpForce = 7f;
-    public float gravity = 2f;
+    public float jumpForce = 7f; // Jump strength
+    public float gravity = 20f;
 
     [Header("References")]
     public Transform playerModel;
@@ -28,42 +29,46 @@ public class PlayerMovement : MonoBehaviour
     public int maxHealth = 3;
     private int currentHealth;
 
+    [Header("Ground Check")]
+    public float groundCheckDistance = 0.1f;
+
     [Header("Damage Settings")]
     public float invincibilityTime = 3f;
     private bool isInvincible = false;
+
+
+    [Header("Animation")]
+    public Animator animator;
 
     private Rigidbody rb;
     private bool canTag = true;
     private GameObject activeHitbox;
     private Coroutine tagCoroutine;
-    public bool isGrounded;
+    private bool isGrounded;
 
     // Runner pickup
     private Runner heldRunner = null;
     public Transform holdPoint;
     public bool isHoldingRunner { get; private set; } = false;
-
     private Coroutine holdReleaseCoroutine;
 
-    void Awake()
+    private void Awake()
     {
         currentHealth = maxHealth;
-
         for (int i = 0; i < heartsUI.Count; i++)
         {
-            if (i < maxHealth)
-                heartsUI[i].sprite = fullHeartSprite;
-            else
-                heartsUI[i].gameObject.SetActive(false);
+            if (i < maxHealth) heartsUI[i].sprite = fullHeartSprite;
+            else heartsUI[i].gameObject.SetActive(false);
         }
     }
 
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 
-        if (playerModel == null) Debug.LogWarning("PlayerMovement: playerModel not assigned.");
+        if (playerModel == null)
+            Debug.LogWarning("PlayerMovement: playerModel not assigned.");
 
         if (holdPoint == null)
         {
@@ -72,39 +77,42 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
+        // Raycast down to check if grounded
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, GetComponent<CapsuleCollider>().height / 2 + groundCheckDistance);
+
+        // Jump input
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isGrounded = false;
+            Vector3 v = rb.linearVelocity;
+            v.y = jumpForce;
+            rb.linearVelocity = v;
         }
 
+        // Tag input
         if (Input.GetMouseButtonDown(0))
         {
-            if (isHoldingRunner)
+            if (isHoldingRunner) DropRunner();
+            else if (canTag)
             {
-                DropRunner();
-            }
-            else
-            {
-                if (canTag)
-                {
-                    if (tagCoroutine != null) StopCoroutine(tagCoroutine);
-                    tagCoroutine = StartCoroutine(DoTag());
-                }
+                if (tagCoroutine != null) StopCoroutine(tagCoroutine);
+                tagCoroutine = StartCoroutine(DoTag());
             }
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        Move();
+        HandleMovement();
 
+        // Apply gravity manually if not grounded
         if (!isGrounded)
-            rb.AddForce(Physics.gravity * gravity, ForceMode.Acceleration);
+        {
+            rb.AddForce(Vector3.down * gravity, ForceMode.Acceleration);
+        }
 
+        // Keep held runner at hold point
         if (isHoldingRunner && heldRunner != null)
         {
             heldRunner.transform.position = holdPoint.position;
@@ -112,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void Move()
+    private void HandleMovement()
     {
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
@@ -121,14 +129,22 @@ public class PlayerMovement : MonoBehaviour
         float speed = isHoldingRunner ? holdMoveSpeed : moveSpeed;
         Vector3 move = inputDir * speed;
 
+        // Move player
         rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
 
-        if (inputDir != Vector3.zero && playerModel != null)
+        // Rotate only if pressing WASD
+        if (inputDir.sqrMagnitude > 0.01f && playerModel != null)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(inputDir);
-            playerModel.rotation = Quaternion.Slerp(playerModel.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+            Quaternion targetRot = Quaternion.LookRotation(inputDir);
+            playerModel.rotation = Quaternion.Slerp(playerModel.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime);
         }
+
+        // Update walking animation
+        if (animator != null)
+            animator.SetBool("walking", inputDir.sqrMagnitude > 0.01f);
     }
+
+
 
     private IEnumerator DoTag()
     {
@@ -136,11 +152,7 @@ public class PlayerMovement : MonoBehaviour
         canTag = false;
         FindAnyObjectByType<GrabUI>()?.StartCooldownUI(tagCooldown);
 
-        if (activeHitbox != null)
-        {
-            Destroy(activeHitbox);
-            activeHitbox = null;
-        }
+        if (activeHitbox != null) Destroy(activeHitbox);
 
         if (playerModel == null)
         {
@@ -160,11 +172,7 @@ public class PlayerMovement : MonoBehaviour
 
         yield return new WaitForSeconds(tagCooldown);
 
-        if (activeHitbox != null)
-        {
-            Destroy(activeHitbox);
-            activeHitbox = null;
-        }
+        if (activeHitbox != null) Destroy(activeHitbox);
 
         canTag = true;
         tagCoroutine = null;
@@ -172,19 +180,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Ground"))
-            isGrounded = true;
-
-        if (collision.collider.CompareTag("Tagger"))
-        {
-            TakeDamage();
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.collider.CompareTag("Ground"))
-            isGrounded = false;
+        if (collision.collider.CompareTag("Tagger")) TakeDamage();
     }
 
     public void PickUpRunner(Runner runner)
@@ -208,11 +204,8 @@ public class PlayerMovement : MonoBehaviour
         runner.transform.localPosition = Vector3.zero;
         runner.transform.localRotation = Quaternion.identity;
 
-        // Start auto-release timer
         if (holdReleaseCoroutine != null) StopCoroutine(holdReleaseCoroutine);
         holdReleaseCoroutine = StartCoroutine(AutoReleaseRunner());
-
-        Debug.Log($"Picked up runner: {runner.name}");
     }
 
     private IEnumerator AutoReleaseRunner()
@@ -220,11 +213,7 @@ public class PlayerMovement : MonoBehaviour
         float duration = Random.Range(5f, 10f);
         yield return new WaitForSeconds(duration);
 
-        if (isHoldingRunner)
-        {
-            Debug.Log("Runner broke free!");
-            DropRunner();
-        }
+        if (isHoldingRunner) DropRunner();
     }
 
     public void DropRunner()
@@ -252,10 +241,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public Runner GetHeldRunner()
-    {
-        return heldRunner != null ? heldRunner.GetComponent<Runner>() : null;
-    }
+    public Runner GetHeldRunner() => heldRunner != null ? heldRunner.GetComponent<Runner>() : null;
 
     private void TakeDamage()
     {
@@ -267,8 +253,7 @@ public class PlayerMovement : MonoBehaviour
 
         StartCoroutine(InvincibilityCoroutine());
 
-        if (currentHealth <= 0)
-            Die();
+        if (currentHealth <= 0) Die();
     }
 
     private IEnumerator InvincibilityCoroutine()
@@ -281,28 +266,13 @@ public class PlayerMovement : MonoBehaviour
     private void Die()
     {
         Debug.Log("Player died!");
-        this.enabled = false;
+        enabled = false;
     }
 
     public void DisableTagging()
     {
         canTag = false;
-
-        if (tagCoroutine != null)
-        {
-            StopCoroutine(tagCoroutine);
-            tagCoroutine = null;
-        }
-
-        if (activeHitbox != null)
-        {
-            Destroy(activeHitbox);
-            activeHitbox = null;
-        }
-
-        Debug.Log("Tag disabled");
+        if (tagCoroutine != null) StopCoroutine(tagCoroutine);
+        if (activeHitbox != null) Destroy(activeHitbox);
     }
 }
-
-
-

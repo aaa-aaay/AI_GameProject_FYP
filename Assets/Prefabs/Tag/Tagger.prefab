@@ -134,7 +134,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 739399241afb9254b96bd9c04e2d8786, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: e590c4cd9378a6d4992c1ff17578747e, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 2
   m_BehaviorName: Tagger
@@ -164,9 +164,23 @@ MonoBehaviour:
   success: {fileID: 2100000, guid: 2da3d292f00208242a4c47bc89e3ff06, type: 2}
   fail: {fileID: 2100000, guid: 40c74f5f18e940640b0807d984821276, type: 2}
   timerUI: {fileID: 0}
-  moveSpeed: 9.95
-  approachReward: 0.01
   agentMode: 1
+  moveSpeed: 9.95
+  jumpForce: 6
+  gravity: 2
+  approachReward: 0.01
+  sameHeightReward: 0.01
+  tagReward: 5
+  losePlayerPenalty: -1
+  edgePenalty: -10
+  crowdPenalty: -0.5
+  staminaPenalty: -0.2
+  detectionRadius: 10
+  maxStamina: 5
+  staminaRegenRate: 1
+  staminaDrainRate: 1.5
+  movementThreshold: 0.05
+  otherTaggers: []
 --- !u!114 &6769635781673609846
 MonoBehaviour:
   m_ObjectHideFlags: 0
