@@ -22,8 +22,9 @@ public class BadmintionGameManager : MonoBehaviour
 
     [Header("Serve refs")]
     [SerializeField] private GameObject serveUIGO;
-    [SerializeField] private Transform serverHolder1;
-    [SerializeField] private Transform serverHolder2;
+    [SerializeField] private GameObject _serveMarkerGO;
+    [SerializeField] private List<Transform> serverHolders;
+    [SerializeField] private List<Transform> serverMarkerHolders;
     [SerializeField] private List<Racket> _rackets;
     public event Action OnGameOver;
 
@@ -131,30 +132,31 @@ public class BadmintionGameManager : MonoBehaviour
     {
         if (servePlayer != 1 && servePlayer != 2) return;
 
-
-        serveUIGO.SetActive(true);
-        Transform newParent = null;
-
         if (servePlayer == 1)
         {
-            newParent = serverHolder1;
             shutter.transform.position = shutterSpawnPoint1.position;
         }
         else if (servePlayer == 2)
         {
-            newParent = serverHolder2;
             shutter.transform.position = shutterSpawnPoint2.position;
         }
 
-
-        RectTransform rect = serveUIGO.GetComponent<RectTransform>();
-        rect.SetParent(newParent, false);
-        rect.localPosition = Vector3.zero;
-        rect.localRotation = Quaternion.identity;
+        SetWorldUI(serveUIGO, serverHolders[servePlayer - 1]);
+        SetWorldUI(_serveMarkerGO, serverMarkerHolders[servePlayer - 1]);
     }
 
     private void FinishedServing()
     {
         serveUIGO.SetActive(false);
+        _serveMarkerGO.SetActive(false);
+    }
+
+    private void SetWorldUI(GameObject UIGO, Transform newParent)
+    {
+        UIGO.SetActive(true);
+        RectTransform rect = UIGO.GetComponent<RectTransform>();
+        rect.SetParent(newParent, false);
+        rect.localPosition = Vector3.zero;
+        rect.localRotation = Quaternion.identity;
     }
 }

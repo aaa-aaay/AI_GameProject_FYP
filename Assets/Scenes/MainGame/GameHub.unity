@@ -736,7 +736,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.111070864, y: 0, z: 0, w: 0.99381256}
-  m_LocalPosition: {x: -110, y: 10.25234, z: 59.225548}
+  m_LocalPosition: {x: -110, y: 4.0753703, z: 73.17272}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2288,7 +2288,7 @@ Transform:
   m_GameObject: {fileID: 988310127}
   serializedVersion: 2
   m_LocalRotation: {x: 0.111070864, y: -0, z: -0, w: 0.99381256}
-  m_LocalPosition: {x: -110, y: 10.25234, z: 59.225548}
+  m_LocalPosition: {x: -110, y: 4.0753703, z: 73.17272}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2349,19 +2349,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 886251e9a18ece04ea8e61686c173e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CameraDistance: 21.3
+  CameraDistance: 7
   DeadZoneDepth: 0
   Composition:
     ScreenPosition: {x: 0, y: 0}
     DeadZone:
       Enabled: 1
-      Size: {x: 0.2, y: 0.2}
+      Size: {x: 0.07, y: 0.08}
     HardLimits:
-      Enabled: 0
-      Size: {x: 0.8, y: 0.8}
-      Offset: {x: 0, y: 0}
+      Enabled: 1
+      Size: {x: 0.3, y: 0.17}
+      Offset: {x: 0, y: -0.14}
   CenterOnActivate: 1
-  TargetOffset: {x: 0, y: 4.55, z: 0}
+  TargetOffset: {x: 0, y: 1.53, z: 0}
   Damping: {x: 1, y: 1, z: 1}
   Lookahead:
     Enabled: 0
@@ -3457,8 +3457,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49d21eadbd853d048a486bb5fa2fd0e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 5
-  _rotationSpeed: 20
+  _moveSpeed: 7
+  _rotationSpeed: 10
   _animator: {fileID: 1159065975}
 --- !u!54 &1219832443
 Rigidbody:
@@ -4662,8 +4662,36 @@ PrefabInstance:
       value: GameHubNPC01
       objectReference: {fileID: 0}
     - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: _question.name
+      value: John (You)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: dialouge.isMCQ
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: _question.isMCQ
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: _question.pfpSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f5ea612ddaa5770489c097da0579cb6f, type: 3}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: _initaldialouge.name
+      value: Waiter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: _initaldialouge.pfpSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
       propertyPath: dialouge.sentences.Array.size
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: _question.sentences.Array.size
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
       propertyPath: 'dialouge.sentences.Array.data[0]'
@@ -4681,10 +4709,46 @@ PrefabInstance:
       propertyPath: 'dialouge.sentences.Array.data[3]'
       value: Have fun around here!
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: '_question.sentences.Array.data[0]'
+      value: Tell me about the tag game
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: '_question.sentences.Array.data[1]'
+      value: Tell me abt the badminton Game
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: '_question.sentences.Array.data[2]'
+      value: Tell me abt the pong game
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: '_question.sentences.Array.data[3]'
+      value: Tell me abt the archery game
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: '_question.sentences.Array.data[4]'
+      value: Tell me abt the racing Game
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: _initaldialouge.sentences.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: '_initaldialouge.sentences.Array.data[0]'
+      value: Welcome to this arcade
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      propertyPath: '_initaldialouge.sentences.Array.data[1]'
+      value: Anything u looking for?
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8374531523398239333, guid: c0e976307484df043afeea940b4f6e69, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6513300941133152378, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1975214097}
   m_SourcePrefab: {fileID: 100100000, guid: c0e976307484df043afeea940b4f6e69, type: 3}
 --- !u!1 &1749759404
 GameObject:
@@ -4858,6 +4922,11 @@ Transform:
   - {fileID: 1838197542}
   m_Father: {fileID: 67174371}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1779888966 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6513300941133152378, guid: c0e976307484df043afeea940b4f6e69, type: 3}
+  m_PrefabInstance: {fileID: 1747279348}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1785759624
 GameObject:
   m_ObjectHideFlags: 0
@@ -5902,6 +5971,62 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5295147322558731498, guid: c0e976307484df043afeea940b4f6e69, type: 3}
   m_PrefabInstance: {fileID: 1747279348}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1975214097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1779888966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28099684fb157d84d851f0fefa5d4d1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _initaldialouge:
+    name: Waiter
+    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
+    sentences:
+    - Hi, welcome to the arcade
+    - Anything u wana know?
+    isMCQ: 0
+  _question:
+    name: John (you)
+    pfpSprite: {fileID: 21300000, guid: 05184b9b8523a784896e204ae53efcbf, type: 3}
+    sentences:
+    - tell me abt tag
+    - tell me abt badminton
+    - tell me abt pong
+    - tell me abt archery
+    - tell me abt racing
+    isMCQ: 1
+  _replyList:
+  - name: Waiter
+    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
+    sentences:
+    - pong is cool
+    isMCQ: 0
+  - name: Waiter
+    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
+    sentences:
+    - badminton is cool
+    isMCQ: 0
+  - name: Waiter
+    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
+    sentences:
+    - pong is cool
+    isMCQ: 0
+  - name: Waiter
+    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
+    sentences:
+    - archery is cool
+    - u need to shoot a bow
+    isMCQ: 0
+  - name: Waiter
+    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
+    sentences:
+    - racing is cool
+    isMCQ: 0
 --- !u!1001 &1981926944
 PrefabInstance:
   m_ObjectHideFlags: 0

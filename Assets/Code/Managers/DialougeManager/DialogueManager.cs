@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,9 +17,14 @@ public class DialogueManager : MonoBehaviour, IGameService
     [SerializeField] private GameObject canvas;
     [SerializeField] private Animator animator;
 
+    [SerializeField] private GameObject _buttonsPanel;
+    [SerializeField] private List<GameObject> buttons;
+
     [SerializeField] private Image pfpImage;
 
     private bool haveDialouge;
+
+    public event Action<int> onDialougeOver;
 
 
     private void OnEnable()
@@ -41,14 +48,41 @@ public class DialogueManager : MonoBehaviour, IGameService
         haveDialouge = true;
         nameText.text = dialouge.name;
         pfpImage.sprite = dialouge.pfpSprite;
+        _buttonsPanel.SetActive(false);
 
-        foreach (string sentence in dialouge.sentences) { 
-            sentences.Enqueue(sentence);
-        
-        
-        
+
+        if (dialouge.isMCQ) {
+            _buttonsPanel.SetActive(true);
+            int sentencesCount = 0;
+            foreach(GameObject buttonGO in buttons)
+            {
+
+                
+                if(sentencesCount >= dialouge.sentences.Count())
+                {
+                    buttonGO.SetActive(false);
+                }
+                else
+                {
+                    sentencesCount++;
+
+                    TMP_Text displayText = buttonGO.GetComponentInChildren<TMP_Text>();
+                    displayText.text = dialouge.sentences[sentencesCount - 1];
+                }
+
+            }
         }
-        DisplayNextSentence();
+        else
+        {
+            foreach (string sentence in dialouge.sentences)
+            {
+                sentences.Enqueue(sentence);
+
+            }
+            DisplayNextSentence();
+        }
+
+
     }
 
     public void DisplayNextSentence()
@@ -82,7 +116,17 @@ public class DialogueManager : MonoBehaviour, IGameService
         haveDialouge = false;
         canvas.SetActive(false);
         animator.SetBool("isOpen", false);
+        onDialougeOver?.Invoke(0);
 
+    }
+
+    public void ReplyPressed(int replyNo)
+    {
+        haveDialouge = false;
+        canvas.SetActive(false);
+        animator.SetBool("isOpen", false);
+        _buttonsPanel.SetActive(false);
+        onDialougeOver?.Invoke(replyNo);
     }
     public bool StillHaveDialogue()
     {

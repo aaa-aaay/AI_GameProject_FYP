@@ -3,23 +3,26 @@ using UnityEngine.VFX;
 
 public class ShutterFX : MonoBehaviour
 {
-    [SerializeField] private VisualEffect vfx;
+    [SerializeField] private GameObject _vfxOBJ;
+    private VisualEffect _vfx;
 
 
-
+    private void Start()
+    {
+        _vfx = _vfxOBJ.GetComponent<VisualEffect>();
+    }
     public void PlayHitEffects()
     {
-        if (vfx != null)
+        if (_vfx != null)
         {
-            vfx.Play();
-            //vfx.SendEvent("OnPlay");
-            Debug.Log("Vfx Played");
+            _vfxOBJ.transform.position = transform.position;
+            _vfx.Play();
         }
     }
 
     public void StopHitEffects()
     {
-        if (vfx != null)
-            vfx.Stop();
+        if (_vfx != null)
+            _vfx.Stop();
     }
 }
