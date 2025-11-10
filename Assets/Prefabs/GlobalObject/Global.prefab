@@ -1926,7 +1926,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8223988475070480853}
         m_TargetAssemblyTypeName: SettingsManager, Assembly-CSharp
-        m_MethodName: SwitchDisplayType
+        m_MethodName: ChangeDifficulty
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2448,7 +2448,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Normal
+  m_text: Medium
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6026,6 +6026,7 @@ MonoBehaviour:
   bgmVolText: {fileID: 4550005801790640027}
   sfxVolText: {fileID: 7378165077162739117}
   _screenTypeText: {fileID: 1225983361785524511}
+  difficultyText: {fileID: 2945150129655595100}
   _isSettingsOpen: 0
 --- !u!1 &6132718990667621441
 GameObject:
@@ -8951,7 +8952,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8223988475070480853}
         m_TargetAssemblyTypeName: SettingsManager, Assembly-CSharp
-        m_MethodName: SwitchDisplayType
+        m_MethodName: ChangeDifficulty
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
