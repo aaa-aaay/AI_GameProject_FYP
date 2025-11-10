@@ -13,14 +13,15 @@ public class RacingAgent : Agent
     private Rigidbody _sphere;
     private BetterCarMovement _carMovement;
     private GoalChecker _goalChecker;
+    private WallFrictionHandler _wallFrictionHandler;
     private ResetCarPosition _carPositionResetter;
     private float _raceTimer;
     public float TimeToReachNextCheckpoint = 50f;
 
     private float _previousDistanceToCheckpoint;
 
-
-
+    private Vector3 _lastPosition;
+    private float _lastSpeed;
 
     public override void Initialize()
     {
@@ -28,12 +29,14 @@ public class RacingAgent : Agent
         _goalChecker = _car.GetComponent<GoalChecker>();
         _sphere = _car.GetComponent<Rigidbody>();
         _carPositionResetter = _car.GetComponent<ResetCarPosition>();
+        _wallFrictionHandler = _car.GetComponent<WallFrictionHandler>();
 
         //_manager.onRaceOver += HandleRaceOver;
         _goalChecker.OnRaceFinished += AiFinishedRace;
         _goalChecker.onCheckPointHit += HandleCPHit;
 
-        
+        _wallFrictionHandler.OnHitWall += HitWall;
+        _wallFrictionHandler.OnWallStay += stayingOnWall;
     }
 
     public override void OnEpisodeBegin()
@@ -54,9 +57,23 @@ public class RacingAgent : Agent
 
         float dist = Vector3.Distance(_car.transform.position, _goalChecker.GetCurrentCheckPoint().position);
         float progress = _previousDistanceToCheckpoint - dist;
-        AddReward(progress * 0.01f); // reward moving closer
-        _previousDistanceToCheckpoint = dist;
+        AddReward(progress * 0.002f); // reward moving closer
 
+
+
+        float currentSpeed = _sphere.linearVelocity.magnitude;
+        //AddReward((currentSpeed - _lastSpeed) * 0.005f); // encourage acceleration
+        //_lastSpeed = currentSpeed;
+
+        // Penalize being too slow
+        if (currentSpeed < 5f)
+            AddReward(-0.005f);
+
+
+        AddReward(currentSpeed / 30f * 0.02f);
+
+
+        _previousDistanceToCheckpoint = dist;
 
         if (_raceTimer <= 0f)
         {
@@ -67,10 +84,13 @@ public class RacingAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        Vector3 diff = _goalChecker.GetCurrentCheckPoint().position - _car.transform.position;
-        sensor.AddObservation(diff / 20f);
-        sensor.AddObservation(_sphere.linearVelocity / 20f);
+        Vector3 toCheckpoint = _goalChecker.GetCurrentCheckPoint().position - _car.transform.position;
+        Vector3 forward = _car.transform.forward;
 
+        sensor.AddObservation(toCheckpoint.normalized);          // where to go
+        sensor.AddObservation(Vector3.Dot(forward, toCheckpoint.normalized)); // alignment
+        sensor.AddObservation(_sphere.linearVelocity.magnitude / 30f); // speed
+        sensor.AddObservation(_sphere.linearVelocity.normalized); // direction of motion
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -79,21 +99,19 @@ public class RacingAgent : Agent
         //Movement(actions.DiscreteActions);
         Movement(actions.ContinuousActions, actions.DiscreteActions);
         //rewardForGettingCloser();
-        AddReward(-0.001f); //avoid stalling
+        AddReward(-0.002f); //avoid stalling
     }
 
 
 
     private void HandleCPHit()
     {
-        Debug.Log("rewarded for hiting cp");
-        AddReward(1.0f/ _manager.checkPoints.Count);
+        float checkpointSpeed = _sphere.linearVelocity.magnitude;
         _raceTimer = TimeToReachNextCheckpoint;
     }
 
     private void AiFinishedRace(string name, float timetaken)
     {
-        Debug.Log("rewarded for ending the race");
         AddReward(0.5f);
         EndEpisode();
     }
@@ -144,6 +162,16 @@ public class RacingAgent : Agent
         //    DiscreteActions[0] = 0;
         //}
 
+    }
+
+
+    private void HitWall()
+    {
+        AddReward(-0.05f);
+    }
+    private void stayingOnWall()
+    {
+        AddReward(-0.01f);
     }
 
 

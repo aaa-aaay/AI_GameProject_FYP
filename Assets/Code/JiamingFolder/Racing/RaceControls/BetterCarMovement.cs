@@ -26,7 +26,7 @@ public class BetterCarMovement : MonoBehaviour
     private float rotate;
     private float currentRotate;
 
-
+    [SerializeField][Range(0, 1)] private float lateralSlip = 0.9f;
     private bool drifting;
 
 
@@ -150,6 +150,14 @@ public class BetterCarMovement : MonoBehaviour
         // Align car normal to terrain
         kartNormal.up = Vector3.Lerp(kartNormal.up, hitNear.normal, Time.deltaTime * 8.0f);
         kartNormal.Rotate(0, transform.eulerAngles.y, 0);
+
+
+
+        // Reduce sideways sliding
+        Vector3 localVel = transform.InverseTransformDirection(sphere.linearVelocity);
+        localVel.x *= lateralSlip; // reduce lateral slip (grip)
+        sphere.linearVelocity = transform.TransformDirection(localVel);
+
     }
 
     public void ToggleDrifting(bool startDrift, float turnInput = 0)

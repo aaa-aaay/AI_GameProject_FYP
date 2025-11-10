@@ -5,6 +5,7 @@ using UnityEngine.VFX;
 
 public class PongBall : MonoBehaviour
 {
+    [SerializeField] private VisualEffect bounce_vfx;
     [SerializeField] private float bounce_force;
     [SerializeField, Range(0f, 1f)] private float start_bounce_multiplier;
     [SerializeField] private float max_speed;
@@ -42,6 +43,11 @@ public class PongBall : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        bounce_vfx.transform.position = collision.GetContact(0).point;
+        bounce_vfx.Play();
+
+        ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("glass", Camera.main.transform.position);
+
         if (collision.gameObject.CompareTag(add_force_tag))
         {
             rigid_body.AddForce((transform.position - collision.transform.position).normalized * bounce_force, ForceMode.Impulse);
@@ -74,6 +80,7 @@ public class PongBall : MonoBehaviour
 
     public void Restart()
     {
+        ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("Explosion", Camera.main.transform.position);
         rigid_body.linearVelocity = Vector3.zero;
         rigid_body.AddForce(new Vector3(Random.Range(-1, 1f), 0, Random.Range(-1, 1f)).normalized * max_speed * start_bounce_multiplier, ForceMode.Impulse); 
         transform.position = start_position;
