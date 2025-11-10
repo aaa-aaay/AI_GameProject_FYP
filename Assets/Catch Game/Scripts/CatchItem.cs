@@ -33,7 +33,10 @@ public class CatchItem : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        EventHolder.OnHit(collision.gameObject, gameObject, 1);
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            EventHolder.OnHit(collision.gameObject, gameObject, 1);
+        }
         gameObject.SetActive(false);
     }
 }

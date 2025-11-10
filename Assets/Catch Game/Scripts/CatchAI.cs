@@ -3,6 +3,7 @@ using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class CatchAI : AgentDLC
 {
@@ -59,6 +60,19 @@ public class CatchAI : AgentDLC
                 AddReward(-0.02f);
             }
             Jump?.Invoke();
+        }
+
+        List<CatchData> players = instance.GetData();
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            if(players[i].GetPlayer() != gameObject)
+            {
+                if (Vector3.Distance(transform.position, players[i].GetPlayer().transform.position) <= 1)
+                {
+                    AddReward(-0.005f);
+                }
+            }
         }
     }
 

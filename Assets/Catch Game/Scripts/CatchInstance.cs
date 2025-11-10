@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using UnityEngine.Events;
 
 [Serializable]
 public class CatchData
@@ -39,6 +40,8 @@ public class CatchInstance : MonoBehaviour
     [SerializeField] private List<CatchData> players;
     [SerializeField] private List<GameObject> spawners;
 
+    [SerializeField] private UnityEvent RestartGame;
+
     private List<CatchItem> item_pool;
 
     private float time_passed;
@@ -52,6 +55,13 @@ public class CatchInstance : MonoBehaviour
         {
             item_pool.Add(Instantiate(item_prefab.gameObject, transform).GetComponent<CatchItem>());
         }
+
+        EventHolder.OnHit += OnScore;
+    }
+
+    private void OnDestroy()
+    {
+        EventHolder.OnHit -= OnScore;
     }
 
     private void Update()
@@ -66,19 +76,7 @@ public class CatchInstance : MonoBehaviour
 
     private void Restart()
     {
-        for (int i = 0; i < max_items;i++)
-        {
-            EventHolder.InvokeOnRestart(item_pool[i].gameObject);
-        }
-        for (int i = 0; i < players.Count; i++)
-        {
-            EventHolder.InvokeOnRestart(players[i].GetPlayer());
-            players[i].SetPoints(0);
-        }
-        for(int i = 0;i < spawners.Count; i++)
-        {
-            EventHolder.InvokeOnRestart(spawners[i].gameObject);
-        }
+        RestartGame?.Invoke();
         time_passed = 0;
     }
 
@@ -104,7 +102,7 @@ public class CatchInstance : MonoBehaviour
         return null;
     }
 
-    public void OnScore(GameObject scorer, GameObject scored, int points)
+    public void OnScore(GameObject scorer, GameObject scored, float points)
     {
         for (int i = 0; i < players.Count; i++)
         {
