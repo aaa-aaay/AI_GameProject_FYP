@@ -8,6 +8,7 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] private TMP_Text bgmVolText;
     [SerializeField] private TMP_Text sfxVolText;
     [SerializeField] private TMP_Text _screenTypeText;
+    [SerializeField] private TMP_Text difficultyText;
     private AudioManager _audioManager;
 
     public bool _isSettingsOpen;
@@ -20,11 +21,12 @@ public class SettingsManager : MonoBehaviour
         WindowedFullScreen = 2,
     }
     private displayType _currentDisplayType;
-    private int currentDisplayType; 
+    private DifficultyLevel _currentDifficultySettings;
     private int maxDisplayType = 3;
     private void Start()
     {
         _audioManager = ServiceLocator.Instance.GetService<AudioManager>();
+        SetDifficultyText();
         SetDisplayType(displayType.Fullscreen);
     }
     public void UpdateBGMVol(float newVolume)
@@ -51,7 +53,7 @@ public class SettingsManager : MonoBehaviour
         else
         {
             if(index != 0) index--;
-            else index = index - 1;
+            else index = maxDisplayType - 1;
         }
         _currentDisplayType = (displayType)index;
 
@@ -85,4 +87,45 @@ public class SettingsManager : MonoBehaviour
         _isSettingsOpen = open;
     }
 
+    public void ChangeDifficulty(bool next)
+    {
+        int index = (int) _currentDifficultySettings;
+        if (next)
+        {
+            if (index < (int) DifficultyLevel.Count - 1) index++;
+            else index = 0;
+        }
+        else
+        {
+            if (index != (int) DifficultyLevel.Easy) index--;
+            else index = index - 1;
+        }
+        PlayerPrefs.SetInt("Difficulty", index);
+        _currentDifficultySettings = (DifficultyLevel) index;
+        SetDifficultyText(_currentDifficultySettings);
+
+    }
+
+    private void SetDifficultyText()
+    {
+        SetDifficultyText((DifficultyLevel)PlayerPrefs.GetInt("Difficulty"));
+    }
+
+    private void SetDifficultyText(DifficultyLevel difficultySettings)
+    {
+        switch (difficultySettings)
+        {
+            case DifficultyLevel.Easy:
+                difficultyText.text = "Easy";
+                break;
+            case DifficultyLevel.Medium:
+                difficultyText.text = "Medium";
+                break;
+            case DifficultyLevel.Hard:
+                difficultyText.text = "Hard";
+                break;
+            default:
+                break;
+        }
+    }
 }
