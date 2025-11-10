@@ -108,7 +108,8 @@ public class SettingsManager : MonoBehaviour
 
     private void SetDifficultyText()
     {
-        SetDifficultyText((DifficultyLevel)PlayerPrefs.GetInt("Difficulty"));
+        _currentDifficultySettings = (DifficultyLevel)PlayerPrefs.GetInt("Difficulty");
+        SetDifficultyText(_currentDifficultySettings);
     }
 
     private void SetDifficultyText(DifficultyLevel difficultySettings)
