@@ -7,7 +7,7 @@ public class LobbyNPC : MonoBehaviour
 
     private bool dialougeStarted;
 
-    private DialogueManager dialogueManager;
+    private DialougeManager dialogueManager;
 
     private LobbyPlayerMovement player;
 
@@ -17,7 +17,7 @@ public class LobbyNPC : MonoBehaviour
 
         inputManager.OnClick += HandleClick;
 
-        dialogueManager = ServiceLocator.Instance.GetService<DialogueManager>();
+        dialogueManager = ServiceLocator.Instance.GetService<DialougeManager>();
 
     }
     private void OnTriggerEnter(Collider other)

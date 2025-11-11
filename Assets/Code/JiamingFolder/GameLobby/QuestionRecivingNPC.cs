@@ -10,7 +10,7 @@ public class QuestionRecivingNPC : MonoBehaviour
     private bool dialougeStarted;
     private bool _questionReplied;
 
-    private DialogueManager dialogueManager;
+    private DialougeManager dialogueManager;
 
     private LobbyPlayerMovement player;
 
@@ -25,7 +25,7 @@ public class QuestionRecivingNPC : MonoBehaviour
 
         inputManager.OnClick += HandleClick;
 
-        dialogueManager = ServiceLocator.Instance.GetService<DialogueManager>();
+        dialogueManager = ServiceLocator.Instance.GetService<DialougeManager>();
 
         _inQuesiton = false;
 

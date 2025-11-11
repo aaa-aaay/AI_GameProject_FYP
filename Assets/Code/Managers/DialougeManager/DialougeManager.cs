@@ -6,9 +6,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogueManager : MonoBehaviour, IGameService
+public class DialougeManager : MonoBehaviour, IGameService
 {
-    public static DialogueManager Instance { get; private set; }
+    public static DialougeManager Instance { get; private set; }
 
     private Queue<string> sentences;
 
@@ -36,7 +36,7 @@ public class DialogueManager : MonoBehaviour, IGameService
 
     private void OnDisable()
     {
-        //ServiceLocator.Instance.RemoveService<DialogueManager>(false);
+        //ServiceLocator.Instance.RemoveService<DialougeManager>(false);
     }
 
 

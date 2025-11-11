@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class UIManager : MonoBehaviour, IGameService
 {
 
-    public static DialogueManager Instance { get; private set; }
+    public static DialougeManager Instance { get; private set; }
 
     [Header("Level Select UI")]
     [SerializeField] private GameObject _levelSelectCanvasGO;
