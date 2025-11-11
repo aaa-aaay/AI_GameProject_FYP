@@ -57,7 +57,12 @@ public class RacingAgent : Agent
 
         float dist = Vector3.Distance(_car.transform.position, _goalChecker.GetCurrentCheckPoint().position);
         float progress = _previousDistanceToCheckpoint - dist;
-        AddReward(progress * 0.002f); // reward moving closer
+        AddReward(progress * 0.1f); // reward moving closer
+        if(progress < 0)
+        {
+            AddReward(progress * 0.02f);
+            Debug.Log("Driving Backwards");
+        }
 
 
 
@@ -67,17 +72,17 @@ public class RacingAgent : Agent
 
         // Penalize being too slow
         if (currentSpeed < 7f)
-            AddReward(-0.005f);
+            AddReward(-0.02f);
 
 
-        AddReward(currentSpeed / 30f * 0.03f);
+        AddReward(currentSpeed / 30f * 0.02f);
 
 
         _previousDistanceToCheckpoint = dist;
 
         if (_raceTimer <= 0f)
         {
-            AddReward(-1f);
+            AddReward(-3.0f);
             EndEpisode();
         }
     }
@@ -106,13 +111,14 @@ public class RacingAgent : Agent
 
     private void HandleCPHit()
     {
+        AddReward(0.2f);
         float checkpointSpeed = _sphere.linearVelocity.magnitude;
         _raceTimer = TimeToReachNextCheckpoint;
     }
 
     private void AiFinishedRace(string name, float timetaken)
     {
-        AddReward(0.5f);
+        AddReward(3.0f);
         EndEpisode();
     }
 
@@ -167,11 +173,11 @@ public class RacingAgent : Agent
 
     private void HitWall()
     {
-        AddReward(-0.06f);
+        AddReward(-0.1f);
     }
     private void stayingOnWall()
     {
-        AddReward(-0.03f);
+        AddReward(-0.02f);
     }
 
 
