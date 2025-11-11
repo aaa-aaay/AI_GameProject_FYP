@@ -83,7 +83,9 @@ public class SettingsManager : MonoBehaviour
     public void ToggleSettings(bool open)
     {
         _settingsPage.SetActive(open);
-        if (open) Time.timeScale = 0; else Time.timeScale = 1;
+        ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
+        if (open) Time.timeScale = 0;
+        else Time.timeScale = 1;
         _isSettingsOpen = open;
     }
 
