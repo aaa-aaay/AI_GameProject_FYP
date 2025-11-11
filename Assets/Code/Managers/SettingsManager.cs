@@ -98,7 +98,7 @@ public class SettingsManager : MonoBehaviour
         else
         {
             if (index != (int) DifficultyLevel.Easy) index--;
-            else index = index - 1;
+            else index = (int)DifficultyLevel.Hard;
         }
         PlayerPrefs.SetInt("Difficulty", index);
         _currentDifficultySettings = (DifficultyLevel) index;
