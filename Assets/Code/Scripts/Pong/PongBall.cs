@@ -46,10 +46,16 @@ public class PongBall : MonoBehaviour
         bounce_vfx.transform.position = collision.GetContact(0).point;
         bounce_vfx.Play();
 
-        ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("glass", Camera.main.transform.position);
-
         if (collision.gameObject.CompareTag(add_force_tag))
         {
+            if (Random.Range(0, 2) == 0)
+            {
+                ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("Fireball", Camera.main.transform.position);
+            }
+            else
+            {
+                ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("Fireball2", Camera.main.transform.position);
+            }
             rigid_body.AddForce((transform.position - collision.transform.position).normalized * bounce_force, ForceMode.Impulse);
         }
         else
@@ -80,7 +86,7 @@ public class PongBall : MonoBehaviour
 
     public void Restart()
     {
-        ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("Explosion", Camera.main.transform.position);
+        ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("BMT_Score", Camera.main.transform.position);
         rigid_body.linearVelocity = Vector3.zero;
         rigid_body.AddForce(new Vector3(Random.Range(-1, 1f), 0, Random.Range(-1, 1f)).normalized * max_speed * start_bounce_multiplier, ForceMode.Impulse); 
         transform.position = start_position;
