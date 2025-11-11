@@ -65,7 +65,11 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void ToggleLevelCompleteUI(bool open,int starCount = 0)
     {
-        _levelCompleteManager.ToggleLevelCompleteCanvas(open,starCount);
+        //if (open) Time.timeScale = 0;
+        //else Time.timeScale = 1;
+
+
+        _levelCompleteManager.ToggleLevelCompleteCanvas(open, starCount, _miniGame);
         if (_inputManager != null)
             _inputManager.toggleInputActivation(!open);
 
@@ -73,7 +77,11 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void ToggleLevelFailedUI(bool open)
     {
-        _levelCompleteManager.ToggleLevelFailedCanvas(open);
+        //if (open) Time.timeScale = 0;
+        //else Time.timeScale = 1;
+
+
+        _levelCompleteManager.ToggleLevelFailedCanvas(open, _miniGame);
         if(_inputManager != null)
             _inputManager.toggleInputActivation(!open);
     }
