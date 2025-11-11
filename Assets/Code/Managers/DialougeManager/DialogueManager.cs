@@ -53,6 +53,7 @@ public class DialogueManager : MonoBehaviour, IGameService
 
         if (dialouge.isMCQ) {
             _buttonsPanel.SetActive(true);
+            sentenceText.text = "";
             int sentencesCount = 0;
             foreach(GameObject buttonGO in buttons)
             {
