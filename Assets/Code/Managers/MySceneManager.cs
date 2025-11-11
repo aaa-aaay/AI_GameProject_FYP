@@ -21,19 +21,19 @@ public class MySceneManager : MonoBehaviour, IGameService
     {
         //handle transition animation here
         EventHolder.InvokeStartLoadScene(name);
-        ServiceLocator.Instance.GetService<DialougeManager>().EndDialogue();
+        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
     }
 
     public void LoadMiniGameWithTutorial(MiniGameSO minigame)
     {
         ServiceLocator.Instance.GetService<UIManager>().SetMiniGameForTutorial(minigame);
         EventHolder.InvokeStartLoadScene(_tutorialSceneName);
-        ServiceLocator.Instance.GetService<DialougeManager>().EndDialogue();
+        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
     }
 
     public void restartScene()
     {
-        ServiceLocator.Instance.GetService<DialougeManager>().EndDialogue();
+        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
         EventHolder.InvokeStartLoadScene(SceneManager.GetActiveScene().name);
     }
     public void GoBacktoGameLobby()
