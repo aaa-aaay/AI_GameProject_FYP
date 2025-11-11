@@ -13,8 +13,6 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         _loadManager = ServiceLocator.Instance.GetService<SaveLoadManager>();
-
-        //_loadManager.CreateNewSaveData();
         _loadManager.LoadData();
         _progress = _loadManager.GetGameSave();
 
@@ -26,11 +24,11 @@ public class LevelManager : MonoBehaviour
 
         foreach (var data in _progress.levels)
         {
-            if (data.unlocked)
-            {
-                _worldList[data.levelIndex - 1].SetState(true);
+            LobbyWorld world = _worldList[data.levelIndex - 1];
+            world.gameObject.GetComponentInChildren<WorldSelect>().SetStarCount(data.stars); //set the star counts
 
-            }
+            if (data.stars >= 3) 
+                world.SetState(true);
         }
     }
 
@@ -38,10 +36,11 @@ public class LevelManager : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.K))
         {
-            Debug.Log(_progress.levels[0].unlocked);
-            Debug.Log(_progress.levels[1].unlocked);
-            Debug.Log(_progress.levels[2].unlocked);
-            Debug.Log(_progress.levels[3].unlocked);
+            Debug.Log(_progress.levels[0].stars);
+            Debug.Log(_progress.levels[1].stars);
+            Debug.Log(_progress.levels[2].stars);
+            Debug.Log(_progress.levels[3].stars);
+            Debug.Log(_progress.levels[4].stars);
         }
     }
 }
