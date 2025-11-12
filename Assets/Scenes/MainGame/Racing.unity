@@ -11360,13 +11360,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 783977640}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.19483475, y: -0, z: -0, w: 0.9808361}
-  m_LocalPosition: {x: -0.05, y: 0.84, z: -3.63}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.73, z: -88.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2330949905341588441}
-  m_LocalEulerAnglesHint: {x: 22.47, y: 0, z: 0}
+  m_Father: {fileID: 4682649694421875865}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!73398921 &783977642
 VFXRenderer:
   serializedVersion: 1
@@ -11446,22 +11446,22 @@ VisualEffect:
           serializedVersion: 2
           m_Curve:
           - serializedVersion: 3
-            time: 0.26885575
-            value: 1.9997722
-            inSlope: 2
-            outSlope: 2
-            tangentMode: 0
+            time: 0
+            value: 0
+            inSlope: 10
+            outSlope: 10
+            tangentMode: 34
             weightedMode: 0
             inWeight: 0
-            outWeight: 0
+            outWeight: 0.33333334
           - serializedVersion: 3
-            time: 0.99979615
-            value: 4.7190204
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
+            time: 1
+            value: 10
+            inSlope: 10
+            outSlope: 10
+            tangentMode: 34
             weightedMode: 0
-            inWeight: 0
+            inWeight: 0.33333334
             outWeight: 0
           m_PreInfinity: 2
           m_PostInfinity: 2
@@ -27148,7 +27148,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6033565341415580926}
-  - {fileID: 783977641}
   m_Father: {fileID: 7204780560059138924}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2405470675576552285
@@ -27521,7 +27520,8 @@ Transform:
   m_LocalPosition: {x: -0.0000024196, y: 0, z: -0.23385}
   m_LocalScale: {x: 1, y: 1, z: 0.03664268}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 783977641}
   m_Father: {fileID: 6033565341415580926}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4893370328672005487

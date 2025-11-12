@@ -5,16 +5,31 @@ using UnityEngine.SceneManagement;
 public class TransitionPlayer : MonoBehaviour
 {
     [SerializeField] private LoadingBar loading_bar;
-    [SerializeField] private bool _playCountDownAfterCutScene = false;
+    [SerializeField] private bool _playCountDown = false;
+    [SerializeField] private GameObject[] covers;
 
     private Animator animator;
 
     private string load_scene;
 
+    private void Awake()
+    {
+        foreach (GameObject cover in covers) cover.SetActive(true);
+    }
+
     void Start()
     {
+
         EventHolder.StartLoadScene += OnStartLoadScene;
         animator = GetComponent<Animator>();
+        StartCoroutine(Delay() );
+    }
+
+    IEnumerator Delay()
+    {
+        yield return null;
+        yield return null;
+        animator.enabled = true;
     }
 
 
@@ -36,7 +51,7 @@ public class TransitionPlayer : MonoBehaviour
     }
     public void StartCountDownUI()
     {
-        if(_playCountDownAfterCutScene)
+        if(_playCountDown)
         ServiceLocator.Instance.GetService<UIManager>().StartCountDownTimer();
         else Time.timeScale = 1f;
 
