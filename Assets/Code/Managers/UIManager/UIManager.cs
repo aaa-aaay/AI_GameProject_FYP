@@ -8,9 +8,6 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour, IGameService
 {
-
-    public static DialogueManager Instance { get; private set; }
-
     [Header("Level Select UI")]
     [SerializeField] private GameObject _levelSelectCanvasGO;
     [SerializeField] private TMP_Text _levelNameText;
