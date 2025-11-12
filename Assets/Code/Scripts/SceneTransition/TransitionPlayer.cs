@@ -6,17 +6,14 @@ public class TransitionPlayer : MonoBehaviour
 {
     [SerializeField] private LoadingBar loading_bar;
     [SerializeField] private bool _playCountDown = false;
-    [SerializeField] private GameObject[] covers;
-
+    [SerializeField] private GameObject _hider;
     private Animator animator;
 
     private string load_scene;
-
     private void Awake()
     {
-        foreach (GameObject cover in covers) cover.SetActive(true);
+        _hider.SetActive(true);
     }
-
     void Start()
     {
 

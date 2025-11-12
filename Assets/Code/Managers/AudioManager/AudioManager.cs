@@ -62,7 +62,7 @@ public class AudioManager : MonoBehaviour, IGameService
     }
 
 
-    public void PlaySFX(string name, Vector3 position)
+    public void PlaySFX(string name, Vector3? position = null)
     {
 
         foreach (Sound sound in sounds)
@@ -75,9 +75,18 @@ public class AudioManager : MonoBehaviour, IGameService
                     AudioSource source = _audioSourcePool.Dequeue();
                     source.clip = sound.clip;
                     source.volume = sound.volume;
-                    source.transform.position = position;
-                    source.Play();
 
+                    if (position.HasValue)
+                    {
+                        source.spatialBlend = 1.0f;
+                        source.transform.position = position.Value;
+                    }
+                    else
+                    {
+                        source.spatialBlend = 0.0f;
+                    }
+
+                    source.Play();
                     StartCoroutine(ReturnToPoolAfterPlayback(source));
                 }
                 else
