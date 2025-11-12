@@ -17,7 +17,10 @@ public class PongPowerUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        PongUI.instance.UpdateSlider(gameObject, 0);
+        if (PongUI.instance != null)
+        {
+            PongUI.instance.UpdateSlider(gameObject, 0);
+        }
     }
 
     // Update is called once per frame
