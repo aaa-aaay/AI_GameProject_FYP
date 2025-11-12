@@ -17,6 +17,7 @@ public class archery_handler : MonoBehaviour
     [SerializeField] private GameObject agentObject;
     private archery_agent agent;
     [field: SerializeField] public GameObject targetObject { get; private set; }
+    [SerializeField] private archery_windFX windFX;
 
     private int playerPoint;
     private int agentPoint;
@@ -87,6 +88,8 @@ public class archery_handler : MonoBehaviour
         agent = agentObject.GetComponent<archery_agent>();
         if (!agent)
             Debug.LogError("archery_agent has not been added.");
+
+        windFX.Initialize();
 
         playerPoint = 0;
         agentPoint = 0;
@@ -160,9 +163,18 @@ public class archery_handler : MonoBehaviour
         playerRightCamera.Target.TrackingTarget = playerObject.transform;
         turnCamera.Target.TrackingTarget = playerObject.transform;
 
-        windDirection = Random.Range(0, 360);
-        if (windDirection <= 180) windDirection = 90f; else windDirection = 270f;
         windSpeed = Random.Range(0f, settings.maxWindSpeed);
+        windDirection = Random.Range(0, 360);
+        if (windDirection <= 180)
+        {
+            windDirection = 90f;
+            windFX.UpdateWind(0, windSpeed);
+        }
+        else
+        {
+            windDirection = 270f;
+            windFX.UpdateWind(1, windSpeed);
+        }
 
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
