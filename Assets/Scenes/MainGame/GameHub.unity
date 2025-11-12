@@ -3470,7 +3470,7 @@ PrefabInstance:
     - target: {fileID: 1761619330319661134, guid: 1386131ff5fbfde42b3ac3127cd9f072, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 2c1820c27a2a4a14b83ab0a1e64376bd, type: 2}
+      objectReference: {fileID: 2100000, guid: 6d90288eb943ebd49bd5fa1bbecbbade, type: 2}
     - target: {fileID: 1892139613776171919, guid: 1386131ff5fbfde42b3ac3127cd9f072, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -4463,50 +4463,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28099684fb157d84d851f0fefa5d4d1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initaldialouge:
-    name: Waiter
-    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
-    sentences:
-    - Hi, welcome to the arcade
-    - Anything u wana know?
-    isMCQ: 0
-  _question:
-    name: John (you)
-    pfpSprite: {fileID: 21300000, guid: 05184b9b8523a784896e204ae53efcbf, type: 3}
-    sentences:
-    - tell me abt tag
-    - tell me abt badminton
-    - tell me abt pong
-    - tell me abt archery
-    - tell me abt racing
-    isMCQ: 1
-  _replyList:
-  - name: Waiter
-    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
-    sentences:
-    - pong is cool
-    isMCQ: 0
-  - name: Waiter
-    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
-    sentences:
-    - badminton is cool
-    isMCQ: 0
-  - name: Waiter
-    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
-    sentences:
-    - pong is cool
-    isMCQ: 0
-  - name: Waiter
-    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
-    sentences:
-    - archery is cool
-    - u need to shoot a bow
-    isMCQ: 0
-  - name: Waiter
-    pfpSprite: {fileID: 21300000, guid: b21fffc206c84b04bab2a0ba683eb494, type: 3}
-    sentences:
-    - racing is cool
-    isMCQ: 0
+  initialDialogue: {fileID: 11400000, guid: 9f58f317b0dcd8a40872991b5fcc512b, type: 2}
 --- !u!1 &1989916012
 GameObject:
   m_ObjectHideFlags: 0
