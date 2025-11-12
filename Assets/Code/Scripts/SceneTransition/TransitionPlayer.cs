@@ -16,6 +16,14 @@ public class TransitionPlayer : MonoBehaviour
     {
         EventHolder.StartLoadScene += OnStartLoadScene;
         animator = GetComponent<Animator>();
+        StartCoroutine(Delay());
+    }
+
+    IEnumerator Delay()
+    {
+        yield return null;
+        yield return null;
+        animator.enabled = true;
     }
 
     private void OnDestroy()
