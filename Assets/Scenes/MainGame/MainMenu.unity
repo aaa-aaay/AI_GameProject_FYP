@@ -816,10 +816,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoadingScreen
       objectReference: {fileID: 0}
-    - target: {fileID: 3764567712477339309, guid: 13f4ade4723a4284c8aefecbf398e304, type: 3}
-      propertyPath: _playCountDown
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5129299144478854189, guid: 13f4ade4723a4284c8aefecbf398e304, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1836,6 +1832,8 @@ GameObject:
   - component: {fileID: 2072088043}
   - component: {fileID: 2072088042}
   - component: {fileID: 2072088041}
+  - component: {fileID: 2072088045}
+  - component: {fileID: 2072088044}
   m_Layer: 0
   m_Name: Start Button
   m_TagString: Untagged
@@ -1980,6 +1978,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2072088039}
   m_CullTransparentMesh: 1
+--- !u!95 &2072088044
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2072088039}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6b375cd995f94b64e848032436aece1c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2072088045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2072088039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07e2eb577d018ec438b564185113db9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2110306706
 GameObject:
   m_ObjectHideFlags: 0

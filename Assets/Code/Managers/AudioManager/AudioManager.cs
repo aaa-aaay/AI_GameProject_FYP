@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour, IGameService
 {
@@ -48,6 +49,16 @@ public class AudioManager : MonoBehaviour, IGameService
     private void OnDisable()
     {
         //ServiceLocator.Instance.RemoveService<AudioManager>(false);
+    }
+
+    private void Start()
+    {
+        SceneManager.sceneLoaded += SetDefaultLocation;
+    }
+
+    private void SetDefaultLocation(Scene scene, LoadSceneMode mode)
+    {
+
     }
 
 
