@@ -205,6 +205,7 @@ GameObject:
   - component: {fileID: 2631119172837093133}
   - component: {fileID: 7076317629059755043}
   - component: {fileID: 3279122110747853017}
+  - component: {fileID: 5820960992884825709}
   m_Layer: 2
   m_Name: Collider
   m_TagString: Untagged
@@ -289,6 +290,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _raceManager: {fileID: 0}
   _name: AI
+  currentLap: 0
   currentCheckPointNo: 0
   currentCheckPoint: {fileID: 0}
 --- !u!114 &7076317629059755043
@@ -317,6 +319,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   elapsedTime: 0
+--- !u!114 &5820960992884825709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3310366995779990104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 420a074d123ac3448809321501082a03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _impactToCountAsCrash: 10
+  _endVelocityRatio: 1
+  _onWallVelocityRatio: 1
+  wallTagName: Wall
 --- !u!1 &3324147677758647370
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,6 +564,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 115
+  lateralSlip: 0.9
 --- !u!114 &8089445329466074076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -559,7 +578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 6
+    VectorObservationSize: 8
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -568,7 +587,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 2cd8bc4ce37ec5e40b601450ddc8aa2e, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: e5982d81a57122e489853ab02db07a6b, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: RacingBehaviour
@@ -595,7 +614,7 @@ MonoBehaviour:
   MaxStep: 100000
   _manager: {fileID: 0}
   _car: {fileID: 3310366995779990104}
-  TimeToReachNextCheckpoint: 40
+  TimeToReachNextCheckpoint: 10
 --- !u!114 &3835948384118606211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,7 +627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DecisionPeriod: 5
+  DecisionPeriod: 2
   DecisionStep: 0
   TakeActionsBetweenDecisions: 1
 --- !u!114 &6991968842244539503

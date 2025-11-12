@@ -1,38 +1,41 @@
+using System;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour, IGameService
 {
-
-    public static DialogueManager Instance { get; private set; }
-
     [Header("Level Select UI")]
     [SerializeField] private GameObject _levelSelectCanvasGO;
     [SerializeField] private TMP_Text _levelNameText;
-    private int starCount;
+    [SerializeField] private Image[] starImages;
+    [SerializeField] private Sprite _starFilledSprite;
+    [SerializeField] private Sprite _starUnFilledSprite;
 
     [Header("Level Select UI")]
-    [SerializeField] private GameObject _levelCompleteCanvas;
-    [SerializeField] private GameObject _levelFailedCanvas;
-    private bool _levelCompleteCanvasOpen;
+    [SerializeField] private LevelCompleteManager _levelCompleteManager;
 
     [Header("UI References")]
     [SerializeField] private CountDownTimer _countDownTimer;
 
+    [Header("Settings References")]
+    [SerializeField] private SettingsManager _settingsManager;
+
 
     private InputManager _inputManager;
     private MiniGameSO _miniGame;
+    public event Action<bool> OnUIToFocusToggle;
 
 
     private void OnEnable()
     {
         ServiceLocator.Instance.AddService(this, false);
         _levelSelectCanvasGO.SetActive(false);
-        _levelCompleteCanvasOpen = false;
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;  
     }
 
     private void OnDisable()
@@ -45,12 +48,23 @@ public class UIManager : MonoBehaviour, IGameService
     private void Start()
     {
         _inputManager = ServiceLocator.Instance.GetService<InputManager>();
+        _inputManager.onOpenSettings += ToggleSettingsPage;
     }
 
-    public void OpenLevelSelectUI(string levelName, int StarUnlocked)
+    public void OpenLevelSelectUI(string levelName, int starUnlocked)
     {
         _levelSelectCanvasGO.SetActive(true);
         _levelNameText.text = levelName;
+
+
+        int count = starUnlocked;
+        foreach (Image image in starImages)
+        {
+
+            if (count > 0) image.sprite = _starFilledSprite;
+            else image.sprite = _starUnFilledSprite;
+            count--;
+        }
     }
 
     public void HideLevelSelectUI()
@@ -59,10 +73,13 @@ public class UIManager : MonoBehaviour, IGameService
     }
 
 
-    public void ToggleLevelCompleteUI(bool open)
+    public void ToggleLevelCompleteUI(bool open,int starCount = 0)
     {
-        _levelCompleteCanvas.SetActive(open);
-        _levelCompleteCanvasOpen = open;
+        //if (open) Time.timeScale = 0;
+        //else Time.timeScale = 1;
+        OnUIToFocusToggle?.Invoke(open);
+        ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
+        _levelCompleteManager.ToggleLevelCompleteCanvas(open, starCount, _miniGame);
         if (_inputManager != null)
             _inputManager.toggleInputActivation(!open);
 
@@ -70,7 +87,11 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void ToggleLevelFailedUI(bool open)
     {
-        _levelFailedCanvas.SetActive(open);
+        //if (open) Time.timeScale = 0;
+        //else Time.timeScale = 1;
+        OnUIToFocusToggle?.Invoke(open);
+        ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
+        _levelCompleteManager.ToggleLevelFailedCanvas(open, _miniGame);
         if(_inputManager != null)
             _inputManager.toggleInputActivation(!open);
     }
@@ -84,7 +105,8 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void RestartScene()
     {
-        _levelFailedCanvas.SetActive(false);
+        ToggleLevelFailedUI(false);
+        ToggleLevelCompleteUI(false);
         MySceneManager sManager = ServiceLocator.Instance.GetService<MySceneManager>();
         sManager.restartScene();
     }
@@ -102,6 +124,18 @@ public class UIManager : MonoBehaviour, IGameService
     public void StartCountDownTimer()
     {
         _countDownTimer.StartCountDown();
+    }
+
+    public void ToggleSettingsPage()
+    {
+        bool temp = false;
+        if (_settingsManager._isSettingsOpen) temp = false;
+        else temp = true;
+
+        _settingsManager.ToggleSettings(temp);
+        OnUIToFocusToggle?.Invoke(temp);
+
+
     }
 
 

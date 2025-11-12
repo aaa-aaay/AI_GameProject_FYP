@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RaceManager : MonoBehaviour
 {
@@ -10,12 +11,18 @@ public class RaceManager : MonoBehaviour
     [SerializeField] GameObject _checkPointHolderGO;
     [SerializeField] GameObject _startPosHolderGO;
     [SerializeField] private RacingLeaderboard _leaderboard;
-    [SerializeField] private TMP_Text _rankingText;
+
     public Transform raceGoalTrans;
     private List<Transform> _startPositions = new List<Transform>();
 
+
+    [Header("Ranking placement references")]
+    [SerializeField] private List<Sprite> _placementSprites = new List<Sprite>();
+    [SerializeField] private Image _placementImage;
+
     [Header("Race Settings")]
     public bool isDebugMood;
+    private float _finishTimeDebug;
     public int lapsPerRace = 3;
     [HideInInspector] public int amtofCheckpoints;
     private List<GoalChecker> _racers = new List<GoalChecker>();
@@ -70,6 +77,7 @@ public class RaceManager : MonoBehaviour
     private void Start()
     {
         ServiceLocator.Instance.GetService<UIManager>().StartCountDownTimer();
+        _finishTimeDebug = 1000;
     }
 
     private void OnDestroy()
@@ -91,12 +99,18 @@ public class RaceManager : MonoBehaviour
         foreach(GoalChecker racers in _racers)
         {
             if (racers.GetRacerName().Contains("you")){
-                _rankingText.text = (_racers.IndexOf(racers) + 1).ToString();
+                _placementImage.sprite = _placementSprites[_racers.IndexOf(racers)];
             }
         }
     }
     private void HandleCarfinishRace(string name, float timeTaken)
     {
+
+        if (timeTaken < _finishTimeDebug)
+        {
+            _finishTimeDebug = timeTaken;
+            Debug.Log(_finishTimeDebug);
+        }
 
         if (isDebugMood) return;
 
