@@ -50,7 +50,6 @@ public class TransitionPlayer : MonoBehaviour
     {
         if(_playCountDown)
         ServiceLocator.Instance.GetService<UIManager>().StartCountDownTimer();
-        else Time.timeScale = 1f;
 
     }
 
