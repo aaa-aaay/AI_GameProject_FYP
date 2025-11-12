@@ -1,11 +1,12 @@
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TransitionPlayer : MonoBehaviour
 {
     [SerializeField] private LoadingBar loading_bar;
-    [SerializeField] private bool _playCountDownAfterCutScene = false;
+    [SerializeField] private bool _playCountDown = false;
 
     private Animator animator;
 
@@ -16,8 +17,6 @@ public class TransitionPlayer : MonoBehaviour
         EventHolder.StartLoadScene += OnStartLoadScene;
         animator = GetComponent<Animator>();
     }
-
-
 
     private void OnDestroy()
     {
@@ -36,11 +35,11 @@ public class TransitionPlayer : MonoBehaviour
     }
     public void StartCountDownUI()
     {
-        if(_playCountDownAfterCutScene)
-        ServiceLocator.Instance.GetService<UIManager>().StartCountDownTimer();
+        if (_playCountDown)
+            ServiceLocator.Instance.GetService<UIManager>().StartCountDownTimer();
         else Time.timeScale = 1f;
 
-    }
+    }   
 
     private void PlayStartLoadAnimation()
     {
