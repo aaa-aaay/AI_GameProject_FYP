@@ -47,12 +47,15 @@ public class TransitionPlayer : MonoBehaviour
             ServiceLocator.Instance.GetService<UIManager>().StartCountDownTimer();
         else Time.timeScale = 1f;
 
-    }   
+    }
 
     private void PlayStartLoadAnimation()
     {
-        animator.ResetTrigger("EndLoad");
-        animator.SetTrigger("StartLoad");
+        if (!animator.GetBool("StartLoad"))
+        {
+            animator.ResetTrigger("EndLoad");
+            animator.SetTrigger("StartLoad");
+        }
     }
 
     private void PlayEndLoadAnimation()
