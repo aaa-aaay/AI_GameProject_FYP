@@ -75,8 +75,8 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void ToggleLevelCompleteUI(bool open,int starCount = 0)
     {
-        //if (open) Time.timeScale = 0;
-        //else Time.timeScale = 1;
+        if (open) Time.timeScale = 0;
+        else Time.timeScale = 1;
         OnUIToFocusToggle?.Invoke(open);
         ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
         _levelCompleteManager.ToggleLevelCompleteCanvas(open, starCount, _miniGame);
@@ -87,8 +87,8 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void ToggleLevelFailedUI(bool open)
     {
-        //if (open) Time.timeScale = 0;
-        //else Time.timeScale = 1;
+        if (open) Time.timeScale = 0;
+        else Time.timeScale = 1;
         OnUIToFocusToggle?.Invoke(open);
         ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
         _levelCompleteManager.ToggleLevelFailedCanvas(open, _miniGame);
