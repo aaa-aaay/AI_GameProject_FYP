@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,9 +16,9 @@ public class UIManager : MonoBehaviour, IGameService
     private int starCount;
 
     [Header("Level Select UI")]
+    [SerializeField] private LevelCompleteManager _levelCompleteManager;
     [SerializeField] private GameObject _levelCompleteCanvas;
     [SerializeField] private GameObject _levelFailedCanvas;
-    private bool _levelCompleteCanvasOpen;
 
     [Header("UI References")]
     [SerializeField] private CountDownTimer _countDownTimer;
@@ -27,16 +29,15 @@ public class UIManager : MonoBehaviour, IGameService
 
     private InputManager _inputManager;
     private MiniGameSO _miniGame;
+    public event Action<bool> OnUIToFocusToggle;
 
 
     private void OnEnable()
     {
         ServiceLocator.Instance.AddService(this, false);
         _levelSelectCanvasGO.SetActive(false);
-        _settingsManager.ToggleSettings(false);
-        _levelCompleteCanvasOpen = false;
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;  
     }
 
     private void OnDisable()
@@ -64,10 +65,13 @@ public class UIManager : MonoBehaviour, IGameService
     }
 
 
-    public void ToggleLevelCompleteUI(bool open)
+    public void ToggleLevelCompleteUI(bool open,int starCount = 0)
     {
-        _levelCompleteCanvas.SetActive(open);
-        _levelCompleteCanvasOpen = open;
+        //if (open) Time.timeScale = 0;
+        //else Time.timeScale = 1;
+        OnUIToFocusToggle?.Invoke(open);
+        ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
+        _levelCompleteManager.ToggleLevelCompleteCanvas(open, starCount, _miniGame);
         if (_inputManager != null)
             _inputManager.toggleInputActivation(!open);
 
@@ -75,7 +79,11 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void ToggleLevelFailedUI(bool open)
     {
-        _levelFailedCanvas.SetActive(open);
+        //if (open) Time.timeScale = 0;
+        //else Time.timeScale = 1;
+        OnUIToFocusToggle?.Invoke(open);
+        ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
+        _levelCompleteManager.ToggleLevelFailedCanvas(open, _miniGame);
         if(_inputManager != null)
             _inputManager.toggleInputActivation(!open);
     }
@@ -89,7 +97,8 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void RestartScene()
     {
-        _levelFailedCanvas.SetActive(false);
+        ToggleLevelFailedUI(false);
+        ToggleLevelCompleteUI(false);
         MySceneManager sManager = ServiceLocator.Instance.GetService<MySceneManager>();
         sManager.restartScene();
     }
@@ -111,8 +120,13 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void ToggleSettingsPage()
     {
-        if (_settingsManager._isSettingsOpen) _settingsManager.ToggleSettings(false);
-        else _settingsManager.ToggleSettings(true);
+        bool temp = false;
+        if (_settingsManager._isSettingsOpen) temp = false;
+        else temp = true;
+
+        _settingsManager.ToggleSettings(temp);
+        OnUIToFocusToggle?.Invoke(temp);
+
 
     }
 

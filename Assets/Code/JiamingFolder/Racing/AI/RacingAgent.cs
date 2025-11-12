@@ -66,11 +66,11 @@ public class RacingAgent : Agent
         //_lastSpeed = currentSpeed;
 
         // Penalize being too slow
-        if (currentSpeed < 5f)
+        if (currentSpeed < 7f)
             AddReward(-0.005f);
 
 
-        AddReward(currentSpeed / 30f * 0.02f);
+        AddReward(currentSpeed / 30f * 0.03f);
 
 
         _previousDistanceToCheckpoint = dist;
@@ -167,11 +167,11 @@ public class RacingAgent : Agent
 
     private void HitWall()
     {
-        AddReward(-0.05f);
+        AddReward(-0.06f);
     }
     private void stayingOnWall()
     {
-        AddReward(-0.01f);
+        AddReward(-0.03f);
     }
 
 
