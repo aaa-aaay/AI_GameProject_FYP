@@ -326,9 +326,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3988561041360215205}
-  - component: {fileID: 451615800993002800}
+  - component: {fileID: 8624465487008029677}
   m_Layer: 0
-  m_Name: DialougeManager
+  m_Name: DialogueManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -350,7 +350,7 @@ Transform:
   - {fileID: 526129252601436072}
   m_Father: {fileID: 3319277607809021431}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &451615800993002800
+--- !u!114 &8624465487008029677
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -359,21 +359,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 414339586263944273}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 723ff7d98e4089d479ba2387ef478ab3, type: 3}
+  m_Script: {fileID: 11500000, guid: 216f7bbbf11719d48b1625f7660c5d35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameText: {fileID: 2833427152824601185}
-  sentenceText: {fileID: 4239681065931819302}
-  canvas: {fileID: 5125629712682303652}
-  animator: {fileID: 2995323106514865034}
-  _buttonsPanel: {fileID: 4285660715180961147}
+  speakerNameText: {fileID: 2833427152824601185}
+  speakerImage: {fileID: 9009050592237752345}
+  speechText: {fileID: 4239681065931819302}
+  canvas: {fileID: 526129252601436072}
+  buttonPanel: {fileID: 8565307172347512069}
   buttons:
-  - {fileID: 7735258589036455215}
-  - {fileID: 8663733286049588042}
-  - {fileID: 8098416403668164054}
-  - {fileID: 2300929077267947647}
-  - {fileID: 6805949469770271053}
-  pfpImage: {fileID: 9009050592237752345}
+  - {fileID: 7531367399916869007}
+  - {fileID: 3863876614441431769}
+  - {fileID: 95463322598937910}
+  - {fileID: 5234955778591489729}
+  - {fileID: 6772224642867342956}
+  animator: {fileID: 2995323106514865034}
 --- !u!1 &673970224432128058
 GameObject:
   m_ObjectHideFlags: 0
@@ -2373,7 +2373,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 451615800993002800}
+      - m_Target: {fileID: 8624465487008029677}
         m_TargetAssemblyTypeName: DialogueManager, Assembly-CSharp
         m_MethodName: ReplyPressed
         m_Mode: 3
@@ -7177,7 +7177,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 451615800993002800}
+      - m_Target: {fileID: 8624465487008029677}
         m_TargetAssemblyTypeName: DialogueManager, Assembly-CSharp
         m_MethodName: ReplyPressed
         m_Mode: 3
@@ -8447,7 +8447,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 451615800993002800}
+      - m_Target: {fileID: 8624465487008029677}
         m_TargetAssemblyTypeName: DialogueManager, Assembly-CSharp
         m_MethodName: ReplyPressed
         m_Mode: 3
@@ -8795,7 +8795,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 451615800993002800}
+      - m_Target: {fileID: 8624465487008029677}
         m_TargetAssemblyTypeName: DialogueManager, Assembly-CSharp
         m_MethodName: ReplyPressed
         m_Mode: 3
@@ -9200,7 +9200,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 451615800993002800}
+      - m_Target: {fileID: 8624465487008029677}
         m_TargetAssemblyTypeName: DialogueManager, Assembly-CSharp
         m_MethodName: ReplyPressed
         m_Mode: 3
