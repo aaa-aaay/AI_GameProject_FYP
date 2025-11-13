@@ -913,6 +913,7 @@ GameObject:
   - component: {fileID: 982920993}
   - component: {fileID: 982920994}
   - component: {fileID: 982920995}
+  - component: {fileID: 982920996}
   m_Layer: 0
   m_Name: Local
   m_TagString: Untagged
@@ -954,7 +955,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69feed49c34d0a84087e1bb34397c423, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainMenuBGM: MainMenuBGM
 --- !u!114 &982920994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -986,6 +986,19 @@ MonoBehaviour:
   canvases:
   - {fileID: 2110306709}
   - {fileID: 899051805}
+--- !u!114 &982920996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982920991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 947085964d005674db8d290e3c67c747, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bgmName: MainMenuBGM
 --- !u!1 &1224005641
 GameObject:
   m_ObjectHideFlags: 0
@@ -998,8 +1011,9 @@ GameObject:
   - component: {fileID: 1224005645}
   - component: {fileID: 1224005644}
   - component: {fileID: 1224005643}
-  - component: {fileID: 1224005646}
   - component: {fileID: 1224005647}
+  - component: {fileID: 1224005646}
+  - component: {fileID: 1224005648}
   m_Layer: 0
   m_Name: Settings Button
   m_TagString: Untagged
@@ -1016,7 +1030,7 @@ RectTransform:
   m_GameObject: {fileID: 1224005641}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0290929, y: 1.0290929, z: 1.0290929}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 899051802}
@@ -1070,6 +1084,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 982920996}
+        m_TargetAssemblyTypeName: AudioPlayer, Assembly-CSharp
+        m_MethodName: PlaySFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ButtonClick
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 982920993}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: OpenSettings
@@ -1152,6 +1178,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 07e2eb577d018ec438b564185113db9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1224005648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1224005641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47b5e7b2140081b49874ecf7f088c9c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1381338257
@@ -1625,10 +1663,11 @@ GameObject:
   - component: {fileID: 1960417259}
   - component: {fileID: 1960417258}
   - component: {fileID: 1960417257}
-  - component: {fileID: 1960417260}
   - component: {fileID: 1960417261}
+  - component: {fileID: 1960417260}
+  - component: {fileID: 1960417262}
   m_Layer: 0
-  m_Name: Credits
+  m_Name: Button (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1643,7 +1682,7 @@ RectTransform:
   m_GameObject: {fileID: 1960417255}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9864286, y: 0.9864286, z: 0.9864286}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 899051802}
@@ -1696,7 +1735,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1960417258}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 982920996}
+        m_TargetAssemblyTypeName: AudioPlayer, Assembly-CSharp
+        m_MethodName: PlaySFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ButtonClick
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1960417258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1767,6 +1818,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 07e2eb577d018ec438b564185113db9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1960417262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960417255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47b5e7b2140081b49874ecf7f088c9c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1991827584
@@ -1843,8 +1906,9 @@ GameObject:
   - component: {fileID: 2072088043}
   - component: {fileID: 2072088042}
   - component: {fileID: 2072088041}
-  - component: {fileID: 2072088044}
   - component: {fileID: 2072088045}
+  - component: {fileID: 2072088044}
+  - component: {fileID: 2072088046}
   m_Layer: 0
   m_Name: Start Button
   m_TagString: Untagged
@@ -1861,7 +1925,7 @@ RectTransform:
   m_GameObject: {fileID: 2072088039}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0187888, y: 1.0187888, z: 1.0187888}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 899051802}
@@ -1925,6 +1989,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 982920996}
+        m_TargetAssemblyTypeName: AudioPlayer, Assembly-CSharp
+        m_MethodName: PlaySFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ButtonClick
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2072088042
@@ -1997,6 +2073,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 07e2eb577d018ec438b564185113db9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2072088046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2072088039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47b5e7b2140081b49874ecf7f088c9c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2110306706
