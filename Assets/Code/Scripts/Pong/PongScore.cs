@@ -1,14 +1,30 @@
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PongScore : MonoBehaviour
 {
-    [SerializeField] private TMP_Text player_score;
-    [SerializeField] private TMP_Text opponent_score;
+    [SerializeField] private Image player_score;
+    [SerializeField] private Image opponent_score;
+
+    [SerializeField] private List<NumberToImage> images;
     
     public void UpdateScores(int new_player_score,  int new_opponent_score)
     {
-        player_score.text = new_player_score.ToString();
-        opponent_score.text = new_opponent_score.ToString();
+        player_score.sprite = GetSpriteByValue(new_player_score);
+        opponent_score.sprite = GetSpriteByValue(new_opponent_score);
+    }
+
+    public Sprite GetSpriteByValue(int number)
+    {
+        for (int i = 0; i < images.Count; i++)
+        {
+            if (number == images[i].value)
+            {
+                return images[i].image;
+            }
+        }
+
+        return images[0].image;
     }
 }

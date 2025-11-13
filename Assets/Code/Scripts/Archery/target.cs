@@ -4,20 +4,15 @@ public class target : MonoBehaviour
 {
     [SerializeField] private ScoreRing[] rings;
 
-    public int OnHit(ContactPoint contact)
+    public int OnHit(Vector3 point)
     {
-        Vector3 hit = contact.point;
-        float dist = Vector3.Distance(hit, transform.position);
-
+        float dist = Vector3.Distance(point, transform.position);
         foreach (var ring in rings)
         {
             if (dist <= ring.radius)
-            {
-                return (ring.points);
-            }
+                return ring.points;
         }
-
-        return (0);
+        return 0;
     }
 }
 

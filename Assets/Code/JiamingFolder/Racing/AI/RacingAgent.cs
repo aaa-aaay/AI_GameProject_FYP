@@ -2,6 +2,8 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 
 public class RacingAgent : Agent
 {
@@ -11,14 +13,15 @@ public class RacingAgent : Agent
     private Rigidbody _sphere;
     private BetterCarMovement _carMovement;
     private GoalChecker _goalChecker;
+    private WallFrictionHandler _wallFrictionHandler;
     private ResetCarPosition _carPositionResetter;
     private float _raceTimer;
     public float TimeToReachNextCheckpoint = 50f;
 
     private float _previousDistanceToCheckpoint;
 
-
-
+    private Vector3 _lastPosition;
+    private float _lastSpeed;
 
     public override void Initialize()
     {
@@ -26,12 +29,14 @@ public class RacingAgent : Agent
         _goalChecker = _car.GetComponent<GoalChecker>();
         _sphere = _car.GetComponent<Rigidbody>();
         _carPositionResetter = _car.GetComponent<ResetCarPosition>();
+        _wallFrictionHandler = _car.GetComponent<WallFrictionHandler>();
 
         //_manager.onRaceOver += HandleRaceOver;
-        _goalChecker.OnRaceFinished += HandleRaceOver;
+        _goalChecker.OnRaceFinished += AiFinishedRace;
         _goalChecker.onCheckPointHit += HandleCPHit;
 
-        
+        _wallFrictionHandler.OnHitWall += HitWall;
+        _wallFrictionHandler.OnWallStay += stayingOnWall;
     }
 
     public override void OnEpisodeBegin()
@@ -52,60 +57,92 @@ public class RacingAgent : Agent
 
         float dist = Vector3.Distance(_car.transform.position, _goalChecker.GetCurrentCheckPoint().position);
         float progress = _previousDistanceToCheckpoint - dist;
-        AddReward(progress * 0.01f); // reward moving closer
-        _previousDistanceToCheckpoint = dist;
+        AddReward(progress * 0.05f); // reward moving closer
+        if(progress < 0)
+        {
+            AddReward(progress * 0.04f);
+            Debug.Log("Driving Backwards");
+        }
 
+
+
+        float currentSpeed = _sphere.linearVelocity.magnitude;
+        //AddReward((currentSpeed - _lastSpeed) * 0.005f); // encourage acceleration
+        //_lastSpeed = currentSpeed;
+
+        // Penalize being too slow
+        if (currentSpeed < 7f)
+            AddReward(-0.02f);
+
+
+        AddReward(currentSpeed / 30f * 0.02f);
+
+
+        _previousDistanceToCheckpoint = dist;
 
         if (_raceTimer <= 0f)
         {
-            AddReward(-1f);
+            AddReward(-5.0f);
             EndEpisode();
         }
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        Vector3 diff = _goalChecker.GetCurrentCheckPoint().position - _car.transform.position;
-        sensor.AddObservation(diff / 20f);
-        sensor.AddObservation(_sphere.linearVelocity / 20f);
+        Vector3 toCheckpoint = _goalChecker.GetCurrentCheckPoint().position - _car.transform.position;
+        Vector3 forward = _car.transform.forward;
 
+        sensor.AddObservation(toCheckpoint.normalized);          // where to go
+        sensor.AddObservation(Vector3.Dot(forward, toCheckpoint.normalized)); // alignment
+        sensor.AddObservation(_sphere.linearVelocity.magnitude / 30f); // speed
+        sensor.AddObservation(_sphere.linearVelocity.normalized); // direction of motion
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
 
         //Movement(actions.DiscreteActions);
-        Movement(actions.ContinuousActions);
+        Movement(actions.ContinuousActions, actions.DiscreteActions);
         //rewardForGettingCloser();
-        AddReward(-0.001f); //avoid stalling
+        AddReward(-0.002f); //avoid stalling
     }
 
 
 
     private void HandleCPHit()
     {
-        Debug.Log("rewarded for hiting cp");
-        AddReward(1.0f/ _manager.checkPoints.Count);
+        AddReward(0.15f);
+        float checkpointSpeed = _sphere.linearVelocity.magnitude;
         _raceTimer = TimeToReachNextCheckpoint;
     }
 
-    private void HandleRaceOver()
+    private void AiFinishedRace(string name, float timetaken)
     {
-        Debug.Log("rewarded for ending the race");
-        AddReward(0.5f);
+        AddReward(3.0f);
+        if(_manager.isDebugMood)
         EndEpisode();
     }
 
 
 
-    private void Movement(ActionSegment<float> act)
+    private void Movement(ActionSegment<float> act, ActionSegment<int> disAct)
     {
         float horizontal = Mathf.Clamp(act[0], -1f, 1f);
         float vertical = Mathf.Clamp01(act[1]);
         Vector2 inputDir = new Vector2(horizontal, vertical);
         inputDir = Vector2.ClampMagnitude(inputDir, 1f); // normalize if needed
 
+
         _carMovement.MoveCar(inputDir);
+
+
+        //if (Mathf.Abs(inputDir.x) > 0.01f)
+        //{
+        //    bool toDrift = disAct[0] == 1;
+        //    if (disAct[0] == 0) toDrift = false;
+        //    else if (disAct[0] == 1) toDrift = true;
+        //    _carMovement.ToggleDrifting(toDrift, inputDir.x);
+        //}
 
     }
 
@@ -114,6 +151,7 @@ public class RacingAgent : Agent
     {
 
         var continuousActions = actionsOut.ContinuousActions;
+        var DiscreteActions = actionsOut.DiscreteActions;
 
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
@@ -121,6 +159,26 @@ public class RacingAgent : Agent
         continuousActions[0] = horizontal;
         continuousActions[1] = Input.GetKey(KeyCode.W)? 1f: 0f;
 
+        //if(Input.GetKey(KeyCode.LeftShift))
+        //{
+
+        //    DiscreteActions[0] = 1;
+        //}
+        //else
+        //{
+        //    DiscreteActions[0] = 0;
+        //}
+
+    }
+
+
+    private void HitWall()
+    {
+        AddReward(-0.1f);
+    }
+    private void stayingOnWall()
+    {
+        AddReward(-0.01f);
     }
 
 

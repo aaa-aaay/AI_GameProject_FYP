@@ -1,26 +1,39 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TransitionPlayer : MonoBehaviour
 {
     [SerializeField] private LoadingBar loading_bar;
-
+    [SerializeField] private bool _playCountDown = false;
+    [SerializeField] private GameObject _hider;
     private Animator animator;
 
     private string load_scene;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private void Awake()
+    {
+        _hider.SetActive(true);
+    }
     void Start()
     {
-        animator = GetComponent<Animator>();
 
         EventHolder.StartLoadScene += OnStartLoadScene;
+        animator = GetComponent<Animator>();
+        StartCoroutine(Delay() );
     }
+
+    IEnumerator Delay()
+    {
+        yield return null;
+        yield return null;
+        animator.enabled = true;
+    }
+
+
 
     private void OnDestroy()
     {
         EventHolder.StartLoadScene -= OnStartLoadScene;
-
     }
 
     public void OnStartLoadScene(string scene_name)
@@ -32,6 +45,12 @@ public class TransitionPlayer : MonoBehaviour
     public void StartLoad()
     {
         loading_bar.StartLoad(load_scene);
+    }
+    public void StartCountDownUI()
+    {
+        if(_playCountDown)
+        ServiceLocator.Instance.GetService<UIManager>().StartCountDownTimer();
+
     }
 
     private void PlayStartLoadAnimation()

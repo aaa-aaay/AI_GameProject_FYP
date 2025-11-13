@@ -72,7 +72,7 @@ public class Racket : MonoBehaviour
             hitShutter = true;
             _lastHitChecker.SetLastHitRacket(gameObject);
             DeactivateCollider();
-
+            ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("BMT_Hit",transform.position);
 
         }
 

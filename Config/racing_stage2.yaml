@@ -1,0 +1,27 @@
+behaviors:
+  RacingBehaviour:
+    trainer_type: ppo
+    hyperparameters:
+      batch_size: 2048
+      buffer_size: 40960
+      learning_rate: 0.0003
+      beta: 0.002
+      epsilon: 0.2
+      lambd: 0.95
+      num_epoch: 3
+    network_settings:
+      normalize: true
+      hidden_units: 512
+      num_layers: 3
+      vis_encode_type: simple        # REQUIRED for RayPerceptionSensor3D
+    reward_signals:
+      extrinsic:
+        gamma: 0.999
+        strength: 1.0
+    max_steps: 50000000
+    time_horizon: 256
+    summary_freq: 50000
+    checkpoint_interval: 500000
+
+engine_settings:
+  time_scale: 20

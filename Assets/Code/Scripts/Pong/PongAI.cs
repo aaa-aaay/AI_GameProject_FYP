@@ -3,6 +3,7 @@ using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
+using Unity.InferenceEngine;
 
 public class PongAI : AgentDLC
 {
@@ -75,35 +76,35 @@ public class PongAI : AgentDLC
 
         Move?.Invoke(direction);
 
-        //Rigidbody closest = GetClosest();
+        Rigidbody closest = GetClosest();
 
-        //predicted_pos = PredictPositionAtZ(closest.transform.localPosition, closest.linearVelocity, transform.localPosition.z);
+        predicted_pos = PredictPositionAtZ(closest.transform.localPosition, closest.linearVelocity, transform.localPosition.z);
 
-        //if (predicted_pos.x > 40)
-        //{
-        //    Vector3 new_vel = closest.linearVelocity;
-        //    new_vel.x *= -1;
-        //    predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, 40), new_vel, transform.localPosition.z);
-        //}
-        //else if (predicted_pos.x < -40)
-        //{
-        //    Vector3 new_vel = closest.linearVelocity;
-        //    new_vel.x *= -1;
-        //    predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, -40), new_vel, transform.localPosition.z);
-        //}
+        if (predicted_pos.x > instance.GetRightBound())
+        {
+            Vector3 new_vel = closest.linearVelocity;
+            new_vel.x *= -1;
+            predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, instance.GetRightBound()), new_vel, transform.localPosition.z);
+        }
+        else if (predicted_pos.x < instance.GetLeftBound())
+        {
+            Vector3 new_vel = closest.linearVelocity;
+            new_vel.x *= -1;
+            predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, instance.GetLeftBound()), new_vel, transform.localPosition.z);
+        }
 
-        //if (predicted_pos.x < transform.localPosition.x + offset && predicted_pos.x > transform.localPosition.x - offset)
-        //{
-        //    AddReward(0.25f);
-        //}
-        //if ((predicted_pos.x - transform.localPosition.x) > 0 && direction.x > 0)
-        //{
-        //    AddReward(0.1f);
-        //}
-        //else if ((predicted_pos.x - transform.localPosition.x) < 0 && direction.x < 0)
-        //{
-        //    AddReward(0.1f);
-        //}
+        if (predicted_pos.x < transform.localPosition.x + offset && predicted_pos.x > transform.localPosition.x - offset)
+        {
+            AddReward(0.25f);
+        }
+        if ((predicted_pos.x - transform.localPosition.x) > 0 && direction.x > 0)
+        {
+            AddReward(0.1f);
+        }
+        else if ((predicted_pos.x - transform.localPosition.x) < 0 && direction.x < 0)
+        {
+            AddReward(0.1f);
+        }
 
         AddReward(-0.01f); // To prevent stalling
     }
@@ -175,7 +176,7 @@ public class PongAI : AgentDLC
             {
                 closest = balls[i];
             }
-            else if (Vector3.Dot(balls[i].linearVelocity, transform.position - balls[i].transform.position) > 0.5f)
+            else if (Vector3.Dot(balls[i].linearVelocity, transform.position - balls[i].transform.position) > 0.25f)
             {
                 if (ZDistance(closest.transform) > ZDistance(balls[i].transform))
                 {
@@ -196,30 +197,30 @@ public class PongAI : AgentDLC
         return distance;
     }
 
-    private Vector3 PredictPositionAtZ(Vector3 other, Vector3 linearVelocity, float expected_z)
+    private Vector3 PredictPositionAtZ(Vector3 other, Vector3 velocity, float expected_z)
     {
         Vector3 temp = Vector3.zero;
 
-        float time_taken = (expected_z - other.z) / linearVelocity.z;
+        float time_taken = (expected_z - other.z) / velocity.z;
 
-        temp.x = other.x + linearVelocity.x * time_taken;
+        temp.x = other.x + velocity.x * time_taken;
         temp.y = other.y;
         temp.z = expected_z;
 
         return temp;
     }
 
-    private Vector3 PredictPositionAtX(Vector3 other, Vector3 linearVelocity, float expected_x)
+    private Vector3 PredictPositionAtX(Vector3 other, Vector3 velocity, float expected_x)
     {
         Vector3 temp = Vector3.zero;
 
-        linearVelocity = linearVelocity.normalized;
+        velocity = velocity.normalized;
 
-        float time_taken = (expected_x - other.x) / linearVelocity.x;
+        float time_taken = (expected_x - other.x) / velocity.x;
 
         temp.x = expected_x;
         temp.y = other.y;
-        temp.z = other.z + linearVelocity.z * time_taken;
+        temp.z = other.z + velocity.z * time_taken;
 
         return temp;
     }

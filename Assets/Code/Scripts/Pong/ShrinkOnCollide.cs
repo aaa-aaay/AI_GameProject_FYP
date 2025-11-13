@@ -15,10 +15,6 @@ public class ShrinkOnCollide : MonoBehaviour
             temp.SetScaleMultiplier(scale_size);
             temp.SetScaleTime(scale_time);
         }
-        else
-        {
-            temp.ResetTimer();
-        }
 
         Destroy(gameObject);
     }

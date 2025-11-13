@@ -19,7 +19,7 @@ public class MiniGameOverHandler : MonoBehaviour, IGameService
 
         if (isWin)
         {
-            uiManager.ToggleLevelCompleteUI(true);
+            uiManager.ToggleLevelCompleteUI(true, startCount);
             slManager.SaveData(levelNo, startCount);
         }
         else

@@ -27,18 +27,18 @@ public class PongFSM : MonoBehaviour
 
         Vector3 predicted_pos = PredictPositionAtZ(closest.transform.localPosition, closest.linearVelocity, transform.localPosition.z);
 
-        //if (predicted_pos.x > 40)
-        //{
-        //    Vector3 new_vel = closest.linearVelocity;
-        //    new_vel.x *= -1;
-        //    predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, 40), new_vel, transform.localPosition.z);
-        //}
-        //else if (predicted_pos.x < -40)
-        //{
-        //    Vector3 new_vel = closest.linearVelocity;
-        //    new_vel.x *= -1;
-        //    predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, -40), new_vel, transform.localPosition.z);
-        //}
+        if (predicted_pos.x > instance.GetRightBound())
+        {
+            Vector3 new_vel = closest.linearVelocity;
+            new_vel.x *= -1;
+            predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, 40), new_vel, transform.localPosition.z);
+        }
+        else if (predicted_pos.x < instance.GetLeftBound())
+        {
+            Vector3 new_vel = closest.linearVelocity;
+            new_vel.x *= -1;
+            predicted_pos = PredictPositionAtZ(PredictPositionAtX(closest.transform.localPosition, closest.linearVelocity, -40), new_vel, transform.localPosition.z);
+        }
 
         if (predicted_pos.x > transform.localPosition.x + tolerance)
         {
@@ -86,30 +86,30 @@ public class PongFSM : MonoBehaviour
         return distance;
     }
 
-    protected Vector3 PredictPositionAtZ(Vector3 other, Vector3 linearVelocity, float expected_z)
+    protected Vector3 PredictPositionAtZ(Vector3 other, Vector3 velocity, float expected_z)
     {
         Vector3 temp = Vector3.zero;
 
-        float time_taken = (expected_z - other.z) / linearVelocity.z;
+        float time_taken = (expected_z - other.z) / velocity.z;
 
-        temp.x = other.x + linearVelocity.x * time_taken;
+        temp.x = other.x + velocity.x * time_taken;
         temp.y = other.y;
         temp.z = expected_z;
 
         return temp;
     }
 
-    protected Vector3 PredictPositionAtX(Vector3 other, Vector3 linearVelocity, float expected_x)
+    protected Vector3 PredictPositionAtX(Vector3 other, Vector3 velocity, float expected_x)
     {
         Vector3 temp = Vector3.zero;
 
-        linearVelocity = linearVelocity.normalized;
+        velocity = velocity.normalized;
 
-        float time_taken = (expected_x - other.x) / linearVelocity.x;
+        float time_taken = (expected_x - other.x) / velocity.x;
 
         temp.x = expected_x;
         temp.y = other.y;
-        temp.z = other.z + linearVelocity.z * time_taken;
+        temp.z = other.z + velocity.z * time_taken;
 
         return temp;
     }
