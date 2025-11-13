@@ -24,7 +24,6 @@ public class CarVFXController : MonoBehaviour
         }
         else
         {
-            Debug.Log(horizontalInput);
             if (horizontalInput <= -0.1f)
             {
 
