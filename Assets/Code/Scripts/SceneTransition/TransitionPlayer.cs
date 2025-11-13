@@ -45,23 +45,46 @@ public class TransitionPlayer : MonoBehaviour
     public void StartLoad()
     {
         loading_bar.StartLoad(load_scene);
+        PlayEndLoadAnimation();
     }
     public void StartCountDownUI()
     {
         if(_playCountDown)
         ServiceLocator.Instance.GetService<UIManager>().StartCountDownTimer();
-
     }
 
     private void PlayStartLoadAnimation()
     {
-        animator.ResetTrigger("EndLoad");
-        animator.SetTrigger("StartLoad");
+        if (!animator.GetBool("StartLoad"))
+        {
+            animator.SetBool("EndLoad", false);
+            animator.SetBool("EndSceneLoad", false);
+            animator.SetBool("StartLoad", true);
+        }
     }
 
     private void PlayEndLoadAnimation()
     {
-        animator.ResetTrigger("StartLoad");
-        animator.SetTrigger("EndLoad");
+        if (!animator.GetBool("EndLoad"))
+        {
+            animator.SetBool("StartLoad", false);
+            animator.SetBool("EndSceneLoad", false);
+            animator.SetBool("EndLoad", true);
+        }
+    }
+
+    public void PlayEndSceneLoadAnimation()
+    {
+        if (!animator.GetBool("EndSceneLoad"))
+        {
+            animator.SetBool("StartLoad", false);
+            animator.SetBool("EndLoad", false);
+            animator.SetBool("EndSceneLoad", true);
+        }
+    }
+
+    public void EndLoad()
+    {
+        loading_bar.EndLoad();
     }
 }
