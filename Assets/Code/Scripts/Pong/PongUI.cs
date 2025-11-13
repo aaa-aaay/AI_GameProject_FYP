@@ -53,7 +53,7 @@ public class PongUI : MonoBehaviour
     [SerializeField] private List<PowerUpUI> powers;
     [SerializeField] private List<NumberToImage> images;
 
-    private int count;
+    [SerializeField] private int count;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

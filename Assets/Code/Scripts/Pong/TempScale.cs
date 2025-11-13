@@ -22,10 +22,9 @@ public class TempScale : MonoBehaviour
         if (time_passed >= scale_time)
         {
             time_passed = scale_time;
+            PongUI.instance.UpdateSlider(gameObject, 0);
             Destroy(this);
         }
-
-        PongUI.instance.UpdateSlider(gameObject, 1 - (time_passed / scale_time));
     }
 
     private void OnDestroy()
