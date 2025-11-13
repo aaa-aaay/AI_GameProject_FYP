@@ -17,10 +17,13 @@ public class archery_handler : MonoBehaviour
     [SerializeField] private GameObject agentObject;
     private archery_agent agent;
     [field: SerializeField] public GameObject targetObject { get; private set; }
+    [SerializeField] private archery_windFX windFX;
 
     private int playerPoint;
     private int agentPoint;
     private int winCond;
+    private int twoStarCond;
+    private int threeStarCond;
 
     [Header("Arrow")]
     [SerializeField, Tooltip("Number of arrows in object pool. Set to 0 to disable.")] private int numArrows = 3;
@@ -32,6 +35,11 @@ public class archery_handler : MonoBehaviour
     [SerializeField] private trajectory_preview preview;
     [SerializeField] private archery_ui_handler uiHandler;
     [field: SerializeField] public archery_settings settings { get; private set; }
+
+    [Header("Positions")]
+    [SerializeField] private Transform shootPosition;
+    [SerializeField] private Transform playerIdlePosition;
+    [SerializeField] private Transform agentIdlePosition;
 
     private bool isPlayerTurn;
     private bool canShoot;
@@ -83,9 +91,15 @@ public class archery_handler : MonoBehaviour
         if (!agent)
             Debug.LogError("archery_agent has not been added.");
 
+        ServiceLocator.Instance.GetService<AudioManager>().PlayBackgroundMusic("BGM_Archery");
+
+        windFX.Initialize();
+
         playerPoint = 0;
         agentPoint = 0;
         winCond = settings.winningPoint;
+        twoStarCond = settings.twoStarAhead;
+        threeStarCond = settings.threeStarAhead;
 
         arrows = new arrow[numArrows];
         for (int i = 0; i < numArrows; i++)
@@ -138,6 +152,7 @@ public class archery_handler : MonoBehaviour
         arrows[currentArrow].gameObject.SetActive(true);
 
         arrows[currentArrow].Shoot(force, yaw, pitch, windDirection, windSpeed);
+        ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("LaserShot", position);
 
         arrowCamera.Target.TrackingTarget = arrows[currentArrow].transform;
         arrowCamera.enabled = true;
@@ -148,18 +163,36 @@ public class archery_handler : MonoBehaviour
 
     private IEnumerator PlayerTurn()
     {
+        playerObject.transform.position = shootPosition.position;
+        agentObject.transform.position = agentIdlePosition.position;
+
         playerLeftCamera.Target.TrackingTarget = playerObject.transform;
         playerRightCamera.Target.TrackingTarget = playerObject.transform;
         turnCamera.Target.TrackingTarget = playerObject.transform;
 
-        windDirection = Random.Range(0, 360);
-        if (windDirection <= 180) windDirection = 90f; else windDirection = 270f;
         windSpeed = Random.Range(0f, settings.maxWindSpeed);
+        windDirection = Random.Range(0, 360);
+        if (windDirection <= 180)
+        {
+            windDirection = 90f;
+            windFX.UpdateWind(0, windSpeed);
+            uiHandler.UpdateWind(0, windSpeed);
+        }
+        else
+        {
+            windDirection = 270f;
+            windFX.UpdateWind(1, windSpeed);
+            uiHandler.UpdateWind(1, windSpeed);
+        }
 
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
 
         targetObject.transform.position = playerObject.transform.position + new Vector3(lateralDistance, 2.5f, targetDistance);
+
+        yield return new WaitForSeconds(cameraStay);
+
+        player.Ready();
 
         yield return new WaitForSeconds(3f + cameraStay);
 
@@ -169,18 +202,36 @@ public class archery_handler : MonoBehaviour
 
     private IEnumerator AgentTurn()
     {
+        playerObject.transform.position = playerIdlePosition.position;
+        agentObject.transform.position = shootPosition.position;
+
         playerLeftCamera.Target.TrackingTarget = agentObject.transform;
         playerRightCamera.Target.TrackingTarget = agentObject.transform;
         turnCamera.Target.TrackingTarget = agentObject.transform;
 
-        windDirection = Random.Range(0, 360);
-        if (windDirection <= 180) windDirection = 90f; else windDirection = 270f;
         windSpeed = Random.Range(0f, settings.maxWindSpeed);
+        windDirection = Random.Range(0, 360);
+        if (windDirection <= 180)
+        {
+            windDirection = 90f;
+            windFX.UpdateWind(0, windSpeed);
+            uiHandler.UpdateWind(0, windSpeed);
+        }
+        else
+        {
+            windDirection = 270f;
+            windFX.UpdateWind(1, windSpeed);
+            uiHandler.UpdateWind(1, windSpeed);
+        }
 
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
 
         targetObject.transform.position = agentObject.transform.position + new Vector3(lateralDistance, 2.5f, targetDistance);
+
+        yield return new WaitForSeconds(cameraStay);
+
+        agent.Ready();
 
         yield return new WaitForSeconds(3f + cameraStay);
 
@@ -193,11 +244,6 @@ public class archery_handler : MonoBehaviour
         if (hasHit) return;
         hasHit = true;
 
-        currentArrow++;
-        if (currentArrow == numArrows)
-            currentArrow = 0;
-        arrows[currentArrow].gameObject.SetActive(false);
-
         if (isPlayerTurn)
         {
             playerPoint += point;
@@ -206,7 +252,7 @@ public class archery_handler : MonoBehaviour
         else
         {
             agentPoint += point;
-            
+
             if (!isAiTraining) isPlayerTurn = true;
 
             if (point > 0) agent.OnHit(point);
@@ -224,7 +270,13 @@ public class archery_handler : MonoBehaviour
         if (playerPoint >= winCond)
         {
             ServiceLocator.Instance.GetService<InputManager>().EnableActions(); //renable actions
-            gameOverHandler.HandleGameOver(true, 4, 3);
+
+            if ((playerPoint - agentPoint) < twoStarCond)
+                gameOverHandler.HandleGameOver(true, 4, 1);
+            else if ((playerPoint - agentPoint) < threeStarCond)
+                gameOverHandler.HandleGameOver(true, 4, 2);
+            else
+                gameOverHandler.HandleGameOver(true, 4, 3);
         }
         else if (agentPoint >= winCond && !isAiTraining)
         {
@@ -232,7 +284,12 @@ public class archery_handler : MonoBehaviour
         }
 
         StopAllCoroutines();
-        StartCoroutine(ReturnCamera());
+        StartCoroutine(ReturnCamera(currentArrow));
+
+        currentArrow++;
+        if (currentArrow == numArrows)
+            currentArrow = 0;
+        arrows[currentArrow].gameObject.SetActive(false);
     }
 
     public void UpdateUI(Vector3 position, float force, float yaw, float pitch)
@@ -253,16 +310,21 @@ public class archery_handler : MonoBehaviour
         estimateLanding = preview.ShowPath(position, force, yaw, pitch, windDirection, windSpeed);
     }
 
-    private IEnumerator ReturnCamera()
+    private IEnumerator ReturnCamera(int arrowIndex)
     {
+        Transform position = new GameObject().transform;
+        position.position = arrows[arrowIndex].transform.position;
+        arrowCamera.Target.TrackingTarget = position;
+
         yield return new WaitForSeconds(cameraStay);
 
         if (isPlayerTurn) StartCoroutine(PlayerTurn()); else StartCoroutine(AgentTurn());
 
         arrowCamera.enabled = false;
         turnCamera.enabled = true;
+        Destroy(position.gameObject);
 
-        yield return new WaitForSeconds(cameraStay);
+        yield return new WaitForSeconds(cameraStay * 2f);
 
         turnCamera.enabled = false;
         playerRightCamera.enabled = true;

@@ -74,6 +74,12 @@ public class archery_player : MonoBehaviour
         stringOrigin = stringConstraint.transform.localPosition;
     }
 
+    public void Ready()
+    {
+        animator.enabled = true;
+        animator.SetTrigger("ReadyAim");
+    }
+
     public void StartTurn()
     {
         isTurn = true;
@@ -112,6 +118,10 @@ public class archery_player : MonoBehaviour
             stringConstraint.constraintActive = false;
             stringConstraint.transform.localPosition = stringOrigin;
             arrow.gameObject.SetActive(false);
+
+            animator.enabled = true;
+            animator.SetTrigger("Shot");
+
             return;
         }
 
@@ -119,7 +129,6 @@ public class archery_player : MonoBehaviour
 
         animator.enabled = true;
         float normalizedForce = Mathf.InverseLerp(minForce, maxForce, force);
-        animator.speed = 0f;
         animator.Play(aimAnim.name, 0, normalizedForce);
         animator.Update(0f);
         animator.enabled = false;

@@ -58,6 +58,12 @@ public class archery_agent : Agent
         stringOrigin = stringConstraint.transform.localPosition;
     }
 
+    public void Ready()
+    {
+        animator.enabled = true;
+        animator.SetTrigger("ReadyAim");
+    }
+
     public void StartTurn()
     {
         StopAllCoroutines();
@@ -165,6 +171,10 @@ public class archery_agent : Agent
             arrow.gameObject.SetActive(false);
             shoot = true;
             handler.Shoot(bow.position, force, yaw, pitch);
+
+            animator.enabled = true;
+            animator.SetTrigger("Shot");
+
             return;
         }
 
@@ -173,11 +183,10 @@ public class archery_agent : Agent
         lastDistance = newDistance;
 
         handler.UpdateUI(bow.position, force, yaw, pitch);
-        canShoot = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) < 1f;
+        if (!canShoot) canShoot = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) < 1f;
 
         animator.enabled = true;
         float normalizedForce = Mathf.InverseLerp(minForce, maxForce, force);
-        animator.speed = 0f;
         animator.Play(aimAnim.name, 0, normalizedForce);
         animator.Update(0f);
         animator.enabled = false;
