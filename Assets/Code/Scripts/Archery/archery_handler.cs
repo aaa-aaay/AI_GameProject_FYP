@@ -89,6 +89,8 @@ public class archery_handler : MonoBehaviour
         if (!agent)
             Debug.LogError("archery_agent has not been added.");
 
+        ServiceLocator.Instance.GetService<AudioManager>().PlayBackgroundMusic("BGM_Archery");
+
         windFX.Initialize();
 
         playerPoint = 0;
@@ -146,6 +148,7 @@ public class archery_handler : MonoBehaviour
         arrows[currentArrow].gameObject.SetActive(true);
 
         arrows[currentArrow].Shoot(force, yaw, pitch, windDirection, windSpeed);
+        ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("LaserShot", position);
 
         arrowCamera.Target.TrackingTarget = arrows[currentArrow].transform;
         arrowCamera.enabled = true;
