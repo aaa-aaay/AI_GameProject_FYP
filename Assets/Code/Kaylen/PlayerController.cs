@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 5f;
     public float holdMoveSpeed = 2.5f;
     public float rotationSpeed = 10f;
-    public float jumpForce = 7f; // Jump strength
+    public float jumpForce = 7f;
     public float gravity = 20f;
 
     [Header("References")]
@@ -36,7 +36,6 @@ public class PlayerMovement : MonoBehaviour
     public float invincibilityTime = 3f;
     private bool isInvincible = false;
 
-
     [Header("Animation")]
     public Animator animator;
 
@@ -46,7 +45,6 @@ public class PlayerMovement : MonoBehaviour
     private Coroutine tagCoroutine;
     private bool isGrounded;
 
-    // Runner pickup
     private Runner heldRunner = null;
     public Transform holdPoint;
     public bool isHoldingRunner { get; private set; } = false;
@@ -65,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         if (playerModel == null)
             Debug.LogWarning("PlayerMovement: playerModel not assigned.");
@@ -79,10 +77,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        // Raycast down to check if grounded
         isGrounded = Physics.Raycast(transform.position, Vector3.down, GetComponent<CapsuleCollider>().height / 2 + groundCheckDistance);
 
-        // Jump input
+        // Jump
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             Vector3 v = rb.linearVelocity;
@@ -90,15 +87,36 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = v;
         }
 
-        // Tag input
+        // Tag input (left click)
         if (Input.GetMouseButtonDown(0))
         {
-            if (isHoldingRunner) DropRunner();
+            // Trigger catch animation
+            if (animator != null)
+                animator.SetTrigger("catching");
+
+            if (isHoldingRunner)
+            {
+                // Drop if already holding
+                DropRunner();
+            }
             else if (canTag)
             {
+                // Start tag attempt
                 if (tagCoroutine != null) StopCoroutine(tagCoroutine);
                 tagCoroutine = StartCoroutine(DoTag());
             }
+        }
+
+        // Movement input
+        float x = Input.GetAxisRaw("Horizontal");
+        float z = Input.GetAxisRaw("Vertical");
+        bool isWalking = new Vector3(x, 0f, z).sqrMagnitude > 0.01f;
+
+        // Apply Animator parameters
+        if (animator != null)
+        {
+            animator.SetBool("walking", isWalking);
+            animator.SetBool("isHolding", isHoldingRunner);
         }
     }
 
@@ -106,13 +124,9 @@ public class PlayerMovement : MonoBehaviour
     {
         HandleMovement();
 
-        // Apply gravity manually if not grounded
         if (!isGrounded)
-        {
             rb.AddForce(Vector3.down * gravity, ForceMode.Acceleration);
-        }
 
-        // Keep held runner at hold point
         if (isHoldingRunner && heldRunner != null)
         {
             heldRunner.transform.position = holdPoint.position;
@@ -129,22 +143,14 @@ public class PlayerMovement : MonoBehaviour
         float speed = isHoldingRunner ? holdMoveSpeed : moveSpeed;
         Vector3 move = inputDir * speed;
 
-        // Move player
         rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
 
-        // Rotate only if pressing WASD
         if (inputDir.sqrMagnitude > 0.01f && playerModel != null)
         {
             Quaternion targetRot = Quaternion.LookRotation(inputDir);
             playerModel.rotation = Quaternion.Slerp(playerModel.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime);
         }
-
-        // Update walking animation
-        if (animator != null)
-            animator.SetBool("walking", inputDir.sqrMagnitude > 0.01f);
     }
-
-
 
     private IEnumerator DoTag()
     {

@@ -62,7 +62,15 @@ public class CaptureCheck : MonoBehaviour
             penDoor.localEulerAngles = angles;
         }
     }
-
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("[DEBUG] P pressed – Forcing capture threshold sequence...");
+            StopAllCoroutines();
+            StartCoroutine(HandleCaptureThresholdReached());
+        }
+    }
     public void RunnerCaptured()
     {
         currentCaptures++;
