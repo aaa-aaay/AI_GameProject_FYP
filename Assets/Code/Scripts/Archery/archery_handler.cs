@@ -169,11 +169,13 @@ public class archery_handler : MonoBehaviour
         {
             windDirection = 90f;
             windFX.UpdateWind(0, windSpeed);
+            uiHandler.UpdateWind(0, windSpeed);
         }
         else
         {
             windDirection = 270f;
             windFX.UpdateWind(1, windSpeed);
+            uiHandler.UpdateWind(1, windSpeed);
         }
 
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
@@ -196,9 +198,20 @@ public class archery_handler : MonoBehaviour
         playerRightCamera.Target.TrackingTarget = agentObject.transform;
         turnCamera.Target.TrackingTarget = agentObject.transform;
 
-        windDirection = Random.Range(0, 360);
-        if (windDirection <= 180) windDirection = 90f; else windDirection = 270f;
         windSpeed = Random.Range(0f, settings.maxWindSpeed);
+        windDirection = Random.Range(0, 360);
+        if (windDirection <= 180)
+        {
+            windDirection = 90f;
+            windFX.UpdateWind(0, windSpeed);
+            uiHandler.UpdateWind(0, windSpeed);
+        }
+        else
+        {
+            windDirection = 270f;
+            windFX.UpdateWind(1, windSpeed);
+            uiHandler.UpdateWind(1, windSpeed);
+        }
 
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
