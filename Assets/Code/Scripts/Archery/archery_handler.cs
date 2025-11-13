@@ -186,6 +186,10 @@ public class archery_handler : MonoBehaviour
 
         targetObject.transform.position = playerObject.transform.position + new Vector3(lateralDistance, 2.5f, targetDistance);
 
+        yield return new WaitForSeconds(cameraStay);
+
+        player.Ready();
+
         yield return new WaitForSeconds(3f + cameraStay);
 
         player.StartTurn();
@@ -220,6 +224,10 @@ public class archery_handler : MonoBehaviour
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
 
         targetObject.transform.position = agentObject.transform.position + new Vector3(lateralDistance, 2.5f, targetDistance);
+
+        yield return new WaitForSeconds(cameraStay);
+
+        agent.Ready();
 
         yield return new WaitForSeconds(3f + cameraStay);
 
@@ -306,7 +314,7 @@ public class archery_handler : MonoBehaviour
         turnCamera.enabled = true;
         Destroy(position.gameObject);
 
-        yield return new WaitForSeconds(cameraStay);
+        yield return new WaitForSeconds(cameraStay * 2f);
 
         turnCamera.enabled = false;
         playerRightCamera.enabled = true;
