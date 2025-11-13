@@ -22,6 +22,8 @@ public class archery_handler : MonoBehaviour
     private int playerPoint;
     private int agentPoint;
     private int winCond;
+    private int twoStarCond;
+    private int threeStarCond;
 
     [Header("Arrow")]
     [SerializeField, Tooltip("Number of arrows in object pool. Set to 0 to disable.")] private int numArrows = 3;
@@ -96,6 +98,8 @@ public class archery_handler : MonoBehaviour
         playerPoint = 0;
         agentPoint = 0;
         winCond = settings.winningPoint;
+        twoStarCond = settings.twoStarAhead;
+        threeStarCond = settings.threeStarAhead;
 
         arrows = new arrow[numArrows];
         for (int i = 0; i < numArrows; i++)
@@ -266,7 +270,13 @@ public class archery_handler : MonoBehaviour
         if (playerPoint >= winCond)
         {
             ServiceLocator.Instance.GetService<InputManager>().EnableActions(); //renable actions
-            gameOverHandler.HandleGameOver(true, 4, 3);
+
+            if ((playerPoint - agentPoint) < twoStarCond)
+                gameOverHandler.HandleGameOver(true, 4, 1);
+            else if ((playerPoint - agentPoint) < threeStarCond)
+                gameOverHandler.HandleGameOver(true, 4, 2);
+            else
+                gameOverHandler.HandleGameOver(true, 4, 3);
         }
         else if (agentPoint >= winCond && !isAiTraining)
         {
