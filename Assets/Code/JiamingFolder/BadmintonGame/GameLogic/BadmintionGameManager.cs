@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BadmintionGameManager : MonoBehaviour
@@ -12,8 +13,9 @@ public class BadmintionGameManager : MonoBehaviour
 
     [SerializeField] private GameObject shutter;
 
-    [SerializeField] private TMP_Text _P1ScoreDisplay;
-    [SerializeField] private TMP_Text _P2ScoreDisplay;
+    [Header("Score displays")]
+    [SerializeField] private TMP_Text[] _p1ScoreDisplays;
+    [SerializeField] private TMP_Text[] _p2ScoreDisplays;
 
 
     [SerializeField] private Transform shutterSpawnPoint1;
@@ -40,8 +42,8 @@ public class BadmintionGameManager : MonoBehaviour
     private void Start()
     {
         audioManager = ServiceLocator.Instance.GetService<AudioManager>();
-        _P1ScoreDisplay.text = 0.ToString();
-        _P2ScoreDisplay.text = 0.ToString();
+        UpDateBadmintonScoreUI(0, _p1ScoreDisplays);
+        UpDateBadmintonScoreUI(0, _p2ScoreDisplays);
 
 
         ToggleServe(_whoServesFirst);
@@ -68,7 +70,7 @@ public class BadmintionGameManager : MonoBehaviour
         if (playerNo == 1)
         {
             player1Score++;
-            _P1ScoreDisplay.text = player1Score.ToString();
+            UpDateBadmintonScoreUI(player1Score, _p1ScoreDisplays);
 
             ToggleServe(1);
             InRedCourt = false;
@@ -79,8 +81,7 @@ public class BadmintionGameManager : MonoBehaviour
         else if(playerNo == 2)
         {
             player2Score++;
-            _P2ScoreDisplay.text = player2Score.ToString();
-
+            UpDateBadmintonScoreUI(player2Score, _p2ScoreDisplays);
 
             ToggleServe(2);
             InRedCourt = true;
@@ -115,8 +116,8 @@ public class BadmintionGameManager : MonoBehaviour
     public void ResetGame()
     {
         player1Score = player2Score = 0;
-        _P2ScoreDisplay.text = player2Score.ToString();
-        _P1ScoreDisplay.text = player1Score.ToString();
+        UpDateBadmintonScoreUI(player1Score, _p1ScoreDisplays);
+        UpDateBadmintonScoreUI(player2Score, _p2ScoreDisplays);
         ToggleServe(_whoServesFirst);
         OnGameOver?.Invoke();
     }
@@ -168,5 +169,14 @@ public class BadmintionGameManager : MonoBehaviour
         rect.SetParent(newParent, false);
         rect.localPosition = Vector3.zero;
         rect.localRotation = Quaternion.identity;
+    }
+
+    private void UpDateBadmintonScoreUI(int score, TMP_Text[] displayTMPs)
+    {
+        foreach(TMP_Text text in displayTMPs)
+        {
+            text.text = score.ToString();
+        }
+            
     }
 }

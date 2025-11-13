@@ -230,7 +230,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 6ecbd65f4033849439282a2c44876309, type: 3}
+  m_Model: {fileID: 0}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: Pong
@@ -485,7 +485,7 @@ MonoBehaviour:
   - {fileID: 8317263329487837619, guid: 626bfeafa64de0a44a1141e01f2501c6, type: 3}
   - {fileID: 8317263329487837619, guid: 9ad4e142d11fdbf4a8cf5cfe10460e7a, type: 3}
   - {fileID: 9027568322037253827, guid: 638077a576f63dc4b8cc3c59bd68506a, type: 3}
-  player: {fileID: 7413052488898283180}
+  player: {fileID: 5938481789971527597}
   opponent: {fileID: 3269120411351522065}
   Scored:
     m_PersistentCalls:
@@ -549,6 +549,8 @@ MonoBehaviour:
   win_score: 10
   min_power_up_time: 2
   max_power_up_time: 5
+  player_points: 0
+  opponent_points: 0
 --- !u!1 &5542970711614902945
 GameObject:
   m_ObjectHideFlags: 0
@@ -833,7 +835,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &357162516095671641
 Transform:
   m_ObjectHideFlags: 0
@@ -969,7 +971,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6718053105966572505
 Transform:
   m_ObjectHideFlags: 0
@@ -1165,6 +1167,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: f47a7c9e-2751-493d-b81c-44237ae9af95
     m_ActionName: 'Archery/Shoot[/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5c876e30-ee80-4303-abea-6a0d1812ed48
+    m_ActionName: 'Player/OpenSettings[/Keyboard/escape]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -2129,6 +2135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b7bb1b293c00ea4eaf521fb357dd811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bounce_vfx: {fileID: 0}
   bounce_force: 2.5
   start_bounce_multiplier: 0.2
   max_speed: 25
@@ -5893,6 +5900,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b7bb1b293c00ea4eaf521fb357dd811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bounce_vfx: {fileID: 0}
   bounce_force: 2.5
   start_bounce_multiplier: 0.2
   max_speed: 25

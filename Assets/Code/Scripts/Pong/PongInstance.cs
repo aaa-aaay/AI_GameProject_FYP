@@ -22,8 +22,8 @@ public class PongInstance : MonoBehaviour
     [SerializeField] private float min_power_up_time;
     [SerializeField] private float max_power_up_time;
 
-    private int player_points;
-    private int opponent_points;
+    [SerializeField] private int player_points;
+    [SerializeField] private int opponent_points;
     private float time_passed;
     private float power_up_time;
     private float power_time_passed;
