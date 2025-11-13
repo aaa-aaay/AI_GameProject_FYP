@@ -11,26 +11,25 @@ public class Runner : MonoBehaviour
     [Header("Movement Settings")]
     public float nodeReachThreshold = 0.5f;
     public float dangerRadius = 5f;
-    public float jumpHeight = 1.5f;
-    public float jumpDuration = 0.5f;
-    public float jumpDistance = 1.5f;
+    public float jumpHeight = 1.5f;     // Arc height
+    public float jumpDuration = 0.5f;   // Duration per hop
+    public float jumpDistance = 1.5f;   // Horizontal distance covered per hop
 
     [Header("References")]
     public List<PathNode> allNodes;
+
     [Header("Animation Settings")]
     public Animator animator;
 
     private Rigidbody rb;
-    private bool isJumping = false;
-    private bool isBeingHeld = false;
-
-    private Vector3 jumpStartPos;
-    private Vector3 jumpTargetPos;
-    private float jumpTimer = 0f;
-
     public List<PathNode> path = new List<PathNode>();
     public int pathIndex = 0;
     private Transform closestDanger;
+
+    private bool isJumping = false;
+    private Vector3 jumpStartPos;
+    private Vector3 jumpTargetPos;
+    private float jumpTimer = 0f;
 
     void Start()
     {
@@ -46,42 +45,16 @@ public class Runner : MonoBehaviour
 
     void Update()
     {
-        // Stop AI if currently being held
-        if (isBeingHeld)
-            return;
-
         DetectDanger();
 
         switch (currentState)
         {
-            case State.Idle:
-                IdleBehaviour();
-                break;
-            case State.Run:
-                RunBehaviour(closestDanger);
-                break;
+            case State.Idle: IdleBehaviour(); break;
+            case State.Run: RunBehaviour(closestDanger); break;
         }
 
         HandleJump();
     }
-
-    // ---------------------------
-    //  PICKUP / DROP HANDLERS
-    // ---------------------------
-
-    public void OnPickedUp()
-    {
-        // Called externally by Player script when picked up
-        isBeingHeld = true;
-        rb.isKinematic = true; // So physics won't move it
-        path.Clear(); // Stop path movement temporarily
-    }
-
-   
-
-    // ---------------------------
-    //  MAIN BEHAVIOURS
-    // ---------------------------
 
     private void DetectDanger()
     {
@@ -92,7 +65,7 @@ public class Runner : MonoBehaviour
 
         foreach (var hit in hits)
         {
-            if ((hit.CompareTag("Player") || hit.CompareTag("Tagger") || hit.CompareTag("Runner")) && hit.gameObject != gameObject)
+            if ((hit.CompareTag("Runner") || hit.CompareTag("Tagger")) && hit.gameObject != gameObject)
             {
                 float d = Vector3.Distance(transform.position, hit.transform.position);
                 if (d < closestDist)
@@ -139,10 +112,6 @@ public class Runner : MonoBehaviour
                 PickNewIdleTarget();
         }
     }
-
-    // ---------------------------
-    //  PATHFINDING / MOVEMENT
-    // ---------------------------
 
     void PickNewIdleTarget()
     {
@@ -208,6 +177,7 @@ public class Runner : MonoBehaviour
         Vector3 dirToNode = nodeTarget - transform.position;
         float distToNode = dirToNode.magnitude;
 
+        // Still far from this node → take a smaller hop towards it
         if (distToNode > nodeReachThreshold)
         {
             Vector3 stepDir = dirToNode.normalized;
@@ -216,6 +186,7 @@ public class Runner : MonoBehaviour
         }
         else
         {
+            // Node reached → move to next
             pathIndex++;
         }
     }
@@ -238,12 +209,14 @@ public class Runner : MonoBehaviour
         jumpTimer += Time.deltaTime;
         float t = jumpTimer / jumpDuration;
 
+        // Parabolic arc
         float height = Mathf.Sin(t * Mathf.PI) * jumpHeight;
         Vector3 pos = Vector3.Lerp(jumpStartPos, jumpTargetPos, t);
         pos.y += height;
 
         rb.MovePosition(pos);
 
+        // Face movement direction
         Vector3 lookDir = (jumpTargetPos - jumpStartPos).normalized;
         if (lookDir.sqrMagnitude > 0.01f)
         {
@@ -251,6 +224,7 @@ public class Runner : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
         }
 
+        // Finish jump
         if (t >= 1f)
         {
             isJumping = false;
@@ -287,37 +261,5 @@ public class Runner : MonoBehaviour
         }
     }
 
-    // Add this public method to Runner (inside class)
-    public void OnDropped()
-    {
-        // Ensure we aren't considered "being held" anymore
-        isBeingHeld = false;
-
-        // Do not change transform here. Use current world position as the start point.
-
-        // Recompute path relative to current location WITHOUT teleporting the runner.
-        // Choose a sensible next goal: if currently in "Run" state keep escaping behavior, else pick idle route.
-        if (currentState == State.Run && closestDanger != null)
-        {
-            // Rebuild escape path from current position
-            PickFurthestNodeFrom(closestDanger);
-        }
-        else
-        {
-            // Continue wandering — pick a new idle target that begins from the closest node
-            PathNode closest = FindClosestNode();
-            if (closest != null)
-            {
-                // Build path from closest node to some random goal but do not set transform
-                PathNode goal = allNodes[Random.Range(0, allNodes.Count)];
-                path = AStar.FindPath(closest, goal);
-                pathIndex = 0;
-            }
-        }
-
-        // Reset motion state so the next Update/MoveAlongPath uses current transform as start.
-        isJumping = false;
-        jumpTimer = 0f;
-    }
 
 }
