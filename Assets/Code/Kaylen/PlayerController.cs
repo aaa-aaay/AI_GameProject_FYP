@@ -235,13 +235,50 @@ public class PlayerMovement : MonoBehaviour
         Rigidbody runRb = heldRunner.GetComponent<Rigidbody>();
         Runner runAgent = heldRunner.GetComponent<Runner>();
 
+        // Re-enable collider and runner script (but keep physics disabled until we set position)
         if (runCol != null) runCol.enabled = true;
-        if (runRb != null) runRb.isKinematic = false;
-        if (runAgent != null) runAgent.enabled = true;
+        if (runAgent != null) runAgent.enabled = false; // disable briefly while we reposition
 
-        heldRunner.transform.SetParent(null, true);
-        heldRunner.transform.position = transform.position + transform.forward * 1.5f + Vector3.up * 0.1f;
+        // Detach from player (no world-position preserving surprises)
+        heldRunner.transform.SetParent(null);
 
+        // Desired drop position in world-space (in front of player)
+        Vector3 dropPosition = transform.position + transform.forward * 1.5f + Vector3.up * 0.1f;
+        Quaternion dropRotation = Quaternion.LookRotation(transform.forward, Vector3.up);
+
+        // If there's a Rigidbody, set its position and zero velocities properly:
+        if (runRb != null)
+        {
+            // Make sure it's kinematic while we set the position cleanly
+            runRb.isKinematic = true;
+
+            // Force position directly on the Rigidbody (world-space)
+            runRb.position = dropPosition;
+            runRb.rotation = dropRotation;
+
+            // MovePosition to ensure interpolation/internal state is correct
+            runRb.MovePosition(dropPosition);
+            runRb.linearVelocity = Vector3.zero;
+            runRb.angularVelocity = Vector3.zero;
+
+            // Now re-enable physics and agent
+            runRb.isKinematic = false;
+        }
+        else
+        {
+            // No rigidbody — set transform directly
+            heldRunner.transform.position = dropPosition;
+            heldRunner.transform.rotation = dropRotation;
+        }
+
+        // Re-enable Runner script AFTER we've placed it
+        if (runAgent != null)
+        {
+            runAgent.enabled = true;
+            runAgent.OnDropped(); // tells Runner to resume from current position (does NOT teleport)
+        }
+
+        // cleanup
         heldRunner = null;
         isHoldingRunner = false;
 
@@ -250,7 +287,10 @@ public class PlayerMovement : MonoBehaviour
             StopCoroutine(holdReleaseCoroutine);
             holdReleaseCoroutine = null;
         }
+
+        Debug.Log("Dropped runner at: " + dropPosition);
     }
+
 
     public Runner GetHeldRunner() => heldRunner != null ? heldRunner.GetComponent<Runner>() : null;
 
@@ -288,6 +328,8 @@ public class PlayerMovement : MonoBehaviour
         canTag = false;
         if (tagCoroutine != null) StopCoroutine(tagCoroutine);
         if (activeHitbox != null) Destroy(activeHitbox);
+         if (animator.layerCount > 1)
+                animator.SetLayerWeight(1, 0f);
     }
     public bool HasPerfectRun()
     {
