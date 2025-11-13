@@ -1,4 +1,6 @@
+using System.Collections;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
@@ -6,6 +8,7 @@ using UnityEngine.VFX;
 public class PongBall : MonoBehaviour
 {
     [SerializeField] private VisualEffect bounce_vfx;
+    [SerializeField] private VisualEffect trail_vfx;
     [SerializeField] private float bounce_force;
     [SerializeField, Range(0f, 1f)] private float start_bounce_multiplier;
     [SerializeField] private float max_speed;
@@ -81,8 +84,17 @@ public class PongBall : MonoBehaviour
     {
         ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("BMT_Score", Camera.main.transform.position);
         rigid_body.linearVelocity = Vector3.zero;
-        rigid_body.AddForce(new Vector3(Random.Range(-1, 1f), 0, Random.Range(-1, 1f)).normalized * max_speed * start_bounce_multiplier, ForceMode.Impulse); 
+        rigid_body.AddForce(new Vector3(Random.Range(-1, 1f), 0, Random.Range(-1, 1f)).normalized * max_speed * start_bounce_multiplier, ForceMode.Impulse);
+        trail_vfx.SetBool("Kill Switch", true);
+        StartCoroutine(EnableTrail());
         transform.position = start_position;
+    }
+
+    IEnumerator EnableTrail()
+    {
+        yield return null;
+        yield return null;
+        trail_vfx.SetBool("Kill Switch", false);
     }
 
     public void Restart(GameObject player)
