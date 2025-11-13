@@ -75,7 +75,6 @@ public class LoadingBar : MonoBehaviour
     {
         yield return null;
         AsyncOperation operation = SceneManager.LoadSceneAsync(scene);
-        Debug.Log(scene);
         operation.allowSceneActivation = false;
 
         while (!operation.isDone)
