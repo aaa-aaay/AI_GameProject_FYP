@@ -12,9 +12,6 @@ public class RotateRigidbodyForce : MonoBehaviour
 
     private void Update()
     {
-        if (transform.forward != Vector3.zero)
-        {
-            transform.forward = body.linearVelocity;
-        }
+        transform.forward = body.linearVelocity;
     }
 }

@@ -18,13 +18,7 @@ public class LoadingBar : MonoBehaviour
     [SerializeField] private Image loading_bg;
     [SerializeField] private Image loading_game;
 
-    [SerializeField] private float delay = 1;
-
     [SerializeField] private List<SceneChangeData> scene_changes;
-
-    private bool load_finished;
-
-    [SerializeField] private TransitionPlayer transition_player;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -66,7 +60,6 @@ public class LoadingBar : MonoBehaviour
             }
         }
 
-        load_finished = false;
         StartCoroutine(AsynchronousLoad(scene_name));
         //SceneManager.LoadSceneAsync(scene_name);
     }
@@ -80,11 +73,10 @@ public class LoadingBar : MonoBehaviour
 
         while (!operation.isDone)
         {
+            print(operation.progress);
             if (operation.progress >= 0.9f)
             {
-                yield return new WaitForSeconds(delay);
-                transition_player.PlayEndSceneLoadAnimation();
-                yield return new WaitUntil(() => load_finished);
+                yield return new WaitForSeconds(2.5f);
                 operation.allowSceneActivation = true;
             }
 
@@ -93,10 +85,5 @@ public class LoadingBar : MonoBehaviour
 
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(scene));
-    }
-
-    public void EndLoad()
-    {
-        load_finished = true;
     }
 }

@@ -3,13 +3,23 @@ using System.Collections.Generic;
 
 public class RigidbodySlow : MonoBehaviour
 {
+    [SerializeField] private float duration;
+
     private List<Rigidbody> data = new List<Rigidbody>();
 
-    private void OnDestroy()
+    private float time_passed = 0;
+
+    private void Update()
     {
-        for (int i = 0; i < data.Count; i++)
+        time_passed += Time.deltaTime;
+
+        if (time_passed >= duration)
         {
-            data[i].linearVelocity *= 2;
+            for (int i = 0; i < data.Count; i++)
+            {
+                data[i].linearVelocity *= 2;
+            }
+            Destroy(gameObject);
         }
     }
 

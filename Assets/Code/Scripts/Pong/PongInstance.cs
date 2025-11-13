@@ -32,7 +32,6 @@ public class PongInstance : MonoBehaviour
     void Start()
     {
         Restart();
-        ServiceLocator.Instance.GetService<AudioManager>().PlayBackgroundMusic("PongBGM");
     }
 
     // Update is called once per frame
@@ -126,19 +125,7 @@ public class PongInstance : MonoBehaviour
         }
         else
         {
-            int score_diff = player_points - opponent_points;
-            if (score_diff >= 5)
-            {
-                gameOverHandler.HandleGameOver(true, 3, 3);
-            }
-            else if (score_diff >= 3)
-            {
-                gameOverHandler.HandleGameOver(true, 3, 2);
-            }
-            else
-            {
-                gameOverHandler.HandleGameOver(true, 3, 1);
-            }
+            gameOverHandler.HandleGameOver(true,3,3);
             EventHolder.InvokeOnWin(player);
             EventHolder.InvokeOnLose(opponent);
         }

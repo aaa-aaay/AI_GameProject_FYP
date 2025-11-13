@@ -328,7 +328,7 @@ VideoPlayer:
   m_ControlledAudioTrackCount: 1
   m_PlayOnAwake: 1
   m_SkipOnDrop: 1
-  m_Looping: 1
+  m_Looping: 0
   m_WaitForFirstFrame: 1
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
@@ -1089,6 +1089,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 982920992}
+  - component: {fileID: 982920993}
+  - component: {fileID: 982920994}
   m_Layer: 0
   m_Name: Local
   m_TagString: Untagged
@@ -1117,6 +1119,34 @@ Transform:
   - {fileID: 1381338258}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &982920993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982920991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69feed49c34d0a84087e1bb34397c423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &982920994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982920991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72739e86f152a5e4ab2f37bffb8eafc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _camera: {fileID: 1808141912}
+  segmentLength: 121
+  numberOfSegments: 3
+  roadPrefab: {fileID: 641896685290742995, guid: 542cae4b294b1ed4989dddb9f465b6ca, type: 3}
 --- !u!1 &1138707668
 GameObject:
   m_ObjectHideFlags: 0
@@ -2429,7 +2459,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 982920993}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: GoGameLobby
         m_Mode: 1

@@ -31,10 +31,10 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4561023908868849738}
   - {fileID: 7480573435986517793}
   - {fileID: 271852706032136375}
   - {fileID: 8945637212183074873}
-  - {fileID: 4561023908868849738}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1000,7 +1000,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loading_bg: {fileID: 1684671888132138994}
   loading_game: {fileID: 7683998627887798881}
-  delay: 2.5
   scene_changes:
   - scene_name: Badminton
     scene_color: {r: 1, g: 1, b: 1, a: 1}
@@ -1017,7 +1016,6 @@ MonoBehaviour:
   - scene_name: archery_game
     scene_color: {r: 1, g: 1, b: 1, a: 1}
     scene_sprite: {fileID: 21300000, guid: d29217e973a8234498495def749843e9, type: 3}
-  transition_player: {fileID: 3764567712477339309}
 --- !u!1 &8732444609841040591
 GameObject:
   m_ObjectHideFlags: 0
