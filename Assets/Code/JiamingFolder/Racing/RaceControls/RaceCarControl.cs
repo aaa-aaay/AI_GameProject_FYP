@@ -18,7 +18,7 @@ public class RaceCarControl : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _manager.OnResetRace += RestartRace;
+        _manager.onRaceOver += RestartRace;
         _movement = GetComponent<BetterCarMovement>();
         _inputManager = ServiceLocator.Instance.GetService<InputManager>();
         _inputManager.OnMove += HandleMove;
@@ -29,18 +29,12 @@ public class RaceCarControl : MonoBehaviour
 
         _carPosResetter = _car.GetComponent<ResetCarPosition>();
         _goalChecker = _car.GetComponent<GoalChecker>();
-        _goalChecker.OnRaceFinished += PlayerFinishedRace;
 
     }
 
     private void OnDestroy()
     {
         _inputManager.OnMove -= HandleMove;
-        _inputManager.OnMoveEnd -= HandleMoveEnd;
-        _inputManager.onDash -= HandleDrift;
-        _inputManager.onDashEnd -= HandleDriftEnd;
-
-        _goalChecker.OnRaceFinished -= PlayerFinishedRace;
     }
 
     // Update is called once per frame
@@ -86,10 +80,5 @@ public class RaceCarControl : MonoBehaviour
     {
         _carPosResetter.ResetPos();
         _goalChecker.ResetCar();
-    }
-
-    private void PlayerFinishedRace(string name, float timeTaken)
-    {
-        _manager.OpenLeaderBoard();
     }
 }

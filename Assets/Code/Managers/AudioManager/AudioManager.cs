@@ -1,8 +1,8 @@
+using IGCC;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour, IGameService
 {
@@ -51,20 +51,9 @@ public class AudioManager : MonoBehaviour, IGameService
         //ServiceLocator.Instance.RemoveService<AudioManager>(false);
     }
 
-    private void Start()
+
+    public void PlaySFX(string name, Vector3 position)
     {
-        SceneManager.sceneLoaded += SetDefaultLocation;
-    }
-
-    private void SetDefaultLocation(Scene scene, LoadSceneMode mode)
-    {
-
-    }
-
-
-    public void PlaySFX(string name, Vector3? position = null)
-    {
-
         foreach (Sound sound in sounds)
         {
             if (sound.audioName == name)
@@ -75,18 +64,9 @@ public class AudioManager : MonoBehaviour, IGameService
                     AudioSource source = _audioSourcePool.Dequeue();
                     source.clip = sound.clip;
                     source.volume = sound.volume;
-
-                    if (position.HasValue)
-                    {
-                        source.spatialBlend = 1.0f;
-                        source.transform.position = position.Value;
-                    }
-                    else
-                    {
-                        source.spatialBlend = 0.0f;
-                    }
-
+                    source.transform.position = position;
                     source.Play();
+
                     StartCoroutine(ReturnToPoolAfterPlayback(source));
                 }
                 else
@@ -158,20 +138,6 @@ public class AudioManager : MonoBehaviour, IGameService
             {
                 Debug.LogWarning($"Duplicate sound name found: {sound.name}. Skipping.");
             }
-        }
-    }
-
-
-    public void SetBGMVol(float bgmVolume)
-    {
-        _backgroundMusicSource.volume = bgmVolume;
-    }
-
-    public void SetSFXVol(float sfxVolume)
-    {
-        foreach (var source in _audioSourcePool)
-        {
-            source.volume = sfxVolume;
         }
     }
 }

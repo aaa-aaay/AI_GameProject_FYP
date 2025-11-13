@@ -11,8 +11,6 @@ public class TempScale : MonoBehaviour
     {
         time_passed = 0;
         transform.localScale *= scale_multiplier;
-
-        PongUI.instance.CreateNew(gameObject, BuffType.Shrink);
     }
 
     // Update is called once per frame
@@ -21,11 +19,8 @@ public class TempScale : MonoBehaviour
         time_passed += Time.deltaTime;
         if (time_passed >= scale_time)
         {
-            time_passed = scale_time;
             Destroy(this);
         }
-
-        PongUI.instance.UpdateSlider(gameObject, 1 - (time_passed / scale_time));
     }
 
     private void OnDestroy()

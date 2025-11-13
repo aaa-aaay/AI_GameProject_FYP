@@ -1,7 +1,7 @@
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class BadmintionGameManager : MonoBehaviour
@@ -13,9 +13,8 @@ public class BadmintionGameManager : MonoBehaviour
 
     [SerializeField] private GameObject shutter;
 
-    [Header("Score displays")]
-    [SerializeField] private TMP_Text[] _p1ScoreDisplays;
-    [SerializeField] private TMP_Text[] _p2ScoreDisplays;
+    [SerializeField] private TMP_Text _P1ScoreDisplay;
+    [SerializeField] private TMP_Text _P2ScoreDisplay;
 
 
     [SerializeField] private Transform shutterSpawnPoint1;
@@ -24,9 +23,8 @@ public class BadmintionGameManager : MonoBehaviour
 
     [Header("Serve refs")]
     [SerializeField] private GameObject serveUIGO;
-    [SerializeField] private GameObject _serveMarkerGO;
-    [SerializeField] private List<Transform> serverHolders;
-    [SerializeField] private List<Transform> serverMarkerHolders;
+    [SerializeField] private Transform serverHolder1;
+    [SerializeField] private Transform serverHolder2;
     [SerializeField] private List<Racket> _rackets;
     public event Action OnGameOver;
 
@@ -36,14 +34,11 @@ public class BadmintionGameManager : MonoBehaviour
 
     public bool InRedCourt { get; set; } = true;
 
-    private AudioManager audioManager;
-
 
     private void Start()
     {
-        audioManager = ServiceLocator.Instance.GetService<AudioManager>();
-        UpDateBadmintonScoreUI(0, _p1ScoreDisplays);
-        UpDateBadmintonScoreUI(0, _p2ScoreDisplays);
+        _P1ScoreDisplay.text = 0.ToString();
+        _P2ScoreDisplay.text = 0.ToString();
 
 
         ToggleServe(_whoServesFirst);
@@ -51,26 +46,19 @@ public class BadmintionGameManager : MonoBehaviour
 
         foreach (Racket r in _rackets)
         {
-            r.OnHitShutter += ShutterHit;
+            r.OnHitShutter += FinishedServing;
         }
 
-    }
-    private void OnDestroy()
-    {
-        foreach (Racket r in _rackets)
-        {
-            r.OnHitShutter -= ShutterHit;
-        }
     }
 
 
     public void PlayerScores(int playerNo)
     {
-        audioManager.PlaySFX("BMT_Score",Camera.main.transform.position);
-        if (playerNo == 1)
+
+        if(playerNo == 1)
         {
             player1Score++;
-            UpDateBadmintonScoreUI(player1Score, _p1ScoreDisplays);
+            _P1ScoreDisplay.text = player1Score.ToString();
 
             ToggleServe(1);
             InRedCourt = false;
@@ -81,7 +69,8 @@ public class BadmintionGameManager : MonoBehaviour
         else if(playerNo == 2)
         {
             player2Score++;
-            UpDateBadmintonScoreUI(player2Score, _p2ScoreDisplays);
+            _P2ScoreDisplay.text = player2Score.ToString();
+
 
             ToggleServe(2);
             InRedCourt = true;
@@ -116,8 +105,8 @@ public class BadmintionGameManager : MonoBehaviour
     public void ResetGame()
     {
         player1Score = player2Score = 0;
-        UpDateBadmintonScoreUI(player1Score, _p1ScoreDisplays);
-        UpDateBadmintonScoreUI(player2Score, _p2ScoreDisplays);
+        _P2ScoreDisplay.text = player2Score.ToString();
+        _P1ScoreDisplay.text = player1Score.ToString();
         ToggleServe(_whoServesFirst);
         OnGameOver?.Invoke();
     }
@@ -143,40 +132,30 @@ public class BadmintionGameManager : MonoBehaviour
     {
         if (servePlayer != 1 && servePlayer != 2) return;
 
+
+        serveUIGO.SetActive(true);
+        Transform newParent = null;
+
         if (servePlayer == 1)
         {
+            newParent = serverHolder1;
             shutter.transform.position = shutterSpawnPoint1.position;
         }
         else if (servePlayer == 2)
         {
+            newParent = serverHolder2;
             shutter.transform.position = shutterSpawnPoint2.position;
         }
 
-        SetWorldUI(serveUIGO, serverHolders[servePlayer - 1]);
-        SetWorldUI(_serveMarkerGO, serverMarkerHolders[servePlayer - 1]);
-    }
 
-    private void ShutterHit()
-    {
-        serveUIGO.SetActive(false);
-        _serveMarkerGO.SetActive(false);
-    }
-
-    private void SetWorldUI(GameObject UIGO, Transform newParent)
-    {
-        UIGO.SetActive(true);
-        RectTransform rect = UIGO.GetComponent<RectTransform>();
+        RectTransform rect = serveUIGO.GetComponent<RectTransform>();
         rect.SetParent(newParent, false);
         rect.localPosition = Vector3.zero;
         rect.localRotation = Quaternion.identity;
     }
 
-    private void UpDateBadmintonScoreUI(int score, TMP_Text[] displayTMPs)
+    private void FinishedServing()
     {
-        foreach(TMP_Text text in displayTMPs)
-        {
-            text.text = score.ToString();
-        }
-            
+        serveUIGO.SetActive(false);
     }
 }

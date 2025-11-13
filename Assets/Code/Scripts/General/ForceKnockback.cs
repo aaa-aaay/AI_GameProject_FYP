@@ -23,7 +23,7 @@ public class ForceKnockback : MonoBehaviour
     {
         if (target == gameObject)
         {
-            rigid_body.AddForce(((transform.position - hitter.transform.position).normalized + Vector3.up).normalized * knockback_force, ForceMode.Impulse);
+            rigid_body.AddForce((transform.position - hitter.transform.position).normalized * knockback_force, ForceMode.Impulse);
         }
     }
 }

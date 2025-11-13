@@ -9,9 +9,9 @@ public class WorldSelect : MonoBehaviour
 
     private InputManager _inputManager;
     private UIManager _uiManager;
-    private bool _playerInRange = false;
+    private bool playerInRange = false;
     private Collider _collider;
-    private int _starCount = 0;
+
 
     private void Awake()
     {
@@ -19,13 +19,14 @@ public class WorldSelect : MonoBehaviour
     }
     private void Start()
     {
+
+       
         _inputManager = ServiceLocator.Instance.GetService<InputManager>();
         _inputManager.onInteract += HandleInteract;
 
         _uiManager = ServiceLocator.Instance.GetService<UIManager>();
 
-        _playerInRange = false;
-        _starCount = 0;
+        playerInRange = false;
     }
 
     private void OnDestroy()
@@ -36,7 +37,7 @@ public class WorldSelect : MonoBehaviour
     private void HandleInteract()
     {
 
-        if(_playerInRange)
+        if(playerInRange)
         {
             ServiceLocator.Instance.GetService<MySceneManager>().LoadMiniGameWithTutorial(_miniGame);
         }
@@ -47,8 +48,8 @@ public class WorldSelect : MonoBehaviour
         if (other.CompareTag("Player"))
         {
 
-            _playerInRange = true;
-            _uiManager.OpenLevelSelectUI(_miniGame.gameName, _starCount);
+            playerInRange = true;
+            _uiManager.OpenLevelSelectUI(_miniGame.gameName, 1);
 
         }
     }
@@ -59,16 +60,13 @@ public class WorldSelect : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            _playerInRange = false;
+            playerInRange = false;
             _uiManager.HideLevelSelectUI();
            
 
         }
     }
-    public void SetStarCount(int count)
-    {
-        _starCount = count;
-    }
+
     public void Activate(bool activate)
     {
         if (activate) {

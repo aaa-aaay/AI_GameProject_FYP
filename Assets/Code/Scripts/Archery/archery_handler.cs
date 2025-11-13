@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections;
+using UnityEngine.Rendering;
 
 public class archery_handler : MonoBehaviour
 {
@@ -8,9 +9,7 @@ public class archery_handler : MonoBehaviour
 
     [Header("Cinemachine Camera")]
     [SerializeField, Tooltip("Time in seconds for camera to stay at arrow position after hitting")] private float cameraStay = 3f;
-    [SerializeField] private CinemachineCamera playerLeftCamera;
-    [SerializeField] private CinemachineCamera playerRightCamera;
-    [SerializeField] private CinemachineCamera turnCamera;
+    [SerializeField] private CinemachineCamera playerCamera;
     [SerializeField] private CinemachineCamera arrowCamera;
     [SerializeField] private GameObject playerObject;
     private archery_player player;
@@ -35,7 +34,6 @@ public class archery_handler : MonoBehaviour
 
     private bool isPlayerTurn;
     private bool canShoot;
-    private bool hasHit;
 
     public float windDirection{ get; private set; }
     public float windSpeed { get; private set; }
@@ -47,8 +45,6 @@ public class archery_handler : MonoBehaviour
     private float targetDistance;
     private float lateralDistance;
 
-    public Vector3 estimateLanding { get; private set; }
-
     [Header("AI Training")]
     [SerializeField] private bool isAiTraining = false;
 
@@ -59,18 +55,12 @@ public class archery_handler : MonoBehaviour
         else
             Destroy(this);
 
-        if (!playerLeftCamera) Debug.LogError("playerLeftCamera not assigned.");
-        if (!playerRightCamera) Debug.LogError("playerRightCamera not assigned.");
-        if (!turnCamera) Debug.LogError("turnCamera not assigned.");
+        if (!playerCamera) Debug.LogError("playerCamera not assigned.");
         if (playerObject)
-        {
-            playerLeftCamera.Target.TrackingTarget = playerObject.transform;
-            playerRightCamera.Target.TrackingTarget = playerObject.transform;
-            turnCamera.Target.TrackingTarget = playerObject.transform;
-        }
+            playerCamera.Target.TrackingTarget = playerObject.transform;
         else
             Debug.LogWarning("playerObject not assigned.");
-        playerRightCamera.enabled = true;
+        playerCamera.enabled = true;
 
         if (!arrowCamera) Debug.LogError("arrowCamera not assigned.");
         arrowCamera.enabled = false;
@@ -109,7 +99,6 @@ public class archery_handler : MonoBehaviour
 
         player.Initialize();
         agent.enabled = true;
-        uiHandler.init_value(settings.maxForce, settings.minForce, settings.winningPoint);
 
         if (!isAiTraining)
         {
@@ -123,16 +112,17 @@ public class archery_handler : MonoBehaviour
         }
     }
 
-    public void Shoot(Vector3 position, float force, float yaw, float pitch)
+    public void Shoot(float force, float yaw, float pitch)
     {
         if (!canShoot) return;
         canShoot = false;
-        hasHit = false;
 
-        playerLeftCamera.enabled = false;
-        playerRightCamera.enabled = false;
+        playerCamera.enabled = false;
 
-        arrows[currentArrow].transform.position = position;
+        if (isPlayerTurn)
+            arrows[currentArrow].transform.position = playerObject.transform.position;
+        else
+            arrows[currentArrow].transform.position = agentObject.transform.position;
 
         arrows[currentArrow].transform.rotation = Quaternion.identity;
         arrows[currentArrow].gameObject.SetActive(true);
@@ -142,26 +132,22 @@ public class archery_handler : MonoBehaviour
         arrowCamera.Target.TrackingTarget = arrows[currentArrow].transform;
         arrowCamera.enabled = true;
 
-        preview.Hide();
         Debug.Log($"Force: {force}\tYaw: {yaw}\tPitch: {pitch}");
     }
 
     private IEnumerator PlayerTurn()
     {
-        playerLeftCamera.Target.TrackingTarget = playerObject.transform;
-        playerRightCamera.Target.TrackingTarget = playerObject.transform;
-        turnCamera.Target.TrackingTarget = playerObject.transform;
-
-        windDirection = Random.Range(0, 360);
-        if (windDirection <= 180) windDirection = 90f; else windDirection = 270f;
+        playerCamera.Target.TrackingTarget = playerObject.transform;
+        
+        windDirection = Random.Range(0f, 360f);
         windSpeed = Random.Range(0f, settings.maxWindSpeed);
 
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
 
-        targetObject.transform.position = playerObject.transform.position + new Vector3(lateralDistance, 2.5f, targetDistance);
+        targetObject.transform.position = playerObject.transform.position + new Vector3(lateralDistance, 1, targetDistance);
 
-        yield return new WaitForSeconds(3f + cameraStay);
+        yield return new WaitForSeconds(3f);
 
         player.StartTurn();
         canShoot = true;
@@ -169,20 +155,20 @@ public class archery_handler : MonoBehaviour
 
     private IEnumerator AgentTurn()
     {
-        playerLeftCamera.Target.TrackingTarget = agentObject.transform;
-        playerRightCamera.Target.TrackingTarget = agentObject.transform;
-        turnCamera.Target.TrackingTarget = agentObject.transform;
-
-        windDirection = Random.Range(0, 360);
-        if (windDirection <= 180) windDirection = 90f; else windDirection = 270f;
+        playerCamera.Target.TrackingTarget = agentObject.transform;
+        
+        windDirection = Random.Range(0f, 360f);
         windSpeed = Random.Range(0f, settings.maxWindSpeed);
 
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
 
-        targetObject.transform.position = agentObject.transform.position + new Vector3(lateralDistance, 2.5f, targetDistance);
+        windDirection = 0;
+        windSpeed = 0;
 
-        yield return new WaitForSeconds(3f + cameraStay);
+        targetObject.transform.position = agentObject.transform.position + new Vector3(lateralDistance, 1, targetDistance);
+
+        yield return new WaitForSeconds(3f);
 
         agent.StartTurn();
         canShoot = true;
@@ -190,9 +176,6 @@ public class archery_handler : MonoBehaviour
 
     public void OnHit(int point)
     {
-        if (hasHit) return;
-        hasHit = true;
-
         currentArrow++;
         if (currentArrow == numArrows)
             currentArrow = 0;
@@ -212,7 +195,7 @@ public class archery_handler : MonoBehaviour
             if (point > 0) agent.OnHit(point);
             else
             {
-                agent.OnHit(0);
+                agent.OnHit(-Vector3.Distance(targetObject.transform.position, agentObject.transform.position));
             }
         }
         uiHandler.set_point(playerPoint, agentPoint);
@@ -220,37 +203,25 @@ public class archery_handler : MonoBehaviour
         if (point > 0) Debug.Log($"Hit: {point}");
 
         MiniGameOverHandler gameOverHandler = GetComponent<MiniGameOverHandler>();
-        
         if (playerPoint >= winCond)
         {
             ServiceLocator.Instance.GetService<InputManager>().EnableActions(); //renable actions
             gameOverHandler.HandleGameOver(true, 4, 3);
+            // Win logic
         }
-        else if (agentPoint >= winCond && !isAiTraining)
+        else if (agentPoint >= winCond)
         {
             gameOverHandler.HandleGameOver(false);
+            // Lose logic
         }
 
-        StopAllCoroutines();
         StartCoroutine(ReturnCamera());
     }
 
-    public void UpdateUI(Vector3 position, float force, float yaw, float pitch)
+    public void UpdateUI(float force, float yaw, float pitch)
     {
-        uiHandler.set_value(force);
-
-        if (yaw >= 0)
-        {
-            playerLeftCamera.enabled = false;
-            playerRightCamera.enabled = true;
-        }
-        else
-        {
-            playerRightCamera.enabled = false;
-            playerLeftCamera.enabled = true;
-        }
-
-        estimateLanding = preview.ShowPath(position, force, yaw, pitch, windDirection, windSpeed);
+        uiHandler.set_value(force, yaw, pitch, windDirection, windSpeed, targetDistance, lateralDistance);
+        preview.ShowPath(force, yaw, pitch);
     }
 
     private IEnumerator ReturnCamera()
@@ -260,11 +231,6 @@ public class archery_handler : MonoBehaviour
         if (isPlayerTurn) StartCoroutine(PlayerTurn()); else StartCoroutine(AgentTurn());
 
         arrowCamera.enabled = false;
-        turnCamera.enabled = true;
-
-        yield return new WaitForSeconds(cameraStay);
-
-        turnCamera.enabled = false;
-        playerRightCamera.enabled = true;
+        playerCamera.enabled = true;
     }
 }

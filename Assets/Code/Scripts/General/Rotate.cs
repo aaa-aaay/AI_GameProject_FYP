@@ -65,27 +65,8 @@ public class Rotate : MonoBehaviour
     {
         if (game_object == gameObject)
         {
-            SetRotation(direction);
+            SetRotation(gameObject, direction);
         }
-    }
-
-    public virtual void SetRotationHorizontal(Vector2 direction)
-    {
-        if (direction != Vector2.zero)
-        {
-            time_passed = 0;
-            start_rotation = transform.rotation;
-            end_rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, 0), Vector3.up);
-        }
-        else
-        {
-            end_rotation = Quaternion.LookRotation(new Vector3(0, 0, 1), Vector3.up);
-        }
-    }
-
-    public void SetRotationHorizontal(InputAction.CallbackContext context)
-    {
-        SetRotationHorizontal(context.ReadValue<Vector2>());
     }
 
     public virtual void SetRotationTopDown(Vector2 direction)
@@ -101,24 +82,5 @@ public class Rotate : MonoBehaviour
     public void SetRotationTopDown(InputAction.CallbackContext context)
     {
         SetRotationTopDown(context.ReadValue<Vector2>());
-    }
-
-    public virtual void SetRotationHorizontalSwappedXAndY(Vector2 direction)
-    {
-        if (direction != Vector2.zero)
-        {
-            time_passed = 0;
-            start_rotation = transform.rotation;
-            end_rotation = Quaternion.LookRotation(new Vector3(direction.y, 0, 0), Vector3.up);
-        }
-        else
-        {
-            end_rotation = Quaternion.LookRotation(new Vector3(0, 0, 1), Vector3.up);
-        }
-    }
-
-    public void SetRotationHorizontalSwappedXAndY(InputAction.CallbackContext context)
-    {
-        SetRotationHorizontal(context.ReadValue<Vector2>());
     }
 }

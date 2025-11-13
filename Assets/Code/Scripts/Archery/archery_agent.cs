@@ -3,11 +3,9 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using System.Collections;
-using UnityEngine.Animations;
 
 public class archery_agent : Agent
 {
-    [Header("AI")]
     [SerializeField] private float minAimTime = 2f;
     private bool isTurn;
 
@@ -28,19 +26,6 @@ public class archery_agent : Agent
     private float pitch;
     private bool shoot;
 
-    private float lastDistance;
-
-    [Header("Animation")]
-    [SerializeField] private Animator animator;
-    [SerializeField] private AnimationClip aimAnim;
-    [SerializeField] private PositionConstraint stringConstraint;
-    [SerializeField] private Transform spine;
-    [SerializeField] private Transform bow;
-    [SerializeField] private Transform arrow;
-
-    private Vector3 spineRotation;
-    private Vector3 stringOrigin;
-
     public override void Initialize()
     {
         isTurn = false;
@@ -53,30 +38,22 @@ public class archery_agent : Agent
         maxYaw = settings.maxYaw;
         minPitch = settings.minPitch;
         maxPitch = settings.maxPitch;
-
-        spineRotation = spine.rotation.eulerAngles;
-        stringOrigin = stringConstraint.transform.localPosition;
     }
 
     public void StartTurn()
     {
-        StopAllCoroutines();
         isTurn = true;
-        if (minForce > 10f) force = minForce; else force = 10f;
-        yaw = 0f;
-        if (minPitch > 0f) pitch = minPitch; else pitch = 0f;
-        handler.UpdateUI(bow.position, force, yaw, pitch);
-        canShoot = false;
-        shoot = false;
-        lastDistance = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding);
-        stringConstraint.constraintActive = true;
-        arrow.gameObject.SetActive(true);
         decisionRequester.enabled = true;
-        StartCoroutine(ShootTimer());
     }
 
     public override void OnEpisodeBegin()
     {
+        if (minForce > 10f) force = minForce; else force = 10f;
+        yaw = 0f;
+        if (minPitch > 0f) pitch = minPitch; else pitch = 0f;
+        canShoot = false;
+        StartCoroutine(ShootTimer());
+        shoot = false;
     }
 
     private IEnumerator ShootTimer()
@@ -99,10 +76,10 @@ public class archery_agent : Agent
         sensor.AddObservation(windLocal.normalized);
         sensor.AddObservation(windLocal.magnitude);
 
-        Vector3 toEstimateLanding = handler.estimateLanding - transform.position;
-        Vector3 toEstimateLandingLocal = transform.InverseTransformDirection(toEstimateLanding);
-        sensor.AddObservation(toEstimateLandingLocal.normalized);
-        sensor.AddObservation(toEstimateLandingLocal.magnitude);
+        sensor.AddObservation(force);
+        sensor.AddObservation(yaw);
+        sensor.AddObservation(pitch);
+        sensor.AddObservation(shoot);
     }
 
     public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
@@ -151,38 +128,15 @@ public class archery_agent : Agent
                 break;
         }
 
-        if (da[3] == 1 && canShoot)
+        if (da[3] == 1)
         {
-            if (Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) > 3f)
-            {
-                AddReward(-10);
-            }
-
             decisionRequester.enabled = false;
             isTurn = false;
-            stringConstraint.constraintActive = false;
-            stringConstraint.transform.localPosition = stringOrigin;
-            arrow.gameObject.SetActive(false);
             shoot = true;
-            handler.Shoot(bow.position, force, yaw, pitch);
-            return;
+            handler.Shoot(force, yaw, pitch);
         }
 
-        float newDistance = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding);
-        AddReward((lastDistance - newDistance));
-        lastDistance = newDistance;
-
-        handler.UpdateUI(bow.position, force, yaw, pitch);
-        canShoot = Vector3.Distance(handler.targetObject.transform.position, handler.estimateLanding) < 1f;
-
-        animator.enabled = true;
-        float normalizedForce = Mathf.InverseLerp(minForce, maxForce, force);
-        animator.speed = 0f;
-        animator.Play(aimAnim.name, 0, normalizedForce);
-        animator.Update(0f);
-        animator.enabled = false;
-
-        spine.localRotation = Quaternion.Euler(spineRotation.x, spineRotation.y + 20f + yaw, spineRotation.z - pitch);
+        handler.UpdateUI(force, yaw, pitch);
     }
 
     public void OnHit(float point)

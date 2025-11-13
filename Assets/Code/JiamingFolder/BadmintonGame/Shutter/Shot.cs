@@ -76,11 +76,6 @@ public abstract class Shot : MonoBehaviour
         // Stop any other shot updates on this object
         foreach (var s in GetComponents<Shot>())
             if (s != this) s.Cancel();
-
-
-        //play VFX
-        ShutterFX shutterFX = GetComponent<ShutterFX>();
-        shutterFX.PlayHitEffects();
     }
 
 

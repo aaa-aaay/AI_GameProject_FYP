@@ -13,17 +13,15 @@ public class PongInstance : MonoBehaviour
     [SerializeField] private UnityEvent<int, int> ScoreChanged;
 
     [SerializeField] private float game_time;
-    [SerializeField] private float lower_score_bounds;
-    [SerializeField] private float upper_score_bounds;
-    [SerializeField] private float left_bound;
-    [SerializeField] private float right_bound;
+    [SerializeField] private float left_scoring_bounds;
+    [SerializeField] private float right_scoring_bounds;
     [SerializeField] private float win_score = 10;
 
     [SerializeField] private float min_power_up_time;
     [SerializeField] private float max_power_up_time;
 
-    [SerializeField] private int player_points;
-    [SerializeField] private int opponent_points;
+    private int player_points;
+    private int opponent_points;
     private float time_passed;
     private float power_up_time;
     private float power_time_passed;
@@ -40,39 +38,35 @@ public class PongInstance : MonoBehaviour
         time_passed += Time.deltaTime;
         power_time_passed += Time.deltaTime;
 
-        if (PongUI.instance.GetActiveCount() < 2)
+        if (power_time_passed > power_up_time)
         {
-            if (power_time_passed > power_up_time)
-            {
-                Instantiate(power_ups[Random.Range(0, power_ups.Count)]).transform.position = new Vector3(Random.Range(left_bound, right_bound) * 0.9f, 1.5f, Random.Range(lower_score_bounds, upper_score_bounds) * 0.6f);
+            Instantiate(power_ups[Random.Range(0, power_ups.Count)]).transform.position = new Vector3(Random.Range(-40, 40), 2, Random.Range(-50, 50));
 
-                PongUI.instance.AddCount();
-                power_time_passed = 0;
-                power_up_time = Random.Range(min_power_up_time, max_power_up_time);
-            }
+            power_time_passed = 0;
+            power_up_time = Random.Range(min_power_up_time, max_power_up_time);
         }
 
-        if (player.transform.localPosition.x + 2.35f > right_bound)
+        if (player.transform.localPosition.x > 37)
         {
-            player.transform.localPosition = new Vector3(right_bound - 2.35f, player.transform.localPosition.y, player.transform.localPosition.z);
+            player.transform.localPosition = new Vector3(37, player.transform.localPosition.y, -60);
         }
-        else if (player.transform.localPosition.x - 2.35f < left_bound)
+        else if (player.transform.localPosition.x < -37)
         {
-            player.transform.localPosition = new Vector3(left_bound + 2.35f, player.transform.localPosition.y, player.transform.localPosition.z);
+            player.transform.localPosition = new Vector3(-37, player.transform.localPosition.y, -60);
         }
 
-        if (opponent.transform.localPosition.x + 2.35f > right_bound)
+        if (opponent.transform.localPosition.x > 37)
         {
-            opponent.transform.localPosition = new Vector3(right_bound - 2.35f, opponent.transform.localPosition.y, opponent.transform.localPosition.z);
+            opponent.transform.localPosition = new Vector3(37, opponent.transform.localPosition.y, 60);
         }
-        else if (opponent.transform.localPosition.x - 2.35f < left_bound)
+        else if (opponent.transform.localPosition.x < -37)
         {
-            opponent.transform.localPosition = new Vector3(left_bound + 2.35f, opponent.transform.localPosition.y, opponent.transform.localPosition.z);
+            opponent.transform.localPosition = new Vector3(-37, opponent.transform.localPosition.y, 60);
         }
 
         for (int i = 0; i < balls.Count; i++)
         {
-            if (balls[i].transform.localPosition.z < lower_score_bounds * 0.8f)
+            if (balls[i].transform.localPosition.z < left_scoring_bounds)
             {
                 opponent_points++;
                 Scored?.Invoke(opponent, balls[i].gameObject);
@@ -84,7 +78,7 @@ public class PongInstance : MonoBehaviour
                     Restart();
                 }
             }
-            else if (balls[i].transform.localPosition.z > upper_score_bounds * 0.8f)
+            else if (balls[i].transform.localPosition.z > right_scoring_bounds)
             {
                 player_points++;
                 Scored?.Invoke(player, balls[i].gameObject);
@@ -106,8 +100,8 @@ public class PongInstance : MonoBehaviour
 
     private void Restart()
     {
-
-        MiniGameOverHandler gameOverHandler = GetComponent<MiniGameOverHandler>();
+        UIManager uiManager = ServiceLocator.Instance.GetService<UIManager>();
+        SaveLoadManager slManager = ServiceLocator.Instance.GetService<SaveLoadManager>();
 
         if (player_points == opponent_points)
         {
@@ -121,11 +115,13 @@ public class PongInstance : MonoBehaviour
             EventHolder.InvokeOnLose(player);
             EventHolder.InvokeOnWin(opponent);
 
-            gameOverHandler.HandleGameOver(false);
+            uiManager.ToggleLevelFailedUI(true);
+
         }
         else
         {
-            gameOverHandler.HandleGameOver(true,3,3);
+            uiManager.ToggleLevelCompleteUI(true);
+            slManager.SaveData(3, 3);
             EventHolder.InvokeOnWin(player);
             EventHolder.InvokeOnLose(opponent);
         }
@@ -173,15 +169,5 @@ public class PongInstance : MonoBehaviour
     public int GetOpponentPoints()
     {
         return opponent_points;
-    }
-
-    public float GetLeftBound()
-    {
-        return left_bound;
-    }
-
-    public float GetRightBound()
-    {
-        return right_bound;
     }
 }

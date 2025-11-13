@@ -26,7 +26,7 @@ public class BetterCarMovement : MonoBehaviour
     private float rotate;
     private float currentRotate;
 
-    [SerializeField][Range(0, 1)] private float lateralSlip = 0.9f;
+
     private bool drifting;
 
 
@@ -35,6 +35,10 @@ public class BetterCarMovement : MonoBehaviour
     int driftMode = 0;
     bool first, second, third;
 
+    private void Update()
+    {
+        // Currently empty — could be used for camera or VFX updates later
+    }
 
     public void MoveCar(Vector2 inputDir)
     {
@@ -129,7 +133,7 @@ public class BetterCarMovement : MonoBehaviour
     {
         // Apply forward and downward forces
         if (drifting)
-            sphere.AddForce(kartModel.transform.right * -driftDirection * currentSpeed, ForceMode.Acceleration);
+            sphere.AddForce(-kartModel.transform.right * currentSpeed, ForceMode.Acceleration);
         else
             sphere.AddForce(transform.forward * currentSpeed, ForceMode.Acceleration);
 
@@ -150,14 +154,6 @@ public class BetterCarMovement : MonoBehaviour
         // Align car normal to terrain
         kartNormal.up = Vector3.Lerp(kartNormal.up, hitNear.normal, Time.deltaTime * 8.0f);
         kartNormal.Rotate(0, transform.eulerAngles.y, 0);
-
-
-
-        // Reduce sideways sliding
-        Vector3 localVel = transform.InverseTransformDirection(sphere.linearVelocity);
-        localVel.x *= lateralSlip; // reduce lateral slip (grip)
-        sphere.linearVelocity = transform.TransformDirection(localVel);
-
     }
 
     public void ToggleDrifting(bool startDrift, float turnInput = 0)

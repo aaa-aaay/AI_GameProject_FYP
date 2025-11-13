@@ -46,7 +46,6 @@ public class LobbyPlayerMovement : MonoBehaviour
     {
         
         _moveInput = Vector2.zero;
-        _rb.linearVelocity = new Vector3(0,0,0);
         _animator.SetBool("walking", false);
     }
 
@@ -58,12 +57,9 @@ public class LobbyPlayerMovement : MonoBehaviour
 
         if (move.sqrMagnitude > 0.001f)
         {
-
-            Vector3 moveDir = move.normalized;
-            Vector3 targetVelocity = moveDir * _moveSpeed;
-            targetVelocity.y = _rb.linearVelocity.y; // Keep gravity
-
-            _rb.linearVelocity = targetVelocity;
+            // Move in world space (no TransformDirection)
+            Vector3 moveDelta = move.normalized * _moveSpeed * Time.fixedDeltaTime;
+            _rb.MovePosition(transform.position + moveDelta);
 
             // Rotate smoothly toward movement direction
             Quaternion targetRotation = Quaternion.LookRotation(move, Vector3.up);

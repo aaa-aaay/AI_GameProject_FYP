@@ -204,8 +204,6 @@ GameObject:
   - component: {fileID: 2003670635404999203}
   - component: {fileID: 2631119172837093133}
   - component: {fileID: 7076317629059755043}
-  - component: {fileID: 3279122110747853017}
-  - component: {fileID: 5820960992884825709}
   m_Layer: 2
   m_Name: Collider
   m_TagString: Untagged
@@ -289,8 +287,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _raceManager: {fileID: 0}
-  _name: AI
-  currentLap: 0
   currentCheckPointNo: 0
   currentCheckPoint: {fileID: 0}
 --- !u!114 &7076317629059755043
@@ -306,35 +302,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _carMesh: {fileID: 5002010312035608921}
---- !u!114 &3279122110747853017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3310366995779990104}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34425793c75ac8d429aa8a89ad1e3b7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  elapsedTime: 0
---- !u!114 &5820960992884825709
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3310366995779990104}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 420a074d123ac3448809321501082a03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _impactToCountAsCrash: 10
-  _endVelocityRatio: 1
-  _onWallVelocityRatio: 1
-  wallTagName: Wall
 --- !u!1 &3324147677758647370
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,7 +497,7 @@ Transform:
   m_GameObject: {fileID: 5002010312035608921}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.75, y: -2.44, z: 6.6}
+  m_LocalPosition: {x: -7.75, y: -1.4, z: 6.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -557,14 +524,13 @@ MonoBehaviour:
   _leftWheelPivot: {fileID: 8372085118313157737}
   _backWheel: {fileID: 9147586903062449905}
   sphere: {fileID: 2003670635404999203}
-  acceleration: 40
+  acceleration: 30
   steering: 10
   gravity: 10
-  offsetPos: {x: 0, y: 0.7, z: 0}
+  offsetPos: {x: 0, y: 0.75, z: 0}
   layerMask:
     serializedVersion: 2
     m_Bits: 115
-  lateralSlip: 0.9
 --- !u!114 &8089445329466074076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -578,7 +544,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 8
+    VectorObservationSize: 6
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -587,7 +553,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: e5982d81a57122e489853ab02db07a6b, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 2cd8bc4ce37ec5e40b601450ddc8aa2e, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: RacingBehaviour
@@ -611,10 +577,10 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 100000
+  MaxStep: 5000
   _manager: {fileID: 0}
   _car: {fileID: 3310366995779990104}
-  TimeToReachNextCheckpoint: 10
+  TimeToReachNextCheckpoint: 40
 --- !u!114 &3835948384118606211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -627,7 +593,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DecisionPeriod: 2
+  DecisionPeriod: 5
   DecisionStep: 0
   TakeActionsBetweenDecisions: 1
 --- !u!114 &6991968842244539503
@@ -647,7 +613,6 @@ MonoBehaviour:
   - Wall
   - RaceCP
   - RacingGoal
-  - Ground
   m_RaysPerDirection: 2
   m_MaxRayDegrees: 120
   m_SphereCastRadius: 0.35
@@ -679,7 +644,6 @@ MonoBehaviour:
   - Wall
   - RaceCP
   - RacingGoal
-  - Ground
   m_RaysPerDirection: 1
   m_MaxRayDegrees: 3.2
   m_SphereCastRadius: 0.5

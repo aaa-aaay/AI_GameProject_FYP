@@ -34,9 +34,6 @@ public class InputManager : MonoBehaviour,IGameService
     [SerializeField]
     private InputActionReference _dashActionReference;
 
-    [SerializeField]
-    private InputActionReference _OpenSettingsActionsReferences;
-
 
     public event Action<Vector2> OnMove;
     public event Action OnMoveEnd;
@@ -51,7 +48,6 @@ public class InputManager : MonoBehaviour,IGameService
     public event Action onInteract;
     public event Action onDash;
     public event Action onDashEnd;
-    public event Action onOpenSettings;
 
     private void Awake()
     {
@@ -66,6 +62,7 @@ public class InputManager : MonoBehaviour,IGameService
     }
     private void OnDisable()
     {
+        //Debug.Log("InputManager OnDisable called");
         //UnbindActions();
 
         //_inputActionAsset.Disable();
@@ -125,10 +122,6 @@ public class InputManager : MonoBehaviour,IGameService
     {
         onDashEnd?.Invoke();
     }
-    private void OpenSettings(InputAction.CallbackContext context)
-    {
-        onOpenSettings?.Invoke();
-    }
 
 
 
@@ -143,7 +136,6 @@ public class InputManager : MonoBehaviour,IGameService
         _interactActionReference.action.performed += Interact;
         _dashActionReference.action.performed += Dash;
         _dashActionReference.action.canceled += DashEnd;
-        _OpenSettingsActionsReferences.action.performed += OpenSettings;
     }
 
     private void UnbindActions()
@@ -158,7 +150,6 @@ public class InputManager : MonoBehaviour,IGameService
         _interactActionReference.action.performed -= Interact;
         _dashActionReference.action.performed -= Dash;
         _dashActionReference.action.canceled -= DashEnd;
-        _OpenSettingsActionsReferences.action.performed -= OpenSettings;
     }
 
     public void EnableActions()

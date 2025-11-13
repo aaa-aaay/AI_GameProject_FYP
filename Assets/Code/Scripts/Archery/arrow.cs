@@ -51,28 +51,28 @@ public class arrow : MonoBehaviour
         rb.AddForce(windForce, ForceMode.Acceleration);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (!other.TryGetComponent(out target target) && other.gameObject.layer != LayerMask.NameToLayer("Floor"))
+        if (!collision.gameObject.TryGetComponent(out target target) && collision.gameObject.layer != LayerMask.NameToLayer("Floor"))
             return;
 
-        Vector3 contactPoint = other.ClosestPoint(tip.position);
-        Vector3 normal = (tip.position - contactPoint).normalized;
+        SetCollision(false);
 
-        Vector3 desiredTipPos = contactPoint - normal * 0.1f;
+        ContactPoint contact = collision.GetContact(0);
+
+        Vector3 desiredTipPos = contact.point - contact.normal * 0.1f;
         Vector3 delta = desiredTipPos - tip.position;
         transform.position += delta;
 
-        // if (target)
-        //     transform.parent = other.transform.parent.transform;
-        // else
-        //     transform.parent = other.transform;
+        //if (target)
+        //    transform.parent = collision.transform.parent.transform;
+        //else
+        //    transform.parent = collision.gameObject.transform;
 
         int point;
-        if (target) point = target.OnHit(contactPoint); else point = 0;
-        archery_handler.instance.OnHit(point);
+        if (target) point = target.OnHit(contact); else point = 0;
 
-        if (point > 0) SetCollision(false);
+        archery_handler.instance.OnHit(point);
     }
 
     private void SetCollision(bool active)
