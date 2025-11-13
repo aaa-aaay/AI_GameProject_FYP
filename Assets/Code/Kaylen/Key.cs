@@ -3,15 +3,15 @@
 public class KeyPickup : MonoBehaviour
 {
     [Header("Pickup Settings")]
-    public string playerTag = "Runner"; // Player tag to detect
-    private ExitTrigger exitDoor;       // Auto-found ExitTrigger in Start()
+    public string playerTag = "Runner"; // Tag of player allowed to pick up the key
+    private ExitTrigger exitDoor;       // Reference to ExitTrigger
     private bool collected = false;
 
     [Header("Floating Settings")]
     public float bobAmplitude = 0.25f;  // Height of bobbing motion
     public float bobSpeed = 2f;         // Speed of bobbing
-    private Vector3 startPos;           // Original position of the object
-    private Camera mainCamera;          // Cached reference to main camera
+    private Vector3 startPos;           // Original position of the key
+    private Camera mainCamera;          // Cached main camera reference
 
     private void Start()
     {
@@ -19,7 +19,7 @@ public class KeyPickup : MonoBehaviour
         startPos = transform.position;
         mainCamera = Camera.main;
 
-        // Find the first ExitTrigger in the scene
+        // Find the ExitTrigger in the scene
         exitDoor = FindFirstObjectByType<ExitTrigger>();
         if (exitDoor == null)
             Debug.LogWarning("[KeyPickup] No ExitTrigger found in the scene!");
@@ -27,15 +27,15 @@ public class KeyPickup : MonoBehaviour
 
     private void Update()
     {
-        // Face toward the camera (billboarding)
+        // Billboard the key toward the camera
         if (mainCamera != null)
         {
             Vector3 direction = mainCamera.transform.position - transform.position;
-            direction.y = 0f; // Keep upright (no tilting)
+            direction.y = 0f;
             transform.rotation = Quaternion.LookRotation(-direction);
         }
 
-        // Bob up and down
+        // Floating (bobbing) effect
         float newY = startPos.y + Mathf.Sin(Time.time * bobSpeed) * bobAmplitude;
         transform.position = new Vector3(startPos.x, newY, startPos.z);
     }
@@ -49,7 +49,15 @@ public class KeyPickup : MonoBehaviour
             collected = true;
             Debug.Log("[KeyPickup] Key collected!");
 
-            // Unlock or trigger exit door if found
+            // Mark player's star condition
+            PlayerMovement player = other.GetComponent<PlayerMovement>();
+            if (player != null)
+            {
+                player.pickedUpKey = true;
+                Debug.Log("[KeyPickup] Player star condition: keyCollected = true");
+            }
+
+            // Unlock exit door (if timer allows it later)
             if (exitDoor != null)
             {
                 exitDoor.UnlockDoor();

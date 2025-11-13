@@ -11,8 +11,13 @@ public class ExitTrigger : MonoBehaviour
     public Vector3 rotationAxis = Vector3.up;
 
     [Header("References")]
-    public TimerUI timer;       // Reference to timer
-    public KeyPickup keyPickup; // Reference to key object (optional — auto-found)
+    public TimerUI timer;
+    public KeyPickup keyPickup;
+
+    [Header("Star Conditions")]
+    public bool keyCollected = false;   // 1 star condition
+    public bool escaped = false;        // 2 stars condition
+    public bool perfectEscape = false;  // 3 stars condition
 
     private bool isUnlocked = false;
     private bool isOpen = false;
@@ -21,54 +26,43 @@ public class ExitTrigger : MonoBehaviour
 
     private void Start()
     {
-        // Auto-assign references if missing
         if (timer == null)
-        {
             timer = FindFirstObjectByType<TimerUI>();
-            if (timer == null)
-                Debug.LogWarning("[ExitTrigger] No TimerUI found in the scene!");
-        }
 
         if (keyPickup == null)
-        {
             keyPickup = FindFirstObjectByType<KeyPickup>();
-            if (keyPickup == null)
-                Debug.LogWarning("[ExitTrigger] No KeyPickup found in the scene!");
-        }
 
-        // Ensure this collider is NOT a trigger
         Collider col = GetComponent<Collider>();
         col.isTrigger = false;
     }
 
     private void Update()
     {
-        // Only open when timer is done AND key is collected
+        // Only unlock when timer is done AND key collected
         if (!isUnlocked && timer != null)
         {
             if (timer.GetRemainingTime() <= 0f && IsKeyCollected())
-            {
                 UnlockDoor();
-            }
         }
+
+        // Continuously track key collected status
+        keyCollected = IsKeyCollected();
     }
 
     public bool IsKeyCollected()
     {
-        // Consider key collected if it's destroyed or missing
+        // Consider key collected if destroyed or missing
         return keyPickup == null;
     }
 
     public void UnlockDoor()
     {
-        if (!isUnlocked)
-        {
-            isUnlocked = true;
-            Debug.Log("Door unlocked!");
+        if (isUnlocked) return;
+        isUnlocked = true;
+        Debug.Log("Door unlocked!");
 
-            if (!isOpen && !isRotating)
-                StartCoroutine(OpenDoor());
-        }
+        if (!isOpen && !isRotating)
+            StartCoroutine(OpenDoor());
     }
 
     private IEnumerator OpenDoor()
@@ -89,7 +83,6 @@ public class ExitTrigger : MonoBehaviour
         doorObject.localRotation = Quaternion.Euler(rotationAxis * endAngle);
         isRotating = false;
         isOpen = true;
-
         Debug.Log("Door opened.");
     }
 
@@ -98,8 +91,27 @@ public class ExitTrigger : MonoBehaviour
         if (!hasWon && isOpen && (collision.collider.CompareTag("Player") || collision.collider.CompareTag("Runner")))
         {
             hasWon = true;
-            Debug.Log("You win!");
+            escaped = true;
+
+            PlayerMovement player = collision.collider.GetComponent<PlayerMovement>();
+            if (player != null)
+            {
+                keyCollected = player.pickedUpKey;
+                perfectEscape = player.HasPerfectRun();
+            }
+
+            Debug.Log($"You win! Stars earned: {CalculateStars()}");
             // Add your win logic here (scene transition, UI, etc.)
         }
+    }
+
+    // Helper: Determine how many stars earned
+    public int CalculateStars()
+    {
+        int stars = 0;
+        if (keyCollected) stars++;
+        if (escaped) stars++;
+        if (perfectEscape) stars++;
+        return stars;
     }
 }

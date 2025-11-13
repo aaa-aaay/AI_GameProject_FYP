@@ -59,7 +59,7 @@ public class TaggerAgent : Agent
 
         if (target == null)
         {
-            GameObject runnerObj = GameObject.FindWithTag("Runner");
+            GameObject runnerObj = GameObject.FindWithTag("Player");
             if (runnerObj != null)
                 target = runnerObj.transform;
         }
@@ -162,6 +162,7 @@ public class TaggerAgent : Agent
             direction.y = 0f;
             moveDir = direction;
 
+            // Reward reaching the exploration point
             float distToExplore = Vector3.Distance(transform.position, explorePoint);
             if (distToExplore < exploreThreshold)
             {
@@ -170,13 +171,14 @@ public class TaggerAgent : Agent
             }
         }
 
+        // Apply movement
         Vector3 move = moveDir * moveSpeed * Mathf.Clamp01(moveForward);
         bool isMoving = moveDir.magnitude > movementThreshold;
 
-        // --- Rotation towards runner or explore point ---
+        // --- Rotation based on current target ---
         if (moveDir.sqrMagnitude > 0.01f)
         {
-            Quaternion targetRotation = Quaternion.identity;
+            Quaternion targetRotation;
             if (playerInRange)
             {
                 Vector3 directionToRunner = (target.position - transform.position).normalized;
@@ -192,7 +194,7 @@ public class TaggerAgent : Agent
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 5f);
         }
 
-        // Stamina
+        // Stamina system
         if (isMoving)
         {
             currentStamina -= staminaDrainRate * Time.fixedDeltaTime;
@@ -207,27 +209,12 @@ public class TaggerAgent : Agent
             currentStamina = Mathf.Min(maxStamina, currentStamina + staminaRegenRate * Time.fixedDeltaTime);
         }
 
-        // Movement application
         if (agentMode == AgentMode.Inference)
             rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
         else
             rb.MovePosition(transform.position + move * Time.fixedDeltaTime);
 
-        // --- AUTO JUMP LOGIC (only in Inference mode) ---
-        if (agentMode == AgentMode.Inference)
-        {
-            // Jump if blocked or if player is higher than us
-            bool blocked = Physics.Raycast(transform.position, transform.forward, 1f);
-            bool playerAbove = (target.position.y - transform.position.y) > 1.0f;
-
-            if ((blocked || playerAbove) && isGrounded && currentStamina > 0.5f)
-            {
-                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                isGrounded = false;
-                currentStamina -= 0.5f;
-            }
-        }
-        else if (jumpInput > 0.5f && isGrounded && currentStamina > 0.5f)
+        if (jumpInput > 0.5f && isGrounded && currentStamina > 0.5f)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
@@ -237,7 +224,7 @@ public class TaggerAgent : Agent
         if (!isGrounded)
             rb.AddForce(Physics.gravity * gravity, ForceMode.Acceleration);
 
-        // Crowd penalty
+        // Penalize clustering
         foreach (var other in otherTaggers)
         {
             if (other == null) continue;
@@ -255,10 +242,9 @@ public class TaggerAgent : Agent
         }
     }
 
-
     private void GenerateNewExplorePoint()
     {
-        explorePoint = new Vector3(Random.Range(-20f, 20f), 0f, Random.Range(-20f, 20f));
+        explorePoint = new Vector3(Random.Range(100f, 140f), 0f, Random.Range(-20f, 20f));
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -287,13 +273,22 @@ public class TaggerAgent : Agent
         if (collision.collider.CompareTag("Border"))
         {
             AddReward(edgePenalty);
-            plane.material = fail;
+            if (plane != null)
+                plane.material = fail;
             EndEpisodeForAll();
         }
         else if (collision.collider.CompareTag("Runner"))
         {
             AddReward(tagReward);
-            plane.material = success;
+            if (plane != null)
+                plane.material = success;
+            EndEpisodeForAll();
+        }
+        else if (collision.collider.CompareTag("Player"))
+        {
+            AddReward(tagReward);
+            if (plane != null)
+                plane.material = success;
             EndEpisodeForAll();
         }
     }

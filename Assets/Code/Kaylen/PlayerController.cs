@@ -39,6 +39,11 @@ public class PlayerMovement : MonoBehaviour
     [Header("Animation")]
     public Animator animator;
 
+    [Header("Star Tracking")]
+    public bool pickedUpKey = false;
+    public bool tookDamage = false;
+
+
     private Rigidbody rb;
     private bool canTag = true;
     private GameObject activeHitbox;
@@ -254,6 +259,8 @@ public class PlayerMovement : MonoBehaviour
         if (currentHealth <= 0 || isInvincible) return;
 
         currentHealth--;
+        tookDamage = true; // Player has taken damage
+
         if (currentHealth < heartsUI.Count)
             heartsUI[currentHealth].sprite = lostHeartSprite;
 
@@ -261,6 +268,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (currentHealth <= 0) Die();
     }
+
 
     private IEnumerator InvincibilityCoroutine()
     {
@@ -281,4 +289,9 @@ public class PlayerMovement : MonoBehaviour
         if (tagCoroutine != null) StopCoroutine(tagCoroutine);
         if (activeHitbox != null) Destroy(activeHitbox);
     }
+    public bool HasPerfectRun()
+    {
+        return pickedUpKey && !tookDamage;
+    }
+
 }
