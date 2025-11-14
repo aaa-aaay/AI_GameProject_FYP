@@ -53,7 +53,7 @@ VisualEffect:
       m_Array: []
     m_Vector2f:
       m_Array:
-      - m_Value: {x: 0.4, y: 0.75}
+      - m_Value: {x: 1.25, y: 1.75}
         m_Name: Size
         m_Overridden: 1
       - m_Value: {x: 0.2, y: 0.3}
@@ -614,7 +614,7 @@ VisualEffect:
       m_Array: []
     m_Vector2f:
       m_Array:
-      - m_Value: {x: 0.4, y: 0.75}
+      - m_Value: {x: 1.25, y: 1.75}
         m_Name: Size
         m_Overridden: 1
       - m_Value: {x: 0.2, y: 0.3}
@@ -1226,6 +1226,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1239016204207987384}
   - {fileID: 7410056491579322523}
   - {fileID: 1136318991579930513}
   m_Father: {fileID: 6728879104058519696}
@@ -1296,6 +1297,18 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 5560235303439357023}
         m_TargetAssemblyTypeName: PongController, Assembly-CSharp
+        m_MethodName: OnMove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5094159899582197817}
+        m_TargetAssemblyTypeName: CircleAnimationController, Assembly-CSharp
         m_MethodName: OnMove
         m_Mode: 0
         m_Arguments:
@@ -1480,9 +1493,6 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 18fae7b9ce1ea274da67240462badae8, type: 3}
-      insertIndex: 0
-      addedObject: {fileID: 1239016204207987384}
     - targetCorrespondingSourceObject: {fileID: -8608723941951749912, guid: 18fae7b9ce1ea274da67240462badae8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7811731575512349501}
@@ -1690,11 +1700,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4888488888029868377, guid: 38718a0f9a36ffd4d93d5f745e2bd33f, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6602568520457887719, guid: 38718a0f9a36ffd4d93d5f745e2bd33f, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7434139037149563828, guid: 38718a0f9a36ffd4d93d5f745e2bd33f, type: 3}
       propertyPath: m_PropertySheet.m_Bool.m_Array.Array.size
@@ -2773,8 +2783,16 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1136318991579930513}
+    m_TransformParent: {fileID: 6718053105966572505}
     m_Modifications:
+    - target: {fileID: 2626880575422404706, guid: fe05a3967732806449929450095073b7, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2626880575422404706, guid: fe05a3967732806449929450095073b7, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3086597733288927773, guid: fe05a3967732806449929450095073b7, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2817,7 +2835,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3086597733288927773, guid: fe05a3967732806449929450095073b7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -2.75
       objectReference: {fileID: 0}
     - target: {fileID: 3086597733288927773, guid: fe05a3967732806449929450095073b7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2837,7 +2855,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3086597733288927773, guid: fe05a3967732806449929450095073b7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 3086597733288927773, guid: fe05a3967732806449929450095073b7, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2855,6 +2873,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5014293907835649435, guid: fe05a3967732806449929450095073b7, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8386128360226758568, guid: fe05a3967732806449929450095073b7, type: 3}
       propertyPath: m_Name
       value: Circle
@@ -2869,6 +2891,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3086597733288927773, guid: fe05a3967732806449929450095073b7, type: 3}
   m_PrefabInstance: {fileID: 4315595116140263589}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5094159899582197817 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9031412239849064604, guid: fe05a3967732806449929450095073b7, type: 3}
+  m_PrefabInstance: {fileID: 4315595116140263589}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 888b3b974c79e284a8f0ae190176eabd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4521413099465763279
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5064,11 +5097,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4888488888029868377, guid: 38718a0f9a36ffd4d93d5f745e2bd33f, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6602568520457887719, guid: 38718a0f9a36ffd4d93d5f745e2bd33f, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7434139037149563828, guid: 38718a0f9a36ffd4d93d5f745e2bd33f, type: 3}
       propertyPath: m_PropertySheet.m_Bool.m_Array.Array.size
