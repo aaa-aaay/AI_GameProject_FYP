@@ -161,29 +161,17 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!canTag) yield break;
         canTag = false;
-
-        // Read the animation length dynamically
-        float animLength = 0.5f; // fallback
-
-        if (animator != null)
-        {
-            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
-            foreach (var clip in clips)
-            {
-                if (clip.name == "TagCatch") // match your attack animation name
-                {
-                    animLength = clip.length / 5;
-                    break;
-                }
-            }
-        }
-
-        // Display UI cooldown (matching anim length)
-        FindAnyObjectByType<GrabUI>()?.StartCooldownUI(animLength);
+        FindAnyObjectByType<GrabUI>()?.StartCooldownUI(tagCooldown);
 
         if (activeHitbox != null) Destroy(activeHitbox);
 
-        // Spawn hitbox
+        if (playerModel == null)
+        {
+            Debug.LogError("DoTag: playerModel is null, cannot spawn hitbox.");
+            canTag = true;
+            yield break;
+        }
+
         Vector3 spawnPos = playerModel.position + playerModel.forward * tagOffset;
         Quaternion spawnRot = playerModel.rotation;
 
@@ -193,15 +181,13 @@ public class PlayerMovement : MonoBehaviour
 
         activeHitbox.transform.SetParent(playerModel, true);
 
-        // Wait for animation to finish
-        yield return new WaitForSeconds(animLength);
+        yield return new WaitForSeconds(tagCooldown);
 
         if (activeHitbox != null) Destroy(activeHitbox);
 
         canTag = true;
         tagCoroutine = null;
     }
-
 
     private void OnCollisionEnter(Collision collision)
     {
