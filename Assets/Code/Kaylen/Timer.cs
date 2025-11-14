@@ -135,7 +135,7 @@ public class TimerUI : MonoBehaviour
 
     public void DebugCurrentTime()
     {
-        Debug.Log($"[TimerUI] Current Time: {currentTime:F2}");
+        //Debug.Log($"[TimerUI] Current Time: {currentTime:F2}");
     }
 
     public float GetRemainingTime() => currentTime;

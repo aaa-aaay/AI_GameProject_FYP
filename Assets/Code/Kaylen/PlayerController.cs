@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("References")]
     public Transform playerModel;
+    public MiniGameOverHandler _gameOverHandler;
 
     [Header("Tag Settings")]
     public GameObject tagHitboxPrefab;
@@ -319,7 +320,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Player died!");
+        _gameOverHandler.HandleGameOver(false);
         enabled = false;
     }
 
