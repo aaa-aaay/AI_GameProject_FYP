@@ -3,7 +3,7 @@
 public class KeyPickup : MonoBehaviour
 {
     [Header("Pickup Settings")]
-    public string playerTag = "Runner"; // Tag of player allowed to pick up the key
+    public string playerTag = "Player"; // Tag of player allowed to pick up the key
     private ExitTrigger exitDoor;       // Reference to ExitTrigger
     private bool collected = false;
 
@@ -27,14 +27,7 @@ public class KeyPickup : MonoBehaviour
 
     private void Update()
     {
-        // Billboard the key toward the camera
-        if (mainCamera != null)
-        {
-            Vector3 direction = mainCamera.transform.position - transform.position;
-            direction.y = 0f;
-            transform.rotation = Quaternion.LookRotation(-direction);
-        }
-
+      
         // Floating (bobbing) effect
         float newY = startPos.y + Mathf.Sin(Time.time * bobSpeed) * bobAmplitude;
         transform.position = new Vector3(startPos.x, newY, startPos.z);
