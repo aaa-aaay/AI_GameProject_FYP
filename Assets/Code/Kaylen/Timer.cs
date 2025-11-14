@@ -12,10 +12,6 @@ public class TimerUI : MonoBehaviour
     public float fadeDuration = 1f;
     public float displayDuration = 3f;
 
-    [Header("Exit Spawn Settings")]
-    public GameObject exitPrefab;
-    public List<Transform> spawnPoints;
-
     [Header("Arrow UI")]
     public RectTransform arrowUI;          // Rotating arrow
     public List<GameObject> timerUIObjects;
@@ -43,18 +39,13 @@ public class TimerUI : MonoBehaviour
         if (currentTime < 0f) currentTime = 0f;
 
         UpdateArrowRotation();
-
-        // Debug function
         DebugCurrentTime();
 
-        // Trigger exit UI only once
         if (currentTime <= 0f && !hasTriggeredExit)
         {
             hasTriggeredExit = true;
             isRunning = false;
-
             ShowExitCanvas();
-            SpawnExit();
         }
     }
 
@@ -63,22 +54,16 @@ public class TimerUI : MonoBehaviour
         if (arrowUI == null || maxTime <= 0f)
             return;
 
-        // Normalize progress: 1 = full time, 0 = timer finished
         float progress = Mathf.Clamp01(currentTime / maxTime);
 
-        // Start at 270°, end at 360° (or 0°)
         float startAngle = 0f;
         float endAngle = 90f;
 
-        // Interpolate anti-clockwise
-        float angle = Mathf.Lerp(startAngle, endAngle, progress); // invert progress for countdown
-
-        // Clamp to prevent overshoot
+        float angle = Mathf.Lerp(startAngle, endAngle, progress);
         angle = Mathf.Clamp(angle, startAngle, endAngle);
 
         arrowUI.localEulerAngles = new Vector3(0, 0, angle);
     }
-
 
     void ShowExitCanvas()
     {
@@ -116,19 +101,6 @@ public class TimerUI : MonoBehaviour
         exitCanvasGroup.alpha = 0f;
     }
 
-    void SpawnExit()
-    {
-        if (exitPrefab == null || spawnPoints.Count == 0)
-        {
-            Debug.LogWarning("Exit prefab or spawn points not assigned!");
-            return;
-        }
-
-        Transform randomPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
-        Instantiate(exitPrefab, randomPoint.position, randomPoint.rotation);
-        Debug.Log("Exit spawned at: " + randomPoint.name);
-    }
-
     public void StartTimer()
     {
         ResetTimer();
@@ -161,11 +133,10 @@ public class TimerUI : MonoBehaviour
         }
     }
 
-    // Debug function to print current time
     public void DebugCurrentTime()
     {
         Debug.Log($"[TimerUI] Current Time: {currentTime:F2}");
     }
 
-public float GetRemainingTime() => currentTime;
+    public float GetRemainingTime() => currentTime;
 }
