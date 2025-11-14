@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class CaptureCheck : MonoBehaviour
 {
+
+
+    [Header("Areas")]
+    [SerializeField] private GameObject area1;
+    [SerializeField] private GameObject area2;
     [Header("Capture Settings")]
     public int captureAmount = 3;
     private int currentCaptures = 0;
 
     [Header("Next Map Settings")]
+    public ExitTrigger exitTrigger;
     public Transform nextMapSpawnPoint;
     public List<Transform> taggerSpawnPoints;
     public GameObject taggerPrefab;
@@ -42,6 +48,9 @@ public class CaptureCheck : MonoBehaviour
     private bool hasOpenedPen = false;
     private bool movementWasDisabled = false;
 
+    private float captureTimer = 0;
+    private bool stillCapturing = false;
+
     void Start()
     {
         playerMovement = FindFirstObjectByType<PlayerMovement>();
@@ -61,6 +70,10 @@ public class CaptureCheck : MonoBehaviour
             angles.y = 120f;
             penDoor.localEulerAngles = angles;
         }
+        area1.SetActive(true);
+        area2.SetActive(false);
+        stillCapturing = true;
+        captureTimer = 0;
     }
     void Update()
     {
@@ -70,6 +83,8 @@ public class CaptureCheck : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(HandleCaptureThresholdReached());
         }
+
+        if (stillCapturing) captureTimer += Time.deltaTime;
     }
     public void RunnerCaptured()
     {
@@ -132,8 +147,10 @@ public class CaptureCheck : MonoBehaviour
         if (playerMovement == null) yield break;
 
         Debug.Log("Capture threshold reached.");
-
+        stillCapturing = false;
         DisablePlayerMovement(true);
+        area1.SetActive(false);
+        area2.SetActive(true);
         playerMovement.DisableTagging();
 
 

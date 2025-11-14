@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Collider))]
 public class ExitTrigger : MonoBehaviour
@@ -13,8 +14,11 @@ public class ExitTrigger : MonoBehaviour
     [Header("References")]
     public TimerUI timer;
     public KeyPickup keyPickup;
+    public MiniGameOverHandler miniGameOverHandler;
 
     [Header("Star Conditions")]
+    [SerializeField] private float timeRequiredForStar = 60;
+    private float timeTookToCaptureRabbits;
     public bool keyCollected = false;   // 1 star condition
     public bool escaped = false;        // 2 stars condition
     public bool perfectEscape = false;  // 3 stars condition
@@ -99,8 +103,7 @@ public class ExitTrigger : MonoBehaviour
                 keyCollected = player.pickedUpKey;
                 perfectEscape = player.HasPerfectRun();
             }
-
-            Debug.Log($"You win! Stars earned: {CalculateStars()}");
+            miniGameOverHandler.HandleGameOver(true, 1, CalculateStars());
             // Add your win logic here (scene transition, UI, etc.)
         }
     }
@@ -108,10 +111,21 @@ public class ExitTrigger : MonoBehaviour
     // Helper: Determine how many stars earned
     public int CalculateStars()
     {
+        //Star 1 espace
+        //star 1 catch all rabbits within a certain amount of time (30 Sec?)
+        //star 3 perfect escape;
+
         int stars = 0;
-        if (keyCollected) stars++;
-        if (escaped) stars++;
+        if (!escaped) return 0;
+        stars++;
+        if(timeTookToCaptureRabbits < timeRequiredForStar) stars++;
         if (perfectEscape) stars++;
         return stars;
+    }
+
+    public void SetTimeTakenToCpature(float timeTaken)
+    {
+        Debug.Log("The Time taken to capture is:  " + timeTaken);
+        timeTookToCaptureRabbits = timeTaken;
     }
 }

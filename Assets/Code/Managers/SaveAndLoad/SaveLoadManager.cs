@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class SaveLoadManager : MonoBehaviour,IGameService
@@ -75,20 +76,25 @@ public class SaveLoadManager : MonoBehaviour,IGameService
         return progress;
     }
 
-    public void CreateNewSaveData()
+    public void CreateNewSaveData(bool returnToMainMenu = false)
     {
         GameProgress newSave = new GameProgress();
-        newSave.levels.Add(new LevelProgress { levelIndex = 1, stars = 2, unlocked = true });
-        newSave.levels.Add(new LevelProgress { levelIndex = 2, stars = 1, unlocked = false });
+        newSave.levels.Add(new LevelProgress { levelIndex = 1, stars = 0, unlocked = true });
+        newSave.levels.Add(new LevelProgress { levelIndex = 2, stars = 0, unlocked = false });
         newSave.levels.Add(new LevelProgress { levelIndex = 3, stars = 0, unlocked = false });
-        newSave.levels.Add(new LevelProgress { levelIndex = 4, stars = 3, unlocked = false });
-        newSave.levels.Add(new LevelProgress { levelIndex = 5, stars = 3, unlocked = false });
+        newSave.levels.Add(new LevelProgress { levelIndex = 4, stars = 0, unlocked = false });
+        newSave.levels.Add(new LevelProgress { levelIndex = 5, stars = 0, unlocked = false });
 
         string json = JsonUtility.ToJson(newSave);
         PlayerPrefs.SetString("GameProgress", json);
         PlayerPrefs.Save();
 
-        progress = newSave; 
+        progress = newSave;
+
+        if (returnToMainMenu) {
+
+            ServiceLocator.Instance.GetService<MySceneManager>().GoToMainMenu();
+        }
 
         
     }
