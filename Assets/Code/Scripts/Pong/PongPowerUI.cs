@@ -15,11 +15,6 @@ public class PongPowerUI : MonoBehaviour
         PongUI.instance.CreateNew(gameObject, type);
     }
 
-    private void OnDestroy()
-    {
-        PongUI.instance.UpdateSlider(gameObject, 0);
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -28,9 +23,8 @@ public class PongPowerUI : MonoBehaviour
         if (time_passed > destroy_time)
         {
             time_passed = destroy_time;
+            PongUI.instance.UpdateSlider(gameObject, 0);
             Destroy(gameObject);
         }
-
-        PongUI.instance.UpdateSlider(gameObject, 1 - (time_passed / destroy_time));
     }
 }

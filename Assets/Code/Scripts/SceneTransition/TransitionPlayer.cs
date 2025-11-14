@@ -5,16 +5,28 @@ using UnityEngine.SceneManagement;
 public class TransitionPlayer : MonoBehaviour
 {
     [SerializeField] private LoadingBar loading_bar;
-    [SerializeField] private bool _playCountDownAfterCutScene = false;
-
+    [SerializeField] private bool _playCountDown = false;
+    [SerializeField] private GameObject _hider;
     private Animator animator;
 
     private string load_scene;
-
+    private void Awake()
+    {
+        _hider.SetActive(true);
+    }
     void Start()
     {
+
         EventHolder.StartLoadScene += OnStartLoadScene;
         animator = GetComponent<Animator>();
+        StartCoroutine(Delay() );
+    }
+
+    IEnumerator Delay()
+    {
+        yield return null;
+        yield return null;
+        animator.enabled = true;
     }
 
 
@@ -33,24 +45,46 @@ public class TransitionPlayer : MonoBehaviour
     public void StartLoad()
     {
         loading_bar.StartLoad(load_scene);
+        PlayEndLoadAnimation();
     }
     public void StartCountDownUI()
     {
-        if(_playCountDownAfterCutScene)
+        if(_playCountDown)
         ServiceLocator.Instance.GetService<UIManager>().StartCountDownTimer();
-        else Time.timeScale = 1f;
-
     }
 
     private void PlayStartLoadAnimation()
     {
-        animator.ResetTrigger("EndLoad");
-        animator.SetTrigger("StartLoad");
+        if (!animator.GetBool("StartLoad"))
+        {
+            animator.SetBool("EndLoad", false);
+            animator.SetBool("EndSceneLoad", false);
+            animator.SetBool("StartLoad", true);
+        }
     }
 
     private void PlayEndLoadAnimation()
     {
-        animator.ResetTrigger("StartLoad");
-        animator.SetTrigger("EndLoad");
+        if (!animator.GetBool("EndLoad"))
+        {
+            animator.SetBool("StartLoad", false);
+            animator.SetBool("EndSceneLoad", false);
+            animator.SetBool("EndLoad", true);
+        }
+    }
+
+    public void PlayEndSceneLoadAnimation()
+    {
+        if (!animator.GetBool("EndSceneLoad"))
+        {
+            animator.SetBool("StartLoad", false);
+            animator.SetBool("EndLoad", false);
+            animator.SetBool("EndSceneLoad", true);
+        }
+    }
+
+    public void EndLoad()
+    {
+        loading_bar.EndLoad();
     }
 }

@@ -4,18 +4,19 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour, IGameService
 {
     [Header("Level Select UI")]
     [SerializeField] private GameObject _levelSelectCanvasGO;
-    [SerializeField] private TMP_Text _levelNameText;
-    private int starCount;
+    [SerializeField] private Image _levelSelectPanelImage;
+    [SerializeField] private Image[] starImages;
+    [SerializeField] private Sprite _starFilledSprite;
+    [SerializeField] private Sprite _starUnFilledSprite;
 
     [Header("Level Select UI")]
     [SerializeField] private LevelCompleteManager _levelCompleteManager;
-    [SerializeField] private GameObject _levelCompleteCanvas;
-    [SerializeField] private GameObject _levelFailedCanvas;
 
     [Header("UI References")]
     [SerializeField] private CountDownTimer _countDownTimer;
@@ -50,10 +51,18 @@ public class UIManager : MonoBehaviour, IGameService
         _inputManager.onOpenSettings += ToggleSettingsPage;
     }
 
-    public void OpenLevelSelectUI(string levelName, int StarUnlocked)
+    public void OpenLevelSelectUI(MiniGameSO levelSO, int starUnlocked)
     {
         _levelSelectCanvasGO.SetActive(true);
-        _levelNameText.text = levelName;
+        _levelSelectPanelImage.sprite = levelSO.levelSelectPanelSprite;
+        int count = starUnlocked;
+        foreach (Image image in starImages)
+        {
+
+            if (count > 0) image.sprite = _starFilledSprite;
+            else image.sprite = _starUnFilledSprite;
+            count--;
+        }
     }
 
     public void HideLevelSelectUI()
@@ -89,6 +98,7 @@ public class UIManager : MonoBehaviour, IGameService
     {
         ToggleLevelFailedUI(false);
         ToggleLevelCompleteUI(false);
+        _settingsManager.ToggleSettings(false);
         HideLevelSelectUI();
     }
 
@@ -117,6 +127,7 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void ToggleSettingsPage()
     {
+
         bool temp = false;
         if (_settingsManager._isSettingsOpen) temp = false;
         else temp = true;
