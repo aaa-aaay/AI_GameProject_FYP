@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5425bf7323e91a946b2f402f968698c0, type: 3}
+  m_Name: Speech4_2
+  m_EditorClassIdentifier: 
+  npcInfo: {fileID: 11400000, guid: 2d8ab7a1dd1dcce499bb7d16711c4d68, type: 2}
+  isMCQ: 1
+  speech: 
+  nextSpeech: {fileID: 0}
+  choices:
+  - optionText: Nature Rangers
+    nextSpeech: {fileID: 11400000, guid: 266574d8529ed234eabe7de9df59bb0b, type: 2}
+  - optionText: Badminton Legends
+    nextSpeech: {fileID: 11400000, guid: c5f0eada97e4d5a46b66e967daed0b44, type: 2}
+  - optionText: Pong Wazards
+    nextSpeech: {fileID: 11400000, guid: 6f5e14afcc68a4644ab7a756342f8fb7, type: 2}
+  - optionText: Next
+    nextSpeech: {fileID: 11400000, guid: 3c527abaab1a29b4195f9208446d5bb6, type: 2}
+  - optionText: Nevermind
+    nextSpeech: {fileID: 11400000, guid: 78d3a6970e8d90f4c9551667821e3202, type: 2}
