@@ -4153,6 +4153,7 @@ GameObject:
   - component: {fileID: 249023394}
   - component: {fileID: 249023393}
   - component: {fileID: 249023392}
+  - component: {fileID: 249023395}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -4235,6 +4236,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1951799610}
+        m_TargetAssemblyTypeName: AudioPlayer, Assembly-CSharp
+        m_MethodName: PlaySFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ButtonClick
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &249023393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4273,6 +4286,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 249023390}
   m_CullTransparentMesh: 1
+--- !u!114 &249023395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249023390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47b5e7b2140081b49874ecf7f088c9c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &274908434
 PrefabInstance:
   m_ObjectHideFlags: 0
