@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class TutorialUIPlayer : MonoBehaviour
@@ -11,11 +12,13 @@ public class TutorialUIPlayer : MonoBehaviour
     private MiniGameSO _minigameSO;
 
     [SerializeField] private VideoPlayer _videoPlayer;
-    [SerializeField] private TMP_Text _gameTitleText;
+    [SerializeField] private Image _gameTitleImage;
+
 
     [SerializeField] private GameObject _nextButton;
     [SerializeField] private GameObject _previousButton;
     [SerializeField] private GameObject _goGameButton;
+
 
 
     int _currentClipIndex = 0;
@@ -26,7 +29,7 @@ public class TutorialUIPlayer : MonoBehaviour
 
         _minigameSO = uiManager.GetMiniGameForTutorial();
         _clips = _minigameSO.tutorialVideoClips;
-        _gameTitleText.text = _minigameSO.gameName;
+        _gameTitleImage.sprite = _minigameSO.levelLogo;
 
         if (_clips.Count <= 0){
             GoGameScene();
