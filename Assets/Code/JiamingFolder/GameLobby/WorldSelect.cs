@@ -48,7 +48,7 @@ public class WorldSelect : MonoBehaviour
         {
 
             _playerInRange = true;
-            _uiManager.OpenLevelSelectUI(_miniGame.gameName, _starCount);
+            _uiManager.OpenLevelSelectUI(_miniGame, _starCount);
 
         }
     }

@@ -70,8 +70,8 @@ public class DialogueManager : MonoBehaviour, IGameService
         speechText.gameObject.SetActive(true);
         buttonPanel.gameObject.SetActive(false);
 
-        speakerNameText.text = currentSentence.SpeakerName;
-        speakerImage.sprite = currentSentence.SpeakerSprite;
+        speakerNameText.text = currentSentence.NpcInfo.NpcName;
+        speakerImage.sprite = currentSentence.NpcInfo.NpcSprite;
 
         StopAllCoroutines();
         StartCoroutine(TypeSentence(currentSentence.Speech));
@@ -83,8 +83,8 @@ public class DialogueManager : MonoBehaviour, IGameService
         buttonPanel.gameObject.SetActive(true);
         foreach (RectTransform t in buttons) t.gameObject.SetActive(false);
 
-        speakerNameText.text = currentSentence.SpeakerName;
-        speakerImage.sprite = currentSentence.SpeakerSprite;
+        speakerNameText.text = currentSentence.NpcInfo.NpcName;
+        speakerImage.sprite = currentSentence.NpcInfo.NpcSprite;
 
         int i = 0;
         foreach (DialogueChoice c in currentSentence.Choices)

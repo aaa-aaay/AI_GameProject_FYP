@@ -127,11 +127,11 @@ public class PongInstance : MonoBehaviour
         else
         {
             int score_diff = player_points - opponent_points;
-            if (score_diff >= 5)
+            if (score_diff >= 4)
             {
                 gameOverHandler.HandleGameOver(true, 3, 3);
             }
-            else if (score_diff >= 3)
+            else if (score_diff >= 2)
             {
                 gameOverHandler.HandleGameOver(true, 3, 2);
             }

@@ -35,7 +35,7 @@ public class RacingLeaderboard : MonoBehaviour
     public void AddLeaderboardData(string racerName, float raceTime)
     {
 
-        if (displayCounter > _entries.Count) return;
+        if (displayCounter >= _entries.Count) return;
         _entries[displayCounter].SetEntryData(racerName, raceTime);
 
 
@@ -52,13 +52,19 @@ public class RacingLeaderboard : MonoBehaviour
     {
         //sort leaderboard based on race time
         leaderboardUI.SetActive(true);
+        ServiceLocator.Instance.GetService<AudioManager>().PlayBackgroundMusic("LeaderboardBGM");
         
     }
 
 
     public void EndRace()
     {
-        if (playerRank < 3) _miniGameOverHandler.HandleGameOver(true, 5, playerRank + 1);
+        if(playerRank == 0) _miniGameOverHandler.HandleGameOver(true, 5, 3);
+        else if (playerRank == 1) _miniGameOverHandler.HandleGameOver(true, 5, 2);
+        else if (playerRank == 2) _miniGameOverHandler.HandleGameOver(true, 5, 1);
+
         else _miniGameOverHandler.HandleGameOver(false);
+
+        Debug.Log(playerRank + 1);
     }
 }

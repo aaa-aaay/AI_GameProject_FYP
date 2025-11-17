@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class CaptureCheck : MonoBehaviour
 {
+
+
+    [Header("Areas")]
+    [SerializeField] private GameObject area1;
+    [SerializeField] private GameObject area2;
     [Header("Capture Settings")]
     public int captureAmount = 3;
     private int currentCaptures = 0;
 
     [Header("Next Map Settings")]
+    public ExitTrigger exitTrigger;
     public Transform nextMapSpawnPoint;
     public List<Transform> taggerSpawnPoints;
     public GameObject taggerPrefab;
-
-    [Header("Visual Settings")]
-    public Material newModel;
 
     [Header("Timer Reference")]
     public TimerUI timerUI;
@@ -38,8 +41,15 @@ public class CaptureCheck : MonoBehaviour
     public Transform penSpawnPoint;
     public GameObject penSpawnPrefab;
 
+    [Header("Post-Capture Spawn Settings")]
+    public GameObject postCapturePrefab;             // Prefab to spawn after all captures
+    public List<Transform> postCaptureSpawnPoints;   // Spawn positions for that prefab
+
     private bool hasOpenedPen = false;
     private bool movementWasDisabled = false;
+
+    private float captureTimer = 0;
+    private bool stillCapturing = false;
 
     void Start()
     {
@@ -53,34 +63,51 @@ public class CaptureCheck : MonoBehaviour
         if (fadeScreen != null)
             fadeScreen.alpha = 0f;
 
-        // Ensure the door starts at 120° on Y-axis
+        // Ensure the door starts closed at 120° Y
         if (penDoor != null)
         {
             Vector3 angles = penDoor.localEulerAngles;
             angles.y = 120f;
             penDoor.localEulerAngles = angles;
         }
+        area1.SetActive(true);
+        area2.SetActive(false);
+        stillCapturing = true;
+        captureTimer = 0;
     }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("[DEBUG] P pressed – Forcing capture threshold sequence...");
+            StopAllCoroutines();
+            StartCoroutine(HandleCaptureThresholdReached());
+        }
 
+        if (stillCapturing) captureTimer += Time.deltaTime;
+    }
     public void RunnerCaptured()
     {
         currentCaptures++;
         Debug.Log($"Runner captured. ({currentCaptures}/{captureAmount})");
+
         FindFirstObjectByType<RabbitUI>()?.OnRunnerCaptured();
 
-        // Play pen opening animation and spawn object when the first rabbit is caught
+        // OPEN PEN ON FIRST CAPTURE ONLY
         if (!hasOpenedPen && penDoor != null)
         {
             hasOpenedPen = true;
             StartCoroutine(RotateDoorSmooth(penDoor, 120f, 0f, rotationDuration));
-
-            if (penSpawnPrefab != null && penSpawnPoint != null)
-            {
-                Instantiate(penSpawnPrefab, penSpawnPoint.position, penSpawnPoint.rotation);
-                Debug.Log("Spawned pen prefab at spawn point.");
-            }
         }
 
+        // ALWAYS SPAWN PEN PREFAB EACH TIME A RUNNER IS CAPTURED
+        if (penSpawnPrefab != null && penSpawnPoint != null)
+        {
+            Instantiate(penSpawnPrefab, penSpawnPoint.position, penSpawnPoint.rotation);
+            Debug.Log("Spawned pen prefab at spawn point.");
+        }
+
+        // CHECK CAPTURE THRESHOLD
         if (currentCaptures >= captureAmount)
         {
             StartCoroutine(HandleCaptureThresholdReached());
@@ -92,7 +119,7 @@ public class CaptureCheck : MonoBehaviour
     {
         float elapsed = 0f;
 
-        // Make sure it starts at 120° before rotating
+        // Start at specified angle
         Vector3 startEuler = door.localEulerAngles;
         startEuler.y = startY;
         door.localEulerAngles = startEuler;
@@ -120,18 +147,12 @@ public class CaptureCheck : MonoBehaviour
         if (playerMovement == null) yield break;
 
         Debug.Log("Capture threshold reached.");
-
+        stillCapturing = false;
         DisablePlayerMovement(true);
+        area1.SetActive(false);
+        area2.SetActive(true);
         playerMovement.DisableTagging();
 
-        // Apply new model if any
-        if (newModel != null && playerMovement.playerModel != null)
-        {
-            Renderer rend = playerMovement.playerModel.GetComponent<Renderer>();
-            if (rend == null) rend = playerMovement.playerModel.GetComponentInChildren<Renderer>();
-            if (rend != null)
-                rend.material = newModel;
-        }
 
         // Teleport player
         if (nextMapSpawnPoint != null)
@@ -158,7 +179,7 @@ public class CaptureCheck : MonoBehaviour
         // Spawn taggers while screen is black
         yield return StartCoroutine(SpawnTaggers());
 
-        // Hold black screen for a moment
+        // Hold black screen briefly
         yield return new WaitForSeconds(blackHoldDuration);
 
         // Fade back in
@@ -166,6 +187,17 @@ public class CaptureCheck : MonoBehaviour
         {
             Debug.Log("Fading back in...");
             yield return StartCoroutine(FadeFromBlack());
+        }
+
+        // ✅ Spawn only one post-capture prefab at a random spawn point
+        if (postCapturePrefab != null && postCaptureSpawnPoints != null && postCaptureSpawnPoints.Count > 0)
+        {
+            Transform chosenPoint = postCaptureSpawnPoints[Random.Range(0, postCaptureSpawnPoints.Count)];
+            if (chosenPoint != null)
+            {
+                Instantiate(postCapturePrefab, chosenPoint.position, chosenPoint.rotation);
+                Debug.Log($"Spawned ONE post-capture prefab at {chosenPoint.position}");
+            }
         }
 
         // Re-enable movement
@@ -181,7 +213,7 @@ public class CaptureCheck : MonoBehaviour
         Debug.Log($"Player head start for {playerHeadStartTime} seconds...");
         yield return new WaitForSeconds(playerHeadStartTime);
 
-        // Activate taggers
+        // Enable taggers
         EnableAllTaggers();
     }
 

@@ -8,15 +8,13 @@ using UnityEditor;
 [Serializable, CreateAssetMenu(fileName = "Speech", menuName = "Dialogue/Speech")]
 public class DialogueSpeechSO : ScriptableObject
 {
-    [SerializeField] private string speakerName;
-    [SerializeField] private Sprite speakerSprite;
-    [SerializeField, TextArea(3, 10)] private string speech;
+    [SerializeField] private DialogueNPCSO npcInfo;
     [SerializeField] private bool isMCQ;
+    [SerializeField, TextArea(3, 10)] private string speech;
     [SerializeField] private DialogueSpeechSO nextSpeech;
     [SerializeField] private DialogueChoice[] choices;
 
-    public string SpeakerName => speakerName;
-    public Sprite SpeakerSprite => speakerSprite;
+    public DialogueNPCSO NpcInfo => npcInfo;
     public string Speech => speech;
     public bool IsMCQ => isMCQ;
     public DialogueSpeechSO NextSpeech => nextSpeech;
@@ -55,17 +53,20 @@ public class DialogueSpeechSOEditor : Editor
     {
         serializedObject.Update();
 
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("speakerName"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("speakerSprite"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("speech"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("npcInfo"));
 
         SerializedProperty isMCQProp = serializedObject.FindProperty("isMCQ");
         EditorGUILayout.PropertyField(isMCQProp);
 
         if (isMCQProp.boolValue) // isMCQ == true
+        {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("choices"), true);
+        }
         else // isMCQ == false
+        {
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("speech"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("nextSpeech"));
+        }
 
         serializedObject.ApplyModifiedProperties();
     }
