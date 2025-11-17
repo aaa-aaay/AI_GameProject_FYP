@@ -6,18 +6,18 @@ using UnityEditor;
 #endif
 
 [Serializable, CreateAssetMenu(fileName = "Speech", menuName = "Dialogue/Speech")]
-public class DialogueSpeechSO : ScriptableObject
+public class DialogueSpeechSO : DialogueOption
 {
     [SerializeField] private DialogueNPCSO npcInfo;
     [SerializeField] private bool isMCQ;
     [SerializeField, TextArea(3, 10)] private string speech;
-    [SerializeField] private DialogueSpeechSO nextSpeech;
+    [SerializeField] private DialogueOption nextSpeech;
     [SerializeField] private DialogueChoice[] choices;
 
     public DialogueNPCSO NpcInfo => npcInfo;
     public string Speech => speech;
     public bool IsMCQ => isMCQ;
-    public DialogueSpeechSO NextSpeech => nextSpeech;
+    public DialogueOption NextSpeech => nextSpeech;
     public DialogueChoice[] Choices => choices;
 
     #if UNITY_EDITOR
@@ -38,10 +38,10 @@ public class DialogueSpeechSO : ScriptableObject
 [Serializable] public struct DialogueChoice
 {
     [SerializeField, TextArea(1, 10)] private string optionText;
-    [SerializeField] private DialogueSpeechSO nextSpeech;
+    [SerializeField] private DialogueOption nextSpeech;
 
     public string OptionText => optionText;
-    public DialogueSpeechSO NextSpeech => nextSpeech;
+    public DialogueOption NextSpeech => nextSpeech;
 }
 
 // Show/Hide variables for DialogueSpeechSO
