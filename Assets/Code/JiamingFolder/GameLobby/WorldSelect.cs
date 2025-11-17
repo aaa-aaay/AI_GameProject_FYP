@@ -39,6 +39,7 @@ public class WorldSelect : MonoBehaviour
         if(_playerInRange)
         {
             ServiceLocator.Instance.GetService<MySceneManager>().LoadMiniGameWithTutorial(_miniGame);
+            ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("LevelSelectFinish");
         }
     }
 
@@ -46,7 +47,7 @@ public class WorldSelect : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-
+            ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("LevelSelect",transform.position);
             _playerInRange = true;
             _uiManager.OpenLevelSelectUI(_miniGame, _starCount);
 

@@ -7,6 +7,7 @@ public class RaceCarControl : MonoBehaviour
     [SerializeField] RaceManager _manager;
     [SerializeField] GameObject _car;
 
+    private RaceAudioPlayer _AudioPlayer;
     private CarVFXController _VFXcontroller;
     private ResetCarPosition _carPosResetter;
     private GoalChecker _goalChecker;
@@ -19,6 +20,7 @@ public class RaceCarControl : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        _AudioPlayer = GetComponent<RaceAudioPlayer>();
         _movement = GetComponent<BetterCarMovement>();
         _VFXcontroller = GetComponent<CarVFXController>();
 
@@ -62,6 +64,7 @@ public class RaceCarControl : MonoBehaviour
         if (Mathf.Abs(_moveInput.x) > 0.1) //moving left or right
         {
             _isDrifting = true;
+            _AudioPlayer.StartDriftSFX();
             _movement.ToggleDrifting(_isDrifting, _moveInput.x);
             _VFXcontroller.PlayDriftEffects(_isDrifting, _moveInput.x);
             Debug.Log("caleed");
@@ -72,6 +75,7 @@ public class RaceCarControl : MonoBehaviour
     private void HandleDriftEnd()
     {
         _isDrifting = false;
+        _AudioPlayer.EndDriftSFX();
         _movement.ToggleDrifting(_isDrifting);
         _VFXcontroller.PlayDriftEffects(_isDrifting);
     }
