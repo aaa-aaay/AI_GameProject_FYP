@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour, IGameService
 {
     [Header("Level Select UI")]
     [SerializeField] private GameObject _levelSelectCanvasGO;
+    [SerializeField] private Animator _levelSelectAnimator;
     [SerializeField] private Image _levelSelectPanelImage;
     [SerializeField] private Image[] starImages;
     [SerializeField] private Sprite _starFilledSprite;
@@ -54,6 +55,7 @@ public class UIManager : MonoBehaviour, IGameService
     public void OpenLevelSelectUI(MiniGameSO levelSO, int starUnlocked)
     {
         _levelSelectCanvasGO.SetActive(true);
+        _levelSelectAnimator.SetTrigger("Open");
         _levelSelectPanelImage.sprite = levelSO.levelSelectPanelSprite;
         int count = starUnlocked;
         foreach (Image image in starImages)
@@ -67,7 +69,8 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void HideLevelSelectUI()
     {
-        _levelSelectCanvasGO.SetActive(false);
+        _levelSelectAnimator.SetTrigger("Close");
+        //_levelSelectCanvasGO.SetActive(false);
     }
 
 

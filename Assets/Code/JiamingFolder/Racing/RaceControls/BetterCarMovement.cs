@@ -29,7 +29,6 @@ public class BetterCarMovement : MonoBehaviour
     [SerializeField][Range(0, 1)] private float lateralSlip = 0.9f;
     private bool drifting;
 
-
     int driftDirection;
     float driftPower;
     int driftMode = 0;
@@ -188,6 +187,7 @@ public class BetterCarMovement : MonoBehaviour
     {
         currentSpeed = x;
     }
+
 
 
 }
