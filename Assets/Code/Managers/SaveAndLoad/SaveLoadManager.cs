@@ -25,14 +25,12 @@ public class SaveLoadManager : MonoBehaviour,IGameService
         {
             if(levelDetail.levelIndex == worldNo)
             {
-                Debug.Log("found the world");
                 Debug.Log(levelDetail.stars);
                 Debug.Log(levelDetail.levelIndex);
                 if (starCount > levelDetail.stars)
                 {
                     levelDetail.stars = starCount;
                     levelDetail.unlocked = true;
-                    Debug.Log("unlocked");
                 }
                 else return;
 

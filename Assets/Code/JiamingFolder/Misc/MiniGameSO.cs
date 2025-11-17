@@ -12,6 +12,7 @@ public class MiniGameSO : ScriptableObject
 
     [Header("For Level Select UI")]
     public Sprite levelSelectPanelSprite;
+    public Sprite levelLogo;
 
     [Header("For mini game Over UI")]
     [TextArea(2, 10)] public string[] starConditions;
