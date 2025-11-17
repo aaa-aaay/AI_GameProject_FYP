@@ -35,7 +35,7 @@ public class RacingLeaderboard : MonoBehaviour
     public void AddLeaderboardData(string racerName, float raceTime)
     {
 
-        if (displayCounter > _entries.Count) return;
+        if (displayCounter >= _entries.Count) return;
         _entries[displayCounter].SetEntryData(racerName, raceTime);
 
 
@@ -52,6 +52,7 @@ public class RacingLeaderboard : MonoBehaviour
     {
         //sort leaderboard based on race time
         leaderboardUI.SetActive(true);
+        ServiceLocator.Instance.GetService<AudioManager>().PlayBackgroundMusic("LeaderboardBGM");
         
     }
 

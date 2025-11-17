@@ -17,37 +17,41 @@ public class MySceneManager : MonoBehaviour, IGameService
         //ServiceLocator.Instance.RemoveService<MySceneManager>(false);
     }
 
+    private void SetupWhenChangingScenes()
+    {
+        Time.timeScale = 1;
+        ServiceLocator.Instance.GetService<AudioManager>().StopBGmWithFade();
+        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
+    }
+
 
     public void LoadScene(string name)
     {
-        Time.timeScale = 1;
+        SetupWhenChangingScenes();
         //handle transition animation here
         EventHolder.InvokeStartLoadScene(name);
-        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
+
     }
 
     public void LoadMiniGameWithTutorial(MiniGameSO minigame)
     {
-        Time.timeScale = 1;
+        SetupWhenChangingScenes();
         ServiceLocator.Instance.GetService<UIManager>().SetMiniGameForTutorial(minigame);
         EventHolder.InvokeStartLoadScene(_tutorialSceneName);
-        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
+
     }
 
     public void restartScene()
     {
-        Time.timeScale = 1;
-        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
+        SetupWhenChangingScenes();
         EventHolder.InvokeStartLoadScene(SceneManager.GetActiveScene().name);
     }
     public void GoBacktoGameLobby()
     {
-        Time.timeScale = 1;
         LoadScene(_gameLobbyName);
     }
     public void GoToMainMenu()
     {
-        Time.timeScale = 1;
         LoadScene(_mainMenuSceneName);
     }
 }
