@@ -53,8 +53,9 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void OpenLevelSelectUI(MiniGameSO levelSO, int starUnlocked)
     {
+        Debug.Log("Open");
         _levelSelectCanvasGO.SetActive(true);
-        _levelSelectAnimator.SetTrigger("Open");
+        _levelSelectAnimator.SetBool("IsOpen", true);
         _levelSelectPanelImage.sprite = levelSO.levelSelectPanelSprite;
         int count = starUnlocked;
         foreach (Image image in starImages)
@@ -68,7 +69,9 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void HideLevelSelectUI()
     {
-        _levelSelectAnimator.SetTrigger("Close");
+
+        Debug.Log("Hidden");
+        _levelSelectAnimator.SetBool("IsOpen", false);
         //_levelSelectCanvasGO.SetActive(false);
     }
 
@@ -77,7 +80,6 @@ public class UIManager : MonoBehaviour, IGameService
     {
         //if (open) Time.timeScale = 0;
         //else Time.timeScale = 1;
-        Debug.Log("The star count is: " + starCount);
         OnUIToFocusToggle?.Invoke(open);
         ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
         _levelCompleteManager.ToggleLevelCompleteCanvas(open, starCount, _miniGame);
