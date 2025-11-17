@@ -10,16 +10,19 @@ public class DialogueActionSO : DialogueOption
 {
     [SerializeField] private dialogueActionType actionType = dialogueActionType.Scene;
     [SerializeField] private string sceneName;
+    [SerializeField] private MiniGameSO minigame;
     [SerializeField] private DialogueOption nextSpeech;
 
     public dialogueActionType ActionType => actionType;
     public string SceneName => sceneName;
+    public MiniGameSO Minigame => minigame;
     public DialogueOption NextSpeech => nextSpeech;
 }
 
 public enum dialogueActionType
 {
-    Scene
+    Scene,
+    MinigameScene
 }
 
 // Show/Hide variables for DialogueOption
@@ -38,6 +41,10 @@ public class DialogueActionSOEditor : Editor
         if ((dialogueActionType)actionType.enumValueIndex == dialogueActionType.Scene)
         {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("sceneName"));
+        }
+        else if ((dialogueActionType)actionType.enumValueIndex == dialogueActionType.MinigameScene)
+        {
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("minigame"));
         }
         else
         {

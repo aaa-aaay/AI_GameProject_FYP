@@ -81,6 +81,12 @@ public class DialogueManager : MonoBehaviour, IGameService
                 EndDialogue();
                 return;
             }
+            else if (actionNodeAfter.ActionType == dialogueActionType.MinigameScene)
+            {
+                ServiceLocator.Instance.GetService<MySceneManager>().LoadMiniGameWithTutorial(actionNodeAfter.Minigame);
+                EndDialogue();
+                return;
+            }
         }
     }
 
