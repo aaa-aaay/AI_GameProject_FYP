@@ -101,14 +101,15 @@ public class BadmintionGameManager : MonoBehaviour
     {
         if (player1Score >= ScoreToWin)
         {
-            ResetGame();
             GameOver(1);
+            ResetGame();
+
             
         }
        else if(player2Score >= ScoreToWin)
        {
-            ResetGame();
             GameOver(2);
+            ResetGame();
             
        }
     }
