@@ -391,6 +391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxStamina: 100
   staminaFillImage: {fileID: 0}
+  gameManager: {fileID: 0}
   running: 0.25
   smashShot: 0
   dropShot: 0
@@ -2900,12 +2901,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ScoreToWin: 7
-  _whoServesFirst: 2
+  _whoServesFirst: 1
   player1Score: 0
   player2Score: 0
   shutter: {fileID: 7238655649081960526}
-  _P1ScoreDisplay: {fileID: 1143658984647913752}
-  _P2ScoreDisplay: {fileID: 4732342137899362007}
+  _p1ScoreDisplays:
+  - {fileID: 4732342137899362007}
+  - {fileID: 0}
+  _p2ScoreDisplays:
+  - {fileID: 1143658984647913752}
+  - {fileID: 0}
   shutterSpawnPoint1: {fileID: 1484316482908499774}
   shutterSpawnPoint2: {fileID: 1595658815115556768}
   serveUIGO: {fileID: 4759665056597773079}
@@ -2931,7 +2936,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef89350285a198c41b3ec8446991bb8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _restart: 0
+  _restart: 1
 --- !u!1 &3189208611236940878
 GameObject:
   m_ObjectHideFlags: 0
@@ -4324,7 +4329,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4243424182941964367}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83d7548629062f94db528b49d726b16e, type: 3}
   m_Name: 
@@ -4378,6 +4383,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxStamina: 100
   staminaFillImage: {fileID: 0}
+  gameManager: {fileID: 5564206013452628640}
   running: 0.25
   smashShot: 0
   dropShot: 0
@@ -4393,7 +4399,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4243424182941964367}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8ebfe906a0993b4c86a8764605a40a0, type: 3}
   m_Name: 
@@ -4401,7 +4407,7 @@ MonoBehaviour:
   moveSpeed: 9
   offset: 1
   _missChance: 0.4
-  _smashMissChance: 0.2
+  _smashMissChance: 0.3
   _dropMissChance: 0.2
   _positionErrorRange: 1.5
   _minimumMovementSpeed: 0.3
@@ -5695,6 +5701,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxStamina: 100
   staminaFillImage: {fileID: 0}
+  gameManager: {fileID: 0}
   running: 0.2
   smashShot: 0
   dropShot: 0
@@ -6444,7 +6451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23056708, g: 0.1642363, b: 0.8792453, a: 0.8}
+  m_Color: {r: 0.9490196, g: 0.29803923, b: 0.29803923, a: 0.8}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6633,6 +6640,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxStamina: 100
   staminaFillImage: {fileID: 0}
+  gameManager: {fileID: 5564206013452628640}
   running: 0.25
   smashShot: 0
   dropShot: 0
@@ -6661,8 +6669,8 @@ MonoBehaviour:
   _net: {fileID: 7203544867358027025}
   _opponetTransform: {fileID: 1950138198727308485}
   _moveSpeed: 9
-  _moveSpeedSlow: 7
-  _moveSpeedVerySlow: 5
+  _moveSpeedSlow: 8
+  _moveSpeedVerySlow: 7
   _offsetFromNet: 0.2
   _targetRangeFromShutter: 2
   _gameManager: {fileID: 5564206013452628640}
@@ -6691,7 +6699,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 71fee9f1fbb41ac418959f9b5a5aca34, type: 3}
+  m_Model: {fileID: 0}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: BadmintionAgent
@@ -8411,7 +8419,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.94716984, g: 0.29844782, b: 0.29844782, a: 0.8}
+  m_Color: {r: 0.23137255, g: 0.16470589, b: 0.8784314, a: 0.8}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

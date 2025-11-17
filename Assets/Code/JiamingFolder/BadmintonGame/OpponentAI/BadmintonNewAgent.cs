@@ -82,7 +82,7 @@ public class BadmintonNewAgent : Agent
         AdjustMovement();
         MoveAgent(actions.DiscreteActions);
         StaminaRewards();
-        AddReward(-0.01f); // small time penalty to avoid stalling
+        AddReward(-0.01f);
     }
 
     public void MoveAgent(ActionSegment<int> act)
@@ -165,16 +165,14 @@ public class BadmintonNewAgent : Agent
         _movement.Dash(dir);
         AddReward(-0.01f);
         Debug.Log("Dashed");
+
         //if (_stamina.UseStamina(BadmintonStamina.actions.Dash))
         //{
+
         //    _movement.Dash(dir);
+        //    AddReward(-0.01f);
         //}
-        //else
-        //{
-        //    //punish the AI for dashing and wasting stamina;
-        //    AddReward(-0.1f);
-        //}
-        
+
     }
 
     private void AdjustMovement()
@@ -182,15 +180,16 @@ public class BadmintonNewAgent : Agent
         //if (_stamina.GetStamina() < _stamina.GetStaminaLimit(1))
         //{
         //    _finalMoveSpeed = _moveSpeedSlow;
-        //    AddReward(-0.001f);
+        //    AddReward(-0.005f);
         //    if (_stamina.GetStamina() < _stamina.GetStaminaLimit(2))
         //    {
         //        _finalMoveSpeed = _moveSpeedVerySlow;
-        //        AddReward(-0.003f);
+        //        AddReward(-0.002f);
         //    }
         //}
         //else
         //{
+        //    AddReward(0.005f);
         //    _finalMoveSpeed = _moveSpeed;
         //}
 
@@ -201,13 +200,11 @@ public class BadmintonNewAgent : Agent
     {
         if (dir == Vector3.zero)
         {
-            AddReward(0.01f);
-            //_stamina.UseStamina(BadmintonStamina.actions.Rest);
+            _stamina.UseStamina(BadmintonStamina.actions.Rest);
             _movement.Walk(false);
-            Debug.Log("resting");
         }
         else {
-            //_stamina.UseStamina(BadmintonStamina.actions.Running);
+            _stamina.UseStamina(BadmintonStamina.actions.Running);
             _movement.Walk(true);
         } 
 
