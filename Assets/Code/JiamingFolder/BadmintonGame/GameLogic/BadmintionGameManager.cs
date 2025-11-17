@@ -134,8 +134,12 @@ public class BadmintionGameManager : MonoBehaviour
         }
         else
         {
-            handler.HandleGameOver(true, 2, 3);
-            
+            if (player1Score <= 2) handler.HandleGameOver(true, 2, 3);
+            else if (player1Score <= 4) handler.HandleGameOver(true, 2, 2);
+            else  handler.HandleGameOver(true, 2, 1);
+
+
+
         }
     }
 

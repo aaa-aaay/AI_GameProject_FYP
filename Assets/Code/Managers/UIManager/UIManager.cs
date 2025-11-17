@@ -75,6 +75,7 @@ public class UIManager : MonoBehaviour, IGameService
     {
         //if (open) Time.timeScale = 0;
         //else Time.timeScale = 1;
+        Debug.Log("The star count is: " + starCount);
         OnUIToFocusToggle?.Invoke(open);
         ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
         _levelCompleteManager.ToggleLevelCompleteCanvas(open, starCount, _miniGame);

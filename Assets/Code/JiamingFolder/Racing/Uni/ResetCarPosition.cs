@@ -26,8 +26,12 @@ public class ResetCarPosition : MonoBehaviour
     {
         transform.localPosition = _originalPosition;
         transform.localRotation = _originalRoation;
-        _rigidbody.linearVelocity = Vector3.zero;
-        _rigidbody.angularVelocity = Vector3.zero;
+        if(_rigidbody != null)
+        {
+            _rigidbody.linearVelocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
+        }
+
 
         _carMesh.transform.localPosition = _originalPositionMesh;
         _carMesh.transform.localRotation = _originalRoationMesh;

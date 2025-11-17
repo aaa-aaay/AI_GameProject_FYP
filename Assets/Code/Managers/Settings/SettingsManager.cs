@@ -31,7 +31,7 @@ public class SettingsManager : MonoBehaviour
     {
         _audioManager = ServiceLocator.Instance.GetService<AudioManager>();
         SetDifficultyText();
-        SetDisplayType(displayType.Fullscreen);
+        SetDisplayType(displayType.WindowedFullScreen);
         UpdateBGMVol(1);
         UpdateSFXVol(1);
     }
@@ -70,7 +70,7 @@ public class SettingsManager : MonoBehaviour
         switch (type)
         {
             case displayType.Fullscreen:
-                Screen.SetResolution(1440, 1080, FullScreenMode.ExclusiveFullScreen);
+                Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, FullScreenMode.ExclusiveFullScreen);
                 _screenTypeText.text = "FullScreen";
                 break;
 
@@ -80,7 +80,7 @@ public class SettingsManager : MonoBehaviour
                 break;
 
             case displayType.WindowedFullScreen:
-                Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, FullScreenMode.FullScreenWindow);
+                Screen.SetResolution(1440,1080, FullScreenMode.FullScreenWindow);
                 _screenTypeText.text = "WindowedFullscreen";
                 break;
         }
