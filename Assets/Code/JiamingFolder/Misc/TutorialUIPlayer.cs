@@ -18,6 +18,7 @@ public class TutorialUIPlayer : MonoBehaviour
     [SerializeField] private GameObject _nextButton;
     [SerializeField] private GameObject _previousButton;
     [SerializeField] private GameObject _goGameButton;
+    UIManager uiManager;
 
 
 
@@ -25,8 +26,8 @@ public class TutorialUIPlayer : MonoBehaviour
 
     private void Start()
     {
-        UIManager uiManager = ServiceLocator.Instance.GetService<UIManager>();
-
+        uiManager = ServiceLocator.Instance.GetService<UIManager>();
+        uiManager.DisableSettings(true);
         _minigameSO = uiManager.GetMiniGameForTutorial();
         _clips = _minigameSO.tutorialVideoClips;
         _gameTitleImage.sprite = _minigameSO.levelLogo;
@@ -84,6 +85,7 @@ public class TutorialUIPlayer : MonoBehaviour
 
     public void GoGameScene()
     {
+        uiManager.DisableSettings(false);
         ServiceLocator.Instance.GetService<MySceneManager>().LoadScene(_minigameSO.sceneName);
     }
 

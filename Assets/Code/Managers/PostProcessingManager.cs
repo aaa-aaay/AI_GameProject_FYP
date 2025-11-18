@@ -27,6 +27,7 @@ public class PostProcessingManager : MonoBehaviour, IGameService
 
     public void ShowTagNightEffects(bool show)
     {
+        if(_tagNightVol != null)
         _tagNightVol.enabled = show;
     }
 

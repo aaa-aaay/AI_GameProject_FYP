@@ -7,7 +7,7 @@ public class RaceCarControl : MonoBehaviour
     [SerializeField] RaceManager _manager;
     [SerializeField] GameObject _car;
 
-    private RaceAudioPlayer _AudioPlayer;
+    [SerializeField] private RaceAudioPlayer _AudioPlayer;
     private CarVFXController _VFXcontroller;
     private ResetCarPosition _carPosResetter;
     private GoalChecker _goalChecker;
@@ -20,7 +20,6 @@ public class RaceCarControl : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _AudioPlayer = GetComponent<RaceAudioPlayer>();
         _movement = GetComponent<BetterCarMovement>();
         _VFXcontroller = GetComponent<CarVFXController>();
 

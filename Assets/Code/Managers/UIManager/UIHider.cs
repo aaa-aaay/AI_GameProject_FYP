@@ -13,6 +13,7 @@ public class UIHider : MonoBehaviour
     {
         foreach (Canvas c in canvases)
             c.enabled = !open;
+
     }
     private void OnDestroy()
     {

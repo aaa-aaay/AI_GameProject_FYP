@@ -27,6 +27,7 @@ public class UIManager : MonoBehaviour, IGameService
 
     private InputManager _inputManager;
     private MiniGameSO _miniGame;
+    private bool disableSettings;
     public event Action<bool> OnUIToFocusToggle;
 
 
@@ -100,6 +101,7 @@ public class UIManager : MonoBehaviour, IGameService
         ToggleLevelFailedUI(false);
         ToggleLevelCompleteUI(false);
         _settingsManager.ToggleSettings(false);
+        disableSettings = false;
         HideLevelSelectUI();
     }
 
@@ -130,13 +132,19 @@ public class UIManager : MonoBehaviour, IGameService
     {
 
         bool temp = false;
-        if (_settingsManager._isSettingsOpen) temp = false;
+        if (_settingsManager._isSettingsOpen || disableSettings) temp = false;
         else temp = true;
+        
 
         _settingsManager.ToggleSettings(temp);
         OnUIToFocusToggle?.Invoke(temp);
 
 
+    }
+
+    public void DisableSettings(bool disable)
+    {
+        disableSettings = disable;
     }
 
 
