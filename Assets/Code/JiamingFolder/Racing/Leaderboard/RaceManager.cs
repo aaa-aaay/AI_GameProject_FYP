@@ -109,14 +109,12 @@ public class RaceManager : MonoBehaviour
         if (timeTaken < _finishTimeDebug)
         {
             _finishTimeDebug = timeTaken;
-            Debug.Log(_finishTimeDebug);
         }
 
         if (isDebugMood) return;
 
         finishedRacers++;
         _leaderboard.AddLeaderboardData(name, timeTaken);
-        Debug.Log("racers finished");
         if (finishedRacers >= _racers.Count)
         {
             //restart or end

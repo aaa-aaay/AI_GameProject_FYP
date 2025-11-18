@@ -119,8 +119,9 @@ public class RacingAgent : Agent
     private void AiFinishedRace(string name, float timetaken)
     {
         AddReward(3.0f);
-        if(_manager.isDebugMood)
-        EndEpisode();
+        gameObject.SetActive(false);
+        //if(_manager.isDebugMood)
+        //EndEpisode();
     }
 
 

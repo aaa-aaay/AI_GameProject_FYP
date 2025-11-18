@@ -47,12 +47,11 @@ public class CaptureCheck : MonoBehaviour
 
     private bool hasOpenedPen = false;
     private bool movementWasDisabled = false;
-
-    private float captureTimer = 0;
-    private bool stillCapturing = false;
+    [SerializeField] private JiamingTagHandler _gamePatchHandler;
 
     void Start()
     {
+        _gamePatchHandler = GetComponent<JiamingTagHandler>();
         playerMovement = FindFirstObjectByType<PlayerMovement>();
         if (playerMovement == null)
             Debug.LogError("CaptureCheck: No PlayerMovement found in the scene!");
@@ -72,8 +71,6 @@ public class CaptureCheck : MonoBehaviour
         }
         area1.SetActive(true);
         area2.SetActive(false);
-        stillCapturing = true;
-        captureTimer = 0;
     }
     void Update()
     {
@@ -84,7 +81,7 @@ public class CaptureCheck : MonoBehaviour
             StartCoroutine(HandleCaptureThresholdReached());
         }
 
-        if (stillCapturing) captureTimer += Time.deltaTime;
+        _gamePatchHandler.UpdateCaptureTimer();
     }
     public void RunnerCaptured()
     {
@@ -147,7 +144,7 @@ public class CaptureCheck : MonoBehaviour
         if (playerMovement == null) yield break;
 
         Debug.Log("Capture threshold reached.");
-        stillCapturing = false;
+        _gamePatchHandler.HandleCatchFinish();
         DisablePlayerMovement(true);
         area1.SetActive(false);
         area2.SetActive(true);

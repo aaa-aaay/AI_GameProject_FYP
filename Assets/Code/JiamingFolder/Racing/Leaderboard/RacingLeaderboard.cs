@@ -64,7 +64,5 @@ public class RacingLeaderboard : MonoBehaviour
         else if (playerRank == 2) _miniGameOverHandler.HandleGameOver(true, 5, 1);
 
         else _miniGameOverHandler.HandleGameOver(false);
-
-        Debug.Log(playerRank + 1);
     }
 }

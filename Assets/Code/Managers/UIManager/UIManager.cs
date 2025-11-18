@@ -27,6 +27,7 @@ public class UIManager : MonoBehaviour, IGameService
 
     private InputManager _inputManager;
     private MiniGameSO _miniGame;
+    private bool disableSettings;
     public event Action<bool> OnUIToFocusToggle;
 
 
@@ -53,14 +54,12 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void OpenLevelSelectUI(MiniGameSO levelSO, int starUnlocked)
     {
-        Debug.Log("Open");
         _levelSelectCanvasGO.SetActive(true);
         _levelSelectAnimator.SetBool("IsOpen", true);
         _levelSelectPanelImage.sprite = levelSO.levelSelectPanelSprite;
         int count = starUnlocked;
         foreach (Image image in starImages)
         {
-
             if (count > 0) image.sprite = _starFilledSprite;
             else image.sprite = _starUnFilledSprite;
             count--;
@@ -69,17 +68,15 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void HideLevelSelectUI()
     {
-
-        Debug.Log("Hidden");
         _levelSelectAnimator.SetBool("IsOpen", false);
         //_levelSelectCanvasGO.SetActive(false);
     }
-
+    
 
     public void ToggleLevelCompleteUI(bool open,int starCount = 0)
     {
-        //if (open) Time.timeScale = 0;
-        //else Time.timeScale = 1;
+        if (open) Time.timeScale = 0;
+        else Time.timeScale = 1;
         OnUIToFocusToggle?.Invoke(open);
         ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
         _levelCompleteManager.ToggleLevelCompleteCanvas(open, starCount, _miniGame);
@@ -90,8 +87,8 @@ public class UIManager : MonoBehaviour, IGameService
 
     public void ToggleLevelFailedUI(bool open)
     {
-        //if (open) Time.timeScale = 0;
-        //else Time.timeScale = 1;
+        if (open) Time.timeScale = 0;
+        else Time.timeScale = 1;
         OnUIToFocusToggle?.Invoke(open);
         ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
         _levelCompleteManager.ToggleLevelFailedCanvas(open, _miniGame);
@@ -104,6 +101,7 @@ public class UIManager : MonoBehaviour, IGameService
         ToggleLevelFailedUI(false);
         ToggleLevelCompleteUI(false);
         _settingsManager.ToggleSettings(false);
+        disableSettings = false;
         HideLevelSelectUI();
     }
 
@@ -134,13 +132,19 @@ public class UIManager : MonoBehaviour, IGameService
     {
 
         bool temp = false;
-        if (_settingsManager._isSettingsOpen) temp = false;
+        if (_settingsManager._isSettingsOpen || disableSettings) temp = false;
         else temp = true;
+        
 
         _settingsManager.ToggleSettings(temp);
         OnUIToFocusToggle?.Invoke(temp);
 
 
+    }
+
+    public void DisableSettings(bool disable)
+    {
+        disableSettings = disable;
     }
 
 
