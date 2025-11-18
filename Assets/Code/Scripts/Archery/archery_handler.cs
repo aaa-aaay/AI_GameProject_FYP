@@ -185,12 +185,12 @@ public class archery_handler : MonoBehaviour
             uiHandler.UpdateWind(1, windSpeed);
         }
 
+        yield return new WaitForSeconds(cameraStay);
+
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
 
         targetObject.transform.position = playerObject.transform.position + new Vector3(lateralDistance, 2.5f, targetDistance);
-
-        yield return new WaitForSeconds(cameraStay);
 
         player.Ready();
 
@@ -224,12 +224,12 @@ public class archery_handler : MonoBehaviour
             uiHandler.UpdateWind(1, windSpeed);
         }
 
+        yield return new WaitForSeconds(cameraStay);
+
         targetDistance = Random.Range(minTargetDistance, maxTargetDistance);
         lateralDistance = Random.Range(-maxLateralDistance, maxLateralDistance);
 
         targetObject.transform.position = agentObject.transform.position + new Vector3(lateralDistance, 2.5f, targetDistance);
-
-        yield return new WaitForSeconds(cameraStay);
 
         agent.Ready();
 
@@ -285,11 +285,6 @@ public class archery_handler : MonoBehaviour
 
         StopAllCoroutines();
         StartCoroutine(ReturnCamera(currentArrow));
-
-        currentArrow++;
-        if (currentArrow == numArrows)
-            currentArrow = 0;
-        arrows[currentArrow].gameObject.SetActive(false);
     }
 
     public void UpdateUI(Vector3 position, float force, float yaw, float pitch)
@@ -325,6 +320,11 @@ public class archery_handler : MonoBehaviour
         Destroy(position.gameObject);
 
         yield return new WaitForSeconds(cameraStay * 2f);
+
+        currentArrow++;
+        if (currentArrow == numArrows)
+            currentArrow = 0;
+        arrows[currentArrow].gameObject.SetActive(false);
 
         turnCamera.enabled = false;
         playerRightCamera.enabled = true;
