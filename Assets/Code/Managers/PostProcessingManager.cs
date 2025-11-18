@@ -1,13 +1,18 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 public class PostProcessingManager : MonoBehaviour, IGameService
 {
     [SerializeField] private Volume volume;
+    [SerializeField] private Volume _tagNightVol;
     private void OnEnable()
     {
         ServiceLocator.Instance.AddService(this, false);
         volume.enabled = false;
+        _tagNightVol.enabled = false;
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDestroy()
@@ -18,5 +23,15 @@ public class PostProcessingManager : MonoBehaviour, IGameService
     public void ShowUIEffects(bool show)
     {
         volume.enabled = show;
+    }
+
+    public void ShowTagNightEffects(bool show)
+    {
+        _tagNightVol.enabled = show;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ShowTagNightEffects(false);
     }
 }
