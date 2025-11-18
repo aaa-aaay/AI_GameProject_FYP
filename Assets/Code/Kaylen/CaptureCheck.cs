@@ -156,6 +156,7 @@ public class CaptureCheck : MonoBehaviour
         {
             playerMovement.transform.position = nextMapSpawnPoint.position;
             playerMovement.transform.rotation = nextMapSpawnPoint.rotation;
+            //playerMovement.animator.SetBool("grounded", true);
             Debug.Log($"Player teleported to {nextMapSpawnPoint.position}");
         }
 

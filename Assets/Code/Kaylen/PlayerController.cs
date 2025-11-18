@@ -85,26 +85,22 @@ public class PlayerMovement : MonoBehaviour
     {
         // Update grounded state
         isGrounded = IsGrounded();
-
-        // Update animator grounded parameter
-        if (animator != null)
-            animator.SetBool("grounded", isGrounded);
-
         // Jump
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
+
+            
             Vector3 v = rb.linearVelocity;
             v.y = 0f; // Reset downward force
             rb.linearVelocity = v;
 
             rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+            Debug.Log("button called");
+            animator.SetTrigger("jump");
+        }
 
-            // Trigger jump animation
-            if (animator != null)
-                animator.SetBool("grounded", false);
-
-            // Tag input (left click)
-            if (Input.GetMouseButtonDown(0))
+        // Tag input (left click)
+        if (Input.GetMouseButtonDown(0))
             {
                 if (animator != null)
                     animator.SetTrigger("catching");
@@ -112,6 +108,7 @@ public class PlayerMovement : MonoBehaviour
                 if (isHoldingRunner) DropRunner();
                 else if (canTag)
                 {
+                    Debug.Log("coroutine started");
                     if (tagCoroutine != null) StopCoroutine(tagCoroutine);
                     tagCoroutine = StartCoroutine(DoTag());
                 }
@@ -127,7 +124,7 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetBool("walking", isWalking);
                 animator.SetBool("isHolding", isHoldingRunner);
             }
-        }
+        
     }
 
     private void FixedUpdate()
