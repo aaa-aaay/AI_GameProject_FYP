@@ -85,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
     {
         // Update grounded state
         isGrounded = IsGrounded();
+        Debug.Log(isGrounded);
         // Jump
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
@@ -202,15 +203,12 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 origin = transform.position + Vector3.up * groundCheckOffset;
         float castDistance = groundCheckOffset + 0.2f;
-
-        return Physics.SphereCast(
+        //return Physics.Raycast(origin, Vector3.down * 2.0f, out RaycastHit hit);
+        return Physics.Raycast(
             origin,
-            groundCheckRadius,
-            Vector3.down,
+            Vector3.down * 1.2f,
             out RaycastHit hit,
-            castDistance,
-            ~0,
-            QueryTriggerInteraction.Ignore
+            castDistance
         );
     }
 
@@ -222,7 +220,10 @@ public class PlayerMovement : MonoBehaviour
         Vector3 endPoint = origin + Vector3.down * castDistance;
 
         // Draw sphere at end point
-        Gizmos.DrawWireSphere(endPoint, groundCheckRadius);
+        Gizmos.DrawLine(
+            origin,
+            Vector3.down * 1.2f
+        );
     }
 
     // ======================= Health & Runner =======================
