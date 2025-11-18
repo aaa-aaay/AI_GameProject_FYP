@@ -101,14 +101,15 @@ public class BadmintionGameManager : MonoBehaviour
     {
         if (player1Score >= ScoreToWin)
         {
-            ResetGame();
             GameOver(1);
+            ResetGame();
+
             
         }
        else if(player2Score >= ScoreToWin)
        {
-            ResetGame();
             GameOver(2);
+            ResetGame();
             
        }
     }
@@ -134,8 +135,12 @@ public class BadmintionGameManager : MonoBehaviour
         }
         else
         {
-            handler.HandleGameOver(true, 2, 3);
-            
+            if (player1Score <= 2) handler.HandleGameOver(true, 2, 3);
+            else if (player1Score <= 4) handler.HandleGameOver(true, 2, 2);
+            else  handler.HandleGameOver(true, 2, 1);
+
+
+
         }
     }
 

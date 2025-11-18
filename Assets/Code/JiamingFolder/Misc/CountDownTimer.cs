@@ -10,6 +10,7 @@ public class CountDownTimer : MonoBehaviour
     [SerializeField] private string _endText = "GO!";
     [SerializeField] private TMP_Text _countDownText;
     [SerializeField] private GameObject _countDownCanvasGO;
+    [SerializeField] private string[] _soundEffectNames;
 
     private CanvasGroup _canvasGroup;
 
@@ -29,6 +30,7 @@ public class CountDownTimer : MonoBehaviour
 
         if(_countDownCount == 0)
         {
+            ServiceLocator.Instance.GetService<AudioManager>().PlaySFX(_soundEffectNames[0]);
             _countDownText.text = _endText;
             _canvasGroup.DOFade(1, 0.3f).SetUpdate(true);
             _countDownText.rectTransform.DOScale(Vector3.one, .3f).SetUpdate(true).OnComplete(AnimationComplete);
@@ -37,7 +39,7 @@ public class CountDownTimer : MonoBehaviour
             Time.timeScale = 1f; //reEnable the game;
             yield break;
         }
-
+        ServiceLocator.Instance.GetService<AudioManager>().PlaySFX(_soundEffectNames[_countDownCount]);
         _countDownText.text = _countDownCount.ToString();
         yield return null;
         _canvasGroup.DOFade(1,0.3f).SetUpdate(true); //animate even when paused

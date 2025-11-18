@@ -13,7 +13,15 @@ MonoBehaviour:
   m_Name: Archery
   m_EditorClassIdentifier: 
   sceneName: archery_game
-  gameName: Archery
-  starConditions: []
-  levelFailedText: Beat hommie at archery
-  tutorialVideoClips: []
+  gameName: Galactic Raiders
+  levelSelectPanelSprite: {fileID: 21300000, guid: 2f684af17f30503439097af56e4af41a, type: 3}
+  levelLogo: {fileID: 21300000, guid: d29217e973a8234498495def749843e9, type: 3}
+  starConditions:
+  - Win at the shooting match against the raiders.
+  - Be at least 100 points ahead of the opponent.
+  - Be at least 200 points ahead of the opponent.
+  levelFailedText: Beat the opponent at the shooting match.
+  tutorialVideoClips:
+  - {fileID: 32900000, guid: 9d41204db0d6bb94eafb6ed2156e219e, type: 3}
+  - {fileID: 32900000, guid: 0607b75c97c4fdc488fb2576ee5dcacd, type: 3}
+  - {fileID: 32900000, guid: 1ec7ad16c4e055544a98a079aac2f902, type: 3}

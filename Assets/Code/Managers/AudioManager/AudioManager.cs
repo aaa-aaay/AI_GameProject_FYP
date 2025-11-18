@@ -23,6 +23,12 @@ public class AudioManager : MonoBehaviour, IGameService
 
     public Sound[] sounds;
 
+    [Range(0, 1)] private float sfxVol = 1;
+    [Range(0, 1)] private float bgmVol = 1;
+    [Range(0, 1)] private float bgmSoundVol;
+
+
+
     private void OnEnable()
     {
         ServiceLocator.Instance.AddService(this, false);
@@ -37,6 +43,10 @@ public class AudioManager : MonoBehaviour, IGameService
             source.maxDistance = 30.0f;
             _audioSourcePool.Enqueue(source);
         }
+
+        sfxVol = 1;
+        bgmVol = 1;
+        bgmSoundVol = 1;
 
         LoadAllSounds();
 
@@ -61,7 +71,10 @@ public class AudioManager : MonoBehaviour, IGameService
 
     }
 
-
+    public void PlaySFXWithOutPos(string name)
+    {
+        PlaySFX(name);
+    }
     public void PlaySFX(string name, Vector3? position = null)
     {
 
@@ -74,7 +87,7 @@ public class AudioManager : MonoBehaviour, IGameService
                 {
                     AudioSource source = _audioSourcePool.Dequeue();
                     source.clip = sound.clip;
-                    source.volume = sound.volume;
+                    source.volume = sfxVol * sound.volume;
 
                     if (position.HasValue)
                     {
@@ -110,6 +123,35 @@ public class AudioManager : MonoBehaviour, IGameService
         }
     }
 
+    public void StopBGmWithFade()
+    {
+        if (_backgroundMusicSource.clip != null && _backgroundMusicSource.isPlaying)
+        {
+            StartCoroutine(FadeOutBGM(_backgroundMusicFadeTime));
+        }
+    }
+
+
+    private IEnumerator FadeOutBGM(float duration)
+    {
+        float startVolume = _backgroundMusicSource.volume;
+
+        float time = 0f;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+
+            _backgroundMusicSource.volume = Mathf.Lerp(startVolume, 0f, t);
+
+            yield return null;
+        }
+
+        _backgroundMusicSource.Stop();
+        _backgroundMusicSource.clip = null;
+        _backgroundMusicSource.volume = startVolume; // reset for next BGM play
+    }
+
     private IEnumerator FadeBackgroundMusic(Sound sound, float duration)
     {
         float fadeScale = 1 / duration;
@@ -126,7 +168,8 @@ public class AudioManager : MonoBehaviour, IGameService
         }
 
         float fadeInTime = 0;
-        float targetVolume = sound.volume;
+        bgmSoundVol = sound.volume;
+        float targetVolume = bgmVol * sound.volume;
         _backgroundMusicSource.clip = sound.clip;
         _backgroundMusicSource.Play();
         while (fadeInTime < 1)
@@ -139,7 +182,7 @@ public class AudioManager : MonoBehaviour, IGameService
 
     private IEnumerator ReturnToPoolAfterPlayback(AudioSource source)
     {
-        yield return new WaitForSeconds(source.clip.length);
+        yield return new WaitForSecondsRealtime(source.clip.length);
         source.Stop();
         source.clip = null;
         _audioSourcePool.Enqueue(source);
@@ -164,7 +207,8 @@ public class AudioManager : MonoBehaviour, IGameService
 
     public void SetBGMVol(float bgmVolume)
     {
-        _backgroundMusicSource.volume = bgmVolume;
+        _backgroundMusicSource.volume = bgmVolume * bgmSoundVol;
+        bgmVol = bgmVolume;
     }
 
     public void SetSFXVol(float sfxVolume)
@@ -173,5 +217,15 @@ public class AudioManager : MonoBehaviour, IGameService
         {
             source.volume = sfxVolume;
         }
+        sfxVol = sfxVolume;
+    }
+
+    public float GetBGMVol()
+    {
+        return bgmVol;
+    }
+    public float GetSFXVol() { 
+    
+        return sfxVol;
     }
 }

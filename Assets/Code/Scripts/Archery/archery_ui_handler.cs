@@ -9,6 +9,9 @@ public class archery_ui_handler : MonoBehaviour
     [SerializeField] private Slider playerPointSlider;
     [SerializeField] private Slider agentPointSlider;
 
+    [SerializeField] private Animator windDirectionAnimator;
+    [SerializeField] private TMP_Text windSpeedText;
+
     private float maxForce;
     private float minForce;
     private float force;
@@ -56,5 +59,16 @@ public class archery_ui_handler : MonoBehaviour
 
         playerPointSlider.value = playerPoint;
         agentPointSlider.value = agentPoint;
+    }
+
+    public void UpdateWind(int direction, float speed = 1)
+    {
+        if (direction == 1)
+            windDirectionAnimator.SetBool("isRight", false);
+        else
+            windDirectionAnimator.SetBool("isRight", true);
+
+        windSpeedText.text = $"Wind Speed:\n" +
+            $"{speed.ToString("F1")} km/h";
     }
 }

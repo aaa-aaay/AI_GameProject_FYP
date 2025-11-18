@@ -10,6 +10,7 @@ public class LevelManager : MonoBehaviour
 
 
     [SerializeField] private List<LobbyWorld> _worldList;
+    [SerializeField] private List<WorldSelect> _worldSelectList;
     private void Start()
     {
         _loadManager = ServiceLocator.Instance.GetService<SaveLoadManager>();
@@ -25,8 +26,8 @@ public class LevelManager : MonoBehaviour
         foreach (var data in _progress.levels)
         {
             LobbyWorld world = _worldList[data.levelIndex - 1];
-            world.gameObject.GetComponentInChildren<WorldSelect>().SetStarCount(data.stars); //set the star counts
-
+            _worldSelectList[data.levelIndex - 1].SetStarCount(data.stars); //set the star counts
+            int tmpint = data.levelIndex - 1;
             if (data.stars >= 3) 
                 world.SetState(true);
         }

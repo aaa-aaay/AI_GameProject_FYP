@@ -1,5 +1,7 @@
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using static UnityEngine.Rendering.BoolParameter;
 
 public class SettingsManager : MonoBehaviour
@@ -9,6 +11,8 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] private TMP_Text sfxVolText;
     [SerializeField] private TMP_Text _screenTypeText;
     [SerializeField] private TMP_Text difficultyText;
+    [SerializeField] private Slider bgmSlider;
+    [SerializeField] private Slider sfxSlider;
     private AudioManager _audioManager;
 
     public bool _isSettingsOpen;
@@ -27,7 +31,9 @@ public class SettingsManager : MonoBehaviour
     {
         _audioManager = ServiceLocator.Instance.GetService<AudioManager>();
         SetDifficultyText();
-        SetDisplayType(displayType.Fullscreen);
+        SetDisplayType(displayType.WindowedFullScreen);
+        UpdateBGMVol(1);
+        UpdateSFXVol(1);
     }
     public void UpdateBGMVol(float newVolume)
     {
@@ -64,7 +70,7 @@ public class SettingsManager : MonoBehaviour
         switch (type)
         {
             case displayType.Fullscreen:
-                Screen.SetResolution(1440, 1080, FullScreenMode.ExclusiveFullScreen);
+                Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, FullScreenMode.ExclusiveFullScreen);
                 _screenTypeText.text = "FullScreen";
                 break;
 
@@ -74,7 +80,7 @@ public class SettingsManager : MonoBehaviour
                 break;
 
             case displayType.WindowedFullScreen:
-                Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, FullScreenMode.FullScreenWindow);
+                Screen.SetResolution(1440,1080, FullScreenMode.FullScreenWindow);
                 _screenTypeText.text = "WindowedFullscreen";
                 break;
         }
@@ -84,7 +90,19 @@ public class SettingsManager : MonoBehaviour
     {
         _settingsPage.SetActive(open);
         ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
-        if (open) Time.timeScale = 0;
+        if (open) {
+            float bgmVol = _audioManager.GetBGMVol();
+            float sfxVol = _audioManager.GetSFXVol();
+
+            bgmVolText.text = Mathf.RoundToInt(bgmVol * 100).ToString();
+            bgmSlider.value = bgmVol;
+            sfxVolText.text = Mathf.RoundToInt(sfxVol * 100).ToString();
+            sfxSlider.value = sfxVol;
+
+
+            Time.timeScale = 0;
+            ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("ButtonClick");
+        }
         else Time.timeScale = 1;
         _isSettingsOpen = open;
     }

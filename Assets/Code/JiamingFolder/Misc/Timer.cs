@@ -4,12 +4,14 @@ public class Timer : MonoBehaviour
 {
 
     private bool timerStarted = false;      
-    public float elapsedTime = 0f;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [HideInInspector] public float elapsedTime = 0f;
+    // Start is
+    //
+    //called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         elapsedTime = 0f;
-        timerStarted = false;
+        
     }
 
     public void StartTimer()

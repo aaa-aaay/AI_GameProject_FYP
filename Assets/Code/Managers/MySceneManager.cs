@@ -5,6 +5,7 @@ public class MySceneManager : MonoBehaviour, IGameService
 {
     [SerializeField] private string _gameLobbyName;
     [SerializeField] private string _tutorialSceneName = "Tutorial";
+    [SerializeField] private string _mainMenuSceneName = "MainMenu";
 
 
     private void OnEnable()
@@ -16,28 +17,41 @@ public class MySceneManager : MonoBehaviour, IGameService
         //ServiceLocator.Instance.RemoveService<MySceneManager>(false);
     }
 
+    private void SetupWhenChangingScenes()
+    {
+        Time.timeScale = 1;
+        ServiceLocator.Instance.GetService<AudioManager>().StopBGmWithFade();
+        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
+    }
+
 
     public void LoadScene(string name)
     {
+        SetupWhenChangingScenes();
         //handle transition animation here
         EventHolder.InvokeStartLoadScene(name);
-        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
+
     }
 
     public void LoadMiniGameWithTutorial(MiniGameSO minigame)
     {
+        SetupWhenChangingScenes();
         ServiceLocator.Instance.GetService<UIManager>().SetMiniGameForTutorial(minigame);
         EventHolder.InvokeStartLoadScene(_tutorialSceneName);
-        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
+
     }
 
     public void restartScene()
     {
-        ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
+        SetupWhenChangingScenes();
         EventHolder.InvokeStartLoadScene(SceneManager.GetActiveScene().name);
     }
     public void GoBacktoGameLobby()
     {
         LoadScene(_gameLobbyName);
+    }
+    public void GoToMainMenu()
+    {
+        LoadScene(_mainMenuSceneName);
     }
 }

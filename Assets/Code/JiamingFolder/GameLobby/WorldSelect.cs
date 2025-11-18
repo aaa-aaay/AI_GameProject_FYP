@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class WorldSelect : MonoBehaviour
 {
-
+    [SerializeField] private string _scene;
     [SerializeField] private MiniGameSO _miniGame;
 
     private InputManager _inputManager;
@@ -25,7 +25,6 @@ public class WorldSelect : MonoBehaviour
         _uiManager = ServiceLocator.Instance.GetService<UIManager>();
 
         _playerInRange = false;
-        _starCount = 0;
     }
 
     private void OnDestroy()
@@ -38,7 +37,14 @@ public class WorldSelect : MonoBehaviour
 
         if(_playerInRange)
         {
+            if (_scene != string.Empty)
+            {
+                ServiceLocator.Instance.GetService<MySceneManager>().LoadScene(_scene);
+                return;
+            }
+
             ServiceLocator.Instance.GetService<MySceneManager>().LoadMiniGameWithTutorial(_miniGame);
+            ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("LevelSelectFinish");
         }
     }
 
@@ -46,9 +52,9 @@ public class WorldSelect : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-
+            ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("LevelSelect",transform.position);
             _playerInRange = true;
-            _uiManager.OpenLevelSelectUI(_miniGame.gameName, _starCount);
+            _uiManager.OpenLevelSelectUI(_miniGame, _starCount);
 
         }
     }

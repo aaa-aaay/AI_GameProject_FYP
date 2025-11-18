@@ -7,6 +7,8 @@ public class RaceCarControl : MonoBehaviour
     [SerializeField] RaceManager _manager;
     [SerializeField] GameObject _car;
 
+    private RaceAudioPlayer _AudioPlayer;
+    private CarVFXController _VFXcontroller;
     private ResetCarPosition _carPosResetter;
     private GoalChecker _goalChecker;
     private BetterCarMovement _movement;
@@ -18,17 +20,21 @@ public class RaceCarControl : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _manager.OnResetRace += RestartRace;
+        _AudioPlayer = GetComponent<RaceAudioPlayer>();
         _movement = GetComponent<BetterCarMovement>();
+        _VFXcontroller = GetComponent<CarVFXController>();
+
+        _carPosResetter = _car.GetComponent<ResetCarPosition>();
+        _goalChecker = _car.GetComponent<GoalChecker>();
+
         _inputManager = ServiceLocator.Instance.GetService<InputManager>();
         _inputManager.OnMove += HandleMove;
         _inputManager.OnMoveEnd += HandleMoveEnd;
         _inputManager.onDash += HandleDrift;
         _inputManager.onDashEnd += HandleDriftEnd;
 
+        _manager.OnResetRace += RestartRace;
 
-        _carPosResetter = _car.GetComponent<ResetCarPosition>();
-        _goalChecker = _car.GetComponent<GoalChecker>();
         _goalChecker.OnRaceFinished += PlayerFinishedRace;
 
     }
@@ -58,8 +64,9 @@ public class RaceCarControl : MonoBehaviour
         if (Mathf.Abs(_moveInput.x) > 0.1) //moving left or right
         {
             _isDrifting = true;
+            _AudioPlayer.StartDriftSFX();
             _movement.ToggleDrifting(_isDrifting, _moveInput.x);
-            Debug.Log("caleed");
+            _VFXcontroller.PlayDriftEffects(_isDrifting, _moveInput.x);
 
         }
     }
@@ -67,7 +74,9 @@ public class RaceCarControl : MonoBehaviour
     private void HandleDriftEnd()
     {
         _isDrifting = false;
+        _AudioPlayer.EndDriftSFX();
         _movement.ToggleDrifting(_isDrifting);
+        _VFXcontroller.PlayDriftEffects(_isDrifting);
     }
 
     private void HandleMoveEnd()

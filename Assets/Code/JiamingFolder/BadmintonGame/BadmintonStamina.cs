@@ -7,7 +7,7 @@ public class BadmintonStamina : MonoBehaviour
 
     [SerializeField] private float maxStamina;
     [SerializeField] private Image staminaFillImage;
-
+    [SerializeField] private BadmintionGameManager gameManager;
 
     [Header("Stamina costs for actions")]
     [SerializeField] private float running;
@@ -35,7 +35,8 @@ public class BadmintonStamina : MonoBehaviour
     {
 
         currentStamina = maxStamina;
-
+        gameManager.OnPlayer1Score += ResetStamina;
+        gameManager.OnPlayer2Score += ResetStamina;
         SetNewStamina();
     }
 
@@ -79,5 +80,10 @@ public class BadmintonStamina : MonoBehaviour
         if (checkPointNo == 1) { return checkpoint1; }
         if (checkPointNo == 2) { return checkpoint2; }
         else return 0;
+    }
+
+    public void ResetStamina()
+    {
+        currentStamina = maxStamina;
     }
 }

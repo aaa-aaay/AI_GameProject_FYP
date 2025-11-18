@@ -18,7 +18,7 @@ public class DialogueManager : MonoBehaviour, IGameService
 
     [SerializeField] private Animator animator;
 
-    private DialogueSpeechSO currentSentence;
+    private DialogueOption currentSentence;
 
     private bool haveDialogue;
 
@@ -45,13 +45,20 @@ public class DialogueManager : MonoBehaviour, IGameService
         if (speech) // Initial speech
         {
             currentSentence = speech;
-            DisplaySentence();
+            DisplaySentence(speech);
             return;
         }
 
-        if (!currentSentence.IsMCQ) currentSentence = currentSentence.NextSpeech; // Display next sentence if not MCQ
-        else if (choice < 0) return; // Ignore if MCQ and no choice made
-        else currentSentence = currentSentence.Choices[choice].NextSpeech;
+        if (currentSentence is DialogueSpeechSO speechNodeBefore)
+        {
+            if (!speechNodeBefore.IsMCQ) currentSentence = speechNodeBefore.NextSpeech; // Display next sentence if not MCQ
+            else if (choice < 0) return; // Ignore if MCQ and no choice made
+            else currentSentence = speechNodeBefore.Choices[choice].NextSpeech;
+        }
+        else if (currentSentence is DialogueActionSO actionNodeBefore)
+        {
+            currentSentence = actionNodeBefore.NextSpeech;
+        }
 
         if (!currentSentence)
         {
@@ -59,35 +66,53 @@ public class DialogueManager : MonoBehaviour, IGameService
             return;
         }
 
-        if (currentSentence.IsMCQ)
-            DisplayChoices();
-        else
-            DisplaySentence();
+        if (currentSentence is DialogueSpeechSO speechNodeAfter)
+        {
+            if (speechNodeAfter.IsMCQ)
+                DisplayChoices(speechNodeAfter);
+            else
+                DisplaySentence(speechNodeAfter);
+        }
+        else if (currentSentence is DialogueActionSO actionNodeAfter)
+        {
+            if (actionNodeAfter.ActionType == dialogueActionType.Scene)
+            {
+                ServiceLocator.Instance.GetService<MySceneManager>().LoadScene(actionNodeAfter.SceneName);
+                EndDialogue();
+                return;
+            }
+            else if (actionNodeAfter.ActionType == dialogueActionType.MinigameScene)
+            {
+                ServiceLocator.Instance.GetService<MySceneManager>().LoadMiniGameWithTutorial(actionNodeAfter.Minigame);
+                EndDialogue();
+                return;
+            }
+        }
     }
 
-    private void DisplaySentence()
+    private void DisplaySentence(DialogueSpeechSO speechNode)
     {
         speechText.gameObject.SetActive(true);
         buttonPanel.gameObject.SetActive(false);
 
-        speakerNameText.text = currentSentence.SpeakerName;
-        speakerImage.sprite = currentSentence.SpeakerSprite;
+        speakerNameText.text = speechNode.NpcInfo.NpcName;
+        speakerImage.sprite = speechNode.NpcInfo.NpcSprite;
 
         StopAllCoroutines();
-        StartCoroutine(TypeSentence(currentSentence.Speech));
+        StartCoroutine(TypeSentence(speechNode.Speech));
     }
 
-    private void DisplayChoices()
+    private void DisplayChoices(DialogueSpeechSO speechNode)
     {
         speechText.gameObject.SetActive(false);
         buttonPanel.gameObject.SetActive(true);
         foreach (RectTransform t in buttons) t.gameObject.SetActive(false);
 
-        speakerNameText.text = currentSentence.SpeakerName;
-        speakerImage.sprite = currentSentence.SpeakerSprite;
+        speakerNameText.text = speechNode.NpcInfo.NpcName;
+        speakerImage.sprite = speechNode.NpcInfo.NpcSprite;
 
         int i = 0;
-        foreach (DialogueChoice c in currentSentence.Choices)
+        foreach (DialogueChoice c in speechNode.Choices)
         {
             buttons[i].gameObject.SetActive(true);
             buttons[i].GetComponentInChildren<TMP_Text>().text = c.OptionText;
@@ -117,4 +142,8 @@ public class DialogueManager : MonoBehaviour, IGameService
     {
         DisplayNextSentence(replyNo - 1);
     }
+}
+
+public class DialogueOption : ScriptableObject
+{
 }

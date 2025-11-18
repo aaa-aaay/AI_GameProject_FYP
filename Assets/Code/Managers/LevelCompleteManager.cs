@@ -20,7 +20,7 @@ public class LevelCompleteManager : MonoBehaviour
     }
     public void ToggleLevelCompleteCanvas(bool open,int starCount = 0, MiniGameSO gameSo = null)
     {
-
+        RemoveStars();
         if (open)
         {
             if (_levelFailedCanvas.activeSelf) return;
@@ -56,7 +56,6 @@ public class LevelCompleteManager : MonoBehaviour
         int count = starCount;
         foreach (var animator in _starAnimators)
         {
-            Debug.Log("AnimationPlayed");
             animator.SetTrigger("GetStar");
             starCount--;
             if (starCount == 0) break;
