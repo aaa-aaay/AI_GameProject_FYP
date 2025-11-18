@@ -13,6 +13,7 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] private TMP_Text difficultyText;
     [SerializeField] private Slider bgmSlider;
     [SerializeField] private Slider sfxSlider;
+    [SerializeField] private LeaveMinigame leave_minigame;
     private AudioManager _audioManager;
 
     public bool _isSettingsOpen;
@@ -99,6 +100,7 @@ public class SettingsManager : MonoBehaviour
             sfxVolText.text = Mathf.RoundToInt(sfxVol * 100).ToString();
             sfxSlider.value = sfxVol;
 
+            leave_minigame.EnableButton();
 
             Time.timeScale = 0;
             ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("ButtonClick");
