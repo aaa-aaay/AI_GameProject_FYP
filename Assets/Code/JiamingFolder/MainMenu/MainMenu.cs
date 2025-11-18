@@ -24,7 +24,7 @@ public class MainMenu : MonoBehaviour
 
     public void OpenCredits()
     {
-
+        Application.OpenURL("https://docs.google.com/presentation/d/1XMuK7ppaOS9fbP7C1iPwgGWCvyIoHoxQr-LBrRrmE6E/edit?usp=sharing");
     }
 
 

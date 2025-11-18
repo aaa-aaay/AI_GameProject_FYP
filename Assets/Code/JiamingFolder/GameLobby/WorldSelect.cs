@@ -48,7 +48,6 @@ public class WorldSelect : MonoBehaviour
         {
             ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("LevelSelect",transform.position);
             _playerInRange = true;
-            Debug.Log("StarCount Given:" + _starCount);
             _uiManager.OpenLevelSelectUI(_miniGame, _starCount);
 
         }
@@ -68,7 +67,6 @@ public class WorldSelect : MonoBehaviour
     }
     public void SetStarCount(int count)
     {
-        Debug.Log("StarCount taken:" + count);
         _starCount = count;
     }
     public void Activate(bool activate)
