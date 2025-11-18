@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class WorldSelect : MonoBehaviour
 {
-
+    [SerializeField] private string _scene;
     [SerializeField] private MiniGameSO _miniGame;
 
     private InputManager _inputManager;
@@ -38,6 +38,12 @@ public class WorldSelect : MonoBehaviour
 
         if(_playerInRange)
         {
+            if (_scene != string.Empty)
+            {
+                ServiceLocator.Instance.GetService<MySceneManager>().LoadScene(_scene);
+                return;
+            }
+
             ServiceLocator.Instance.GetService<MySceneManager>().LoadMiniGameWithTutorial(_miniGame);
             ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("LevelSelectFinish");
         }
