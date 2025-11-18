@@ -105,11 +105,12 @@ public class RaceManager : MonoBehaviour
     }
     private void HandleCarfinishRace(string name, float timeTaken)
     {
-
         if (timeTaken < _finishTimeDebug)
         {
             _finishTimeDebug = timeTaken;
         }
+
+        Debug.Log("TimeTaken: " + _finishTimeDebug);
 
         if (isDebugMood) return;
 
