@@ -3,23 +3,30 @@
 public class KeyPickup : MonoBehaviour
 {
     [Header("Pickup Settings")]
-    public string playerTag = "Player"; // Tag of player allowed to pick up the key
-    private ExitTrigger exitDoor;       // Reference to ExitTrigger
+    public string playerTag = "Player";
+    private ExitTrigger exitDoor;
     private bool collected = false;
+    public GameObject keyUI;
 
     [Header("Floating Settings")]
-    public float bobAmplitude = 0.25f;  // Height of bobbing motion
-    public float bobSpeed = 2f;         // Speed of bobbing
-    private Vector3 startPos;           // Original position of the key
-    private Camera mainCamera;          // Cached main camera reference
+    public float bobAmplitude = 0.25f;
+    public float bobSpeed = 2f;
+    private Vector3 startPos;
+    private Camera mainCamera;
+
+   
 
     private void Start()
     {
-        // Cache starting position and main camera
+        keyUI = GameObject.Find("Key");
+        if (keyUI == null)
+            Debug.LogWarning("[KeyPickup] Could not auto-assign KeyUI! Make sure an object named 'KeyUI' exists in the scene.");
+        else
+            keyUI.SetActive(false); 
+
         startPos = transform.position;
         mainCamera = Camera.main;
 
-        // Find the ExitTrigger in the scene
         exitDoor = FindFirstObjectByType<ExitTrigger>();
         if (exitDoor == null)
             Debug.LogWarning("[KeyPickup] No ExitTrigger found in the scene!");
@@ -27,8 +34,6 @@ public class KeyPickup : MonoBehaviour
 
     private void Update()
     {
-      
-        // Floating (bobbing) effect
         float newY = startPos.y + Mathf.Sin(Time.time * bobSpeed) * bobAmplitude;
         transform.position = new Vector3(startPos.x, newY, startPos.z);
     }
@@ -42,6 +47,12 @@ public class KeyPickup : MonoBehaviour
             collected = true;
             Debug.Log("[KeyPickup] Key collected!");
 
+            // --- SHOW UI ICON ---
+            if (keyUI != null)
+                keyUI.SetActive(true);
+            else
+                Debug.LogWarning("[KeyPickup] No Key UI assigned!");
+
             // Mark player's star condition
             PlayerMovement player = other.GetComponent<PlayerMovement>();
             if (player != null)
@@ -50,7 +61,7 @@ public class KeyPickup : MonoBehaviour
                 Debug.Log("[KeyPickup] Player star condition: keyCollected = true");
             }
 
-            // Unlock exit door (if timer allows it later)
+            // Unlock exit door
             if (exitDoor != null)
             {
                 exitDoor.UnlockDoor();
