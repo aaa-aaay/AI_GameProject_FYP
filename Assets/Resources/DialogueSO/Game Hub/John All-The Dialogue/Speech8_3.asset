@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5425bf7323e91a946b2f402f968698c0, type: 3}
-  m_Name: Speech6_1
+  m_Name: Speech8_3
   m_EditorClassIdentifier: 
-  npcInfo: {fileID: 11400000, guid: 15e26dd0a0fcbfc4f8c347522fbd5c5e, type: 2}
-  isMCQ: 0
-  speech: Ultimate Badminton, go one on one against your opponent in a match of badminton.
-  nextSpeech: {fileID: 11400000, guid: c778f38b059c1334e9ed9952d3f53ef8, type: 2}
-  choices: []
+  npcInfo: {fileID: 11400000, guid: 2d8ab7a1dd1dcce499bb7d16711c4d68, type: 2}
+  isMCQ: 1
+  speech: 
+  nextSpeech: {fileID: 0}
+  choices:
+  - optionText: Yes
+    nextSpeech: {fileID: 11400000, guid: 041ebb0117263414d955aa59c36f235e, type: 2}
+  - optionText: No
+    nextSpeech: {fileID: 11400000, guid: 2d510c8b0b072e748a11dc0bf3ffb846, type: 2}
