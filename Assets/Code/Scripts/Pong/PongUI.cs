@@ -84,6 +84,11 @@ public class PongUI : MonoBehaviour
         count++;
     }
 
+    public void ReduceCount()
+    {
+        count--;
+    }
+
     public void UpdateSlider(GameObject owner, float value)
     {
         for (int i = 0; i < powers.Count; i++)
