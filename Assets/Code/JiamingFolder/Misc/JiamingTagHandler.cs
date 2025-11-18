@@ -32,7 +32,7 @@ public class JiamingTagHandler : MonoBehaviour
     {
         if (!_stillCatching) return;
         captureTimer += Time.deltaTime;
-        timerText.text = captureTimer.ToString();
+        timerText.text = captureTimer.ToString("F2");
         UpdateTimerUI(captureTimer);
     }
 }
