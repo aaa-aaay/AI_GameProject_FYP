@@ -67,7 +67,6 @@ public class RaceCarControl : MonoBehaviour
             _AudioPlayer.StartDriftSFX();
             _movement.ToggleDrifting(_isDrifting, _moveInput.x);
             _VFXcontroller.PlayDriftEffects(_isDrifting, _moveInput.x);
-            Debug.Log("caleed");
 
         }
     }

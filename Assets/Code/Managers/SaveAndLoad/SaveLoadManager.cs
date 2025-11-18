@@ -25,8 +25,6 @@ public class SaveLoadManager : MonoBehaviour,IGameService
         {
             if(levelDetail.levelIndex == worldNo)
             {
-                Debug.Log(levelDetail.stars);
-                Debug.Log(levelDetail.levelIndex);
                 if (starCount > levelDetail.stars)
                 {
                     levelDetail.stars = starCount;

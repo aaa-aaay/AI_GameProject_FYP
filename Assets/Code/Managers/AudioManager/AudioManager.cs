@@ -168,7 +168,6 @@ public class AudioManager : MonoBehaviour, IGameService
         }
 
         float fadeInTime = 0;
-        Debug.Log("Volume:" + bgmVol);
         bgmSoundVol = sound.volume;
         float targetVolume = bgmVol * sound.volume;
         _backgroundMusicSource.clip = sound.clip;
