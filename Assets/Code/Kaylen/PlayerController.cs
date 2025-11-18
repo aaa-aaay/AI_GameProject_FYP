@@ -31,7 +31,8 @@ public class PlayerMovement : MonoBehaviour
     private int currentHealth;
 
     [Header("Ground Check")]
-    public float groundCheckDistance = 0.1f;
+    public float groundCheckRadius = 0.25f;
+    public float groundCheckOffset = 0.1f;
 
     [Header("Damage Settings")]
     public float invincibilityTime = 3f;
@@ -43,7 +44,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Star Tracking")]
     public bool pickedUpKey = false;
     public bool tookDamage = false;
-
 
     private Rigidbody rb;
     private bool canTag = true;
@@ -83,47 +83,48 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, GetComponent<CapsuleCollider>().height / 2 + groundCheckDistance);
-
+        // Update grounded state
+        isGrounded = IsGrounded();
         // Jump
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
+
+            
             Vector3 v = rb.linearVelocity;
-            v.y = jumpForce;
+            v.y = 0f; // Reset downward force
             rb.linearVelocity = v;
+
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+            Debug.Log("button called");
+            animator.SetTrigger("jump");
         }
 
         // Tag input (left click)
         if (Input.GetMouseButtonDown(0))
-        {
-            // Trigger catch animation
+            {
+                if (animator != null)
+                    animator.SetTrigger("catching");
+
+                if (isHoldingRunner) DropRunner();
+                else if (canTag)
+                {
+                    Debug.Log("coroutine started");
+                    if (tagCoroutine != null) StopCoroutine(tagCoroutine);
+                    tagCoroutine = StartCoroutine(DoTag());
+                }
+            }
+
+            // Movement input
+            float x = Input.GetAxisRaw("Horizontal");
+            float z = Input.GetAxisRaw("Vertical");
+            bool isWalking = new Vector3(x, 0f, z).sqrMagnitude > 0.01f;
+
             if (animator != null)
-                animator.SetTrigger("catching");
-
-            if (isHoldingRunner)
             {
-                // Drop if already holding
-                DropRunner();
+                animator.SetBool("walking", isWalking);
+                animator.SetBool("isHolding", isHoldingRunner);
             }
-            else if (canTag)
-            {
-                // Start tag attempt
-                if (tagCoroutine != null) StopCoroutine(tagCoroutine);
-                tagCoroutine = StartCoroutine(DoTag());
-            }
-        }
-
-        // Movement input
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
-        bool isWalking = new Vector3(x, 0f, z).sqrMagnitude > 0.01f;
-
-        // Apply Animator parameters
-        if (animator != null)
-        {
-            animator.SetBool("walking", isWalking);
-            animator.SetBool("isHolding", isHoldingRunner);
-        }
+        
     }
 
     private void FixedUpdate()
@@ -162,6 +163,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!canTag) yield break;
         canTag = false;
+
         FindAnyObjectByType<GrabUI>()?.StartCooldownUI(tagCooldown);
 
         if (activeHitbox != null) Destroy(activeHitbox);
@@ -195,6 +197,35 @@ public class PlayerMovement : MonoBehaviour
         if (collision.collider.CompareTag("Tagger")) TakeDamage();
     }
 
+    // ======================= Ground Check =======================
+    private bool IsGrounded()
+    {
+        Vector3 origin = transform.position + Vector3.up * groundCheckOffset;
+        float castDistance = groundCheckOffset + 0.2f;
+
+        return Physics.SphereCast(
+            origin,
+            groundCheckRadius,
+            Vector3.down,
+            out RaycastHit hit,
+            castDistance,
+            ~0,
+            QueryTriggerInteraction.Ignore
+        );
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Vector3 origin = transform.position + Vector3.up * groundCheckOffset;
+        float castDistance = groundCheckOffset + 0.2f;
+        Vector3 endPoint = origin + Vector3.down * castDistance;
+
+        // Draw sphere at end point
+        Gizmos.DrawWireSphere(endPoint, groundCheckRadius);
+    }
+
+    // ======================= Health & Runner =======================
     public void PickUpRunner(Runner runner)
     {
         if (runner == null || isHoldingRunner) return;
@@ -236,50 +267,36 @@ public class PlayerMovement : MonoBehaviour
         Rigidbody runRb = heldRunner.GetComponent<Rigidbody>();
         Runner runAgent = heldRunner.GetComponent<Runner>();
 
-        // Re-enable collider and runner script (but keep physics disabled until we set position)
         if (runCol != null) runCol.enabled = true;
-        if (runAgent != null) runAgent.enabled = false; // disable briefly while we reposition
+        if (runAgent != null) runAgent.enabled = false;
 
-        // Detach from player (no world-position preserving surprises)
         heldRunner.transform.SetParent(null);
 
-        // Desired drop position in world-space (in front of player)
         Vector3 dropPosition = transform.position + transform.forward * 1.5f + Vector3.up * 0.1f;
         Quaternion dropRotation = Quaternion.LookRotation(transform.forward, Vector3.up);
 
-        // If there's a Rigidbody, set its position and zero velocities properly:
         if (runRb != null)
         {
-            // Make sure it's kinematic while we set the position cleanly
             runRb.isKinematic = true;
-
-            // Force position directly on the Rigidbody (world-space)
             runRb.position = dropPosition;
             runRb.rotation = dropRotation;
-
-            // MovePosition to ensure interpolation/internal state is correct
             runRb.MovePosition(dropPosition);
             runRb.linearVelocity = Vector3.zero;
             runRb.angularVelocity = Vector3.zero;
-
-            // Now re-enable physics and agent
             runRb.isKinematic = false;
         }
         else
         {
-            // No rigidbody — set transform directly
             heldRunner.transform.position = dropPosition;
             heldRunner.transform.rotation = dropRotation;
         }
 
-        // Re-enable Runner script AFTER we've placed it
         if (runAgent != null)
         {
             runAgent.enabled = true;
-            runAgent.OnDropped(); // tells Runner to resume from current position (does NOT teleport)
+            runAgent.OnDropped();
         }
 
-        // cleanup
         heldRunner = null;
         isHoldingRunner = false;
 
@@ -288,10 +305,7 @@ public class PlayerMovement : MonoBehaviour
             StopCoroutine(holdReleaseCoroutine);
             holdReleaseCoroutine = null;
         }
-
-        Debug.Log("Dropped runner at: " + dropPosition);
     }
-
 
     public Runner GetHeldRunner() => heldRunner != null ? heldRunner.GetComponent<Runner>() : null;
 
@@ -300,7 +314,7 @@ public class PlayerMovement : MonoBehaviour
         if (currentHealth <= 0 || isInvincible) return;
 
         currentHealth--;
-        tookDamage = true; // Player has taken damage
+        tookDamage = true;
 
         if (currentHealth < heartsUI.Count)
             heartsUI[currentHealth].sprite = lostHeartSprite;
@@ -309,7 +323,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (currentHealth <= 0) Die();
     }
-
 
     private IEnumerator InvincibilityCoroutine()
     {
@@ -331,15 +344,11 @@ public class PlayerMovement : MonoBehaviour
         if (activeHitbox != null) Destroy(activeHitbox);
 
         if (animator != null)
-        {
             animator.SetLayerWeight(1, 0f);
-        }
     }
-
 
     public bool HasPerfectRun()
     {
         return pickedUpKey && !tookDamage;
     }
-
 }
