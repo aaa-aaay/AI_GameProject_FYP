@@ -13,6 +13,9 @@ public class KeyPickup : MonoBehaviour
     private Vector3 startPos;           // Original position of the key
     private Camera mainCamera;          // Cached main camera reference
 
+    // UI Key Indicator
+    private GameObject keyUI;
+
     private void Start()
     {
         // Cache starting position and main camera
@@ -23,11 +26,21 @@ public class KeyPickup : MonoBehaviour
         exitDoor = FindFirstObjectByType<ExitTrigger>();
         if (exitDoor == null)
             Debug.LogWarning("[KeyPickup] No ExitTrigger found in the scene!");
+
+        // --- UI KEY ICON SETUP ---
+        keyUI = GameObject.Find("Key");   // looks for a GameObject named "Key"
+        if (keyUI != null)
+        {
+            keyUI.SetActive(false);       // hide until key is picked up
+        }
+        else
+        {
+            Debug.LogWarning("[KeyPickup] No UI Key object named 'Key' found in scene.");
+        }
     }
 
     private void Update()
     {
-      
         // Floating (bobbing) effect
         float newY = startPos.y + Mathf.Sin(Time.time * bobSpeed) * bobAmplitude;
         transform.position = new Vector3(startPos.x, newY, startPos.z);
@@ -50,14 +63,16 @@ public class KeyPickup : MonoBehaviour
                 Debug.Log("[KeyPickup] Player star condition: keyCollected = true");
             }
 
-            // Unlock exit door (if timer allows it later)
+            // Unlock exit door
             if (exitDoor != null)
             {
                 exitDoor.UnlockDoor();
             }
-            else
+
+            // --- ENABLE UI ICON HERE ---
+            if (keyUI != null)
             {
-                Debug.LogWarning("[KeyPickup] Tried to unlock ExitDoor, but none was found!");
+                keyUI.SetActive(true);
             }
 
             Destroy(gameObject);

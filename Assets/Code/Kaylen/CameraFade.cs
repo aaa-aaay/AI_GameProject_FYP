@@ -8,11 +8,10 @@ public class CameraFade : MonoBehaviour
     [Range(0f, 1f)] public float fadeAlpha = 0.25f;
     public float fadeSpeed = 5f;
 
-    // Internal caches
     private Dictionary<Renderer, Material[]> materialInstances = new Dictionary<Renderer, Material[]>();
+    private Dictionary<Material, float> originalAlphas = new Dictionary<Material, float>();
     private Dictionary<Material, float> currentAlphas = new Dictionary<Material, float>();
 
-    // Property name in shader
     private readonly string alphaProperty = "_Alpha";
 
     void Update()
@@ -20,31 +19,40 @@ public class CameraFade : MonoBehaviour
         Collider[] hits = Physics.OverlapSphere(transform.position, radius);
         HashSet<Renderer> overlappedRenderers = new HashSet<Renderer>();
 
-        // Handle overlapping renderers
-
+        // Handle objects inside the radius
         foreach (var hit in hits)
         {
-
             Renderer rend = hit.GetComponent<Renderer>();
             if (rend == null) continue;
             overlappedRenderers.Add(rend);
 
-            // Initialize materials once
+            // First-time material setup
             if (!materialInstances.ContainsKey(rend))
             {
                 Material[] mats = rend.materials;
+
                 for (int i = 0; i < mats.Length; i++)
                 {
                     Material newMat = new Material(mats[i]);
                     mats[i] = newMat;
-                    if (!currentAlphas.ContainsKey(newMat))
-                        currentAlphas[newMat] = GetInitialAlpha(newMat);
+
+                    // Cache original alpha once
+                    if (!originalAlphas.ContainsKey(newMat))
+                    {
+                        float original = newMat.HasProperty(alphaProperty)
+                            ? newMat.GetFloat(alphaProperty)
+                            : 1f;
+
+                        originalAlphas[newMat] = original;
+                        currentAlphas[newMat] = original;
+                    }
                 }
+
                 rend.materials = mats;
                 materialInstances[rend] = mats;
             }
 
-            // Fade down to fadeAlpha
+            // Fade DOWN to fadeAlpha
             foreach (Material mat in materialInstances[rend])
             {
                 if (!mat.HasProperty(alphaProperty)) continue;
@@ -56,7 +64,7 @@ public class CameraFade : MonoBehaviour
             }
         }
 
-        // Restore alpha for renderers no longer overlapping
+        // Restore materials that are no longer inside radius
         foreach (var kvp in materialInstances)
         {
             Renderer rend = kvp.Key;
@@ -67,18 +75,14 @@ public class CameraFade : MonoBehaviour
             {
                 if (!mat.HasProperty(alphaProperty)) continue;
 
+                float original = originalAlphas[mat];
                 float current = currentAlphas[mat];
-                current = Mathf.Lerp(current, 1f, Time.deltaTime * fadeSpeed);
+                current = Mathf.Lerp(current, original, Time.deltaTime * fadeSpeed);
+
                 currentAlphas[mat] = current;
                 mat.SetFloat(alphaProperty, current);
             }
         }
-    }
-
-    // Read initial alpha from the material
-    private float GetInitialAlpha(Material mat)
-    {
-        return mat.HasProperty(alphaProperty) ? mat.GetFloat(alphaProperty) : 1f;
     }
 
     void OnDrawGizmosSelected()
