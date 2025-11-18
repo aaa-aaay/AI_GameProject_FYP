@@ -25,7 +25,6 @@ public class WorldSelect : MonoBehaviour
         _uiManager = ServiceLocator.Instance.GetService<UIManager>();
 
         _playerInRange = false;
-        _starCount = 0;
     }
 
     private void OnDestroy()
