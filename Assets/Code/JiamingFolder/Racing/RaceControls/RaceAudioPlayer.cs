@@ -43,12 +43,13 @@ public class RaceAudioPlayer : MonoBehaviour
 
     public void PlayDrivingSound()
     {
-        float localForwardSpeed = transform.InverseTransformDirection(_rb.linearVelocity).z;
+        float localForwardSpeed =  Mathf.Abs(transform.InverseTransformDirection(_rb.linearVelocity).z);
         float forwardSpeed = Mathf.Max(0f, localForwardSpeed);
         float t = Mathf.InverseLerp(0, maxSpeedForVolume, Mathf.Abs(forwardSpeed));
 
         t = Mathf.SmoothStep(0, 1, t);
-        _drivingSound.volume = Mathf.Lerp(minVolume, maxVolume * audiovol, t) ;
+        Debug.Log(maxVolume);
+        _drivingSound.volume = Mathf.Lerp(minVolume, maxVolume, t) ;
     }
 
     public void StartDriftSFX()

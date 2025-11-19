@@ -10321,7 +10321,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: aa6f2f05b923a4f4ba71e649773f4793, type: 3}
   m_Resource: {fileID: 8300000, guid: aa6f2f05b923a4f4ba71e649773f4793, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0
+  m_Volume: 1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -27870,7 +27870,6 @@ GameObject:
   - component: {fileID: 1951799608}
   - component: {fileID: 1951799609}
   - component: {fileID: 1951799610}
-  - component: {fileID: 1951799611}
   m_Layer: 0
   m_Name: Local
   m_TagString: Untagged
@@ -27930,30 +27929,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bgmName: RacingBGM
---- !u!114 &1951799611
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1951799607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54afd659a0dfa344b82842a6d0d0afc0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rb: {fileID: 5371787647095464336}
-  _drftingSound: {fileID: 523501921}
-  _drivingSound: {fileID: 668942020}
-  _cheeringAudioSource:
-  - {fileID: 2038324797}
-  - {fileID: 720299110}
-  - {fileID: 914948119}
-  - {fileID: 1761208200}
-  maxVolume: 0.9
-  minVolume: 0
-  maxSpeedForVolume: 20
-  driftFadeTime: 0.2
 --- !u!1 &1976240304
 GameObject:
   m_ObjectHideFlags: 0
@@ -29700,7 +29675,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _manager: {fileID: 831836817}
   _car: {fileID: 148278279627344693}
-  _AudioPlayer: {fileID: 1951799611}
+  _AudioPlayer: {fileID: 7204780560059138926}
 --- !u!4 &1426202990070282018
 Transform:
   m_ObjectHideFlags: 0
@@ -30885,6 +30860,7 @@ GameObject:
   - component: {fileID: 282068812889592060}
   - component: {fileID: 1347949888037301663}
   - component: {fileID: 7204780560059138925}
+  - component: {fileID: 7204780560059138926}
   m_Layer: 2
   m_Name: Kart
   m_TagString: Untagged
@@ -30928,6 +30904,30 @@ MonoBehaviour:
   _leftDriftVFXs:
   - {fileID: 124263173}
   - {fileID: 846880870}
+--- !u!114 &7204780560059138926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7066995304201312850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54afd659a0dfa344b82842a6d0d0afc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rb: {fileID: 5371787647095464336}
+  _drftingSound: {fileID: 523501921}
+  _drivingSound: {fileID: 668942020}
+  _cheeringAudioSource:
+  - {fileID: 2038324797}
+  - {fileID: 720299110}
+  - {fileID: 914948119}
+  - {fileID: 1761208200}
+  maxVolume: 0.9
+  minVolume: 0
+  maxSpeedForVolume: 20
+  driftFadeTime: 0.2
 --- !u!114 &7239096649882267858
 MonoBehaviour:
   m_ObjectHideFlags: 0
