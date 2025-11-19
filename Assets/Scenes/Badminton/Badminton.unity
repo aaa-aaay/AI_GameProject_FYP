@@ -1793,7 +1793,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -2062,7 +2062,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -4261,13 +4261,37 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1922296889}
     - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: dash
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: lobShot
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: resting
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: running
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: dropShot
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: smashShot
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 435819433}
     - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: staminaFillImage
       value: 
-      objectReference: {fileID: 2012953901}
+      objectReference: {fileID: 442795449}
     - target: {fileID: 7973530929211878751, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: m_Color.b
       value: 0.8784314
@@ -4291,6 +4315,14 @@ PrefabInstance:
     - target: {fileID: 8041182162714475249, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: m_Color.r
       value: 0.9490196
+      objectReference: {fileID: 0}
+    - target: {fileID: 9009383845120543880, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: _moveSpeedSlow
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 9009383845120543880, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: _moveSpeedVerySlow
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
