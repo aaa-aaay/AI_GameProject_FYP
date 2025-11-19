@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using DG.Tweening.Core.Easing;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ public class BadmintonStamina : MonoBehaviour
 
     [SerializeField] private float maxStamina;
     [SerializeField] private Image staminaFillImage;
+    [SerializeField] private BadmintionGameManager gameManager;
 
 
     [Header("Stamina costs for actions")]
@@ -27,7 +29,7 @@ public class BadmintonStamina : MonoBehaviour
         Running, SmashShot, DropShot, lobShot, Dash, Rest
     }
 
-    private float currentStamina;
+    public float currentStamina;
 
 
 
@@ -35,7 +37,8 @@ public class BadmintonStamina : MonoBehaviour
     {
 
         currentStamina = maxStamina;
-
+        gameManager.OnPlayer1Score += ResetStamina;
+        gameManager.OnPlayer2Score += ResetStamina;
         SetNewStamina();
     }
 
@@ -80,4 +83,11 @@ public class BadmintonStamina : MonoBehaviour
         if (checkPointNo == 2) { return checkpoint2; }
         else return 0;
     }
+
+    private void ResetStamina()
+    {
+        currentStamina = maxStamina;
+    }
+
+
 }

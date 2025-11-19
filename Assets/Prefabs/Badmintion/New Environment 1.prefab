@@ -391,6 +391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxStamina: 100
   staminaFillImage: {fileID: 0}
+  gameManager: {fileID: 0}
   running: 0.25
   smashShot: 0
   dropShot: 0
@@ -399,6 +400,7 @@ MonoBehaviour:
   resting: 0.3
   checkpoint1: 0
   checkpoint2: 0
+  currentStamina: 0
 --- !u!1 &315283025673785440
 GameObject:
   m_ObjectHideFlags: 0
@@ -4256,6 +4258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxStamina: 100
   staminaFillImage: {fileID: 0}
+  gameManager: {fileID: 5564206013452628640}
   running: 0.25
   smashShot: 0
   dropShot: 0
@@ -4264,6 +4267,7 @@ MonoBehaviour:
   resting: 0.3
   checkpoint1: 0
   checkpoint2: 0
+  currentStamina: 0
 --- !u!114 &5713757266372519100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5489,6 +5493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxStamina: 100
   staminaFillImage: {fileID: 0}
+  gameManager: {fileID: 0}
   running: 0.2
   smashShot: 0
   dropShot: 0
@@ -5497,6 +5502,7 @@ MonoBehaviour:
   resting: 0.45
   checkpoint1: 50
   checkpoint2: 25
+  currentStamina: 0
 --- !u!1 &5516112663527750994
 GameObject:
   m_ObjectHideFlags: 0
@@ -6393,14 +6399,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxStamina: 100
   staminaFillImage: {fileID: 0}
+  gameManager: {fileID: 5564206013452628640}
   running: 0.25
-  smashShot: 0
-  dropShot: 0
-  lobShot: 0
-  dash: 10
+  smashShot: -0.2
+  dropShot: -0.2
+  lobShot: -0.2
+  dash: 2
   resting: 0.35
   checkpoint1: 50
   checkpoint2: 25
+  currentStamina: 0
 --- !u!114 &9009383845120543880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6442,7 +6450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 21
+    VectorObservationSize: 23
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
