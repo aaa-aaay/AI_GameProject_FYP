@@ -78,7 +78,9 @@ public class archery_handler : MonoBehaviour
         }
         else
             Debug.LogWarning("playerObject not assigned.");
-        playerRightCamera.enabled = true;
+        playerLeftCamera.enabled = false;
+        playerRightCamera.enabled = false;
+        turnCamera.enabled = true;
 
         if (!arrowCamera) Debug.LogError("arrowCamera not assigned.");
         arrowCamera.enabled = false;
@@ -126,15 +128,11 @@ public class archery_handler : MonoBehaviour
         uiHandler.init_value(settings.maxForce, settings.minForce, settings.winningPoint);
 
         if (!isAiTraining)
-        {
             isPlayerTurn = true;
-            StartCoroutine(PlayerTurn());
-        }
         else
-        {
             isPlayerTurn = false;
-            StartCoroutine(AgentTurn());
-        }
+
+        StartCoroutine(ReturnCamera(0));
     }
 
     public void Shoot(Vector3 position, float force, float yaw, float pitch)
