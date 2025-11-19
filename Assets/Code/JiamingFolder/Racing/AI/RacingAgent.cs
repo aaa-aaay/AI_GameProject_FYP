@@ -89,10 +89,12 @@ public class RacingAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
+
         Vector3 toCheckpoint = _goalChecker.GetCurrentCheckPoint().position - _car.transform.position;
+        sensor.AddObservation(toCheckpoint.normalized);
         Vector3 forward = _car.transform.forward;
 
-        sensor.AddObservation(toCheckpoint.normalized);          // where to go
+         // where to go
         sensor.AddObservation(Vector3.Dot(forward, toCheckpoint.normalized)); // alignment
         sensor.AddObservation(_sphere.linearVelocity.magnitude / 30f); // speed
         sensor.AddObservation(_sphere.linearVelocity.normalized); // direction of motion

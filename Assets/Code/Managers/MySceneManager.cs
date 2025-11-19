@@ -22,6 +22,7 @@ public class MySceneManager : MonoBehaviour, IGameService
         Time.timeScale = 1;
         ServiceLocator.Instance.GetService<AudioManager>().StopBGmWithFade();
         ServiceLocator.Instance.GetService<DialogueManager>().EndDialogue();
+        ServiceLocator.Instance.GetService<UIManager>().DisableSettings(true);
     }
 
 
