@@ -4172,6 +4172,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1103482581563438595, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 435819433}
     - target: {fileID: 2353224912123257681, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -4184,6 +4188,14 @@ PrefabInstance:
       propertyPath: _vfxOBJ
       value: 
       objectReference: {fileID: 755564252}
+    - target: {fileID: 5305788218823792339, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 6b5b2e025f7d8a74ca47570fa130f657, type: 3}
+    - target: {fileID: 5305788218823792339, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: m_BrainParameters.VectorObservationSize
+      value: 23
+      objectReference: {fileID: 0}
     - target: {fileID: 5564206013452628640, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: _p1ScoreDisplays.Array.size
       value: 2
@@ -4253,6 +4265,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6564236724450844908, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: resting
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6564236724450844908, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 435819433}
@@ -4260,29 +4276,41 @@ PrefabInstance:
       propertyPath: staminaFillImage
       value: 
       objectReference: {fileID: 1922296889}
+    - target: {fileID: 6582569674995803508, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6730631275617689159, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: m_Size.z
+      value: 0.60928726
+      objectReference: {fileID: 0}
+    - target: {fileID: 6730631275617689159, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: m_Center.z
+      value: -0.30464363
+      objectReference: {fileID: 0}
     - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: dash
-      value: 1.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: lobShot
-      value: -5
+      value: -0.2
       objectReference: {fileID: 0}
     - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: resting
-      value: 0.5
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: running
-      value: 0.2
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: dropShot
-      value: -5
+      value: -0.2
       objectReference: {fileID: 0}
     - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: smashShot
-      value: -5
+      value: -0.2
       objectReference: {fileID: 0}
     - target: {fileID: 6978192258945099777, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: gameManager
@@ -4317,12 +4345,16 @@ PrefabInstance:
       value: 0.9490196
       objectReference: {fileID: 0}
     - target: {fileID: 9009383845120543880, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
-      propertyPath: _moveSpeedSlow
+      propertyPath: _moveSpeed
       value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 9009383845120543880, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
+      propertyPath: _moveSpeedSlow
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9009383845120543880, guid: 1e299792c0b4f5d47ab4f19667158f21, type: 3}
       propertyPath: _moveSpeedVerySlow
-      value: 9
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

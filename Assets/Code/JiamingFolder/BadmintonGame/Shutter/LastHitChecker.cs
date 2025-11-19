@@ -5,12 +5,21 @@ public class LastHitChecker : MonoBehaviour
 {
     private GameObject racketThatLastHit;
     public event Action<GameObject> OnHitByRacker;
+    [SerializeField] private BadmintionGameManager gameManager;
 
     private void Start()
     {
         racketThatLastHit = null;
+        gameManager.OnPlayer1Score += ResetLastHit;
+        gameManager.OnPlayer2Score += ResetLastHit;
     }
 
+
+    private void OnDestroy()
+    {
+        gameManager.OnPlayer1Score -= ResetLastHit;
+        gameManager.OnPlayer2Score -= ResetLastHit;
+    }
     public void SetLastHitRacket(GameObject racket)
     {
         racketThatLastHit = racket;
@@ -21,5 +30,10 @@ public class LastHitChecker : MonoBehaviour
     }
     public GameObject GetLastHitRacker() { 
         return racketThatLastHit;
+    }
+
+    private void ResetLastHit()
+    {
+        racketThatLastHit = null;
     }
 }
