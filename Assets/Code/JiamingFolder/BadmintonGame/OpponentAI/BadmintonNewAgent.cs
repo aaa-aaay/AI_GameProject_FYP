@@ -54,7 +54,7 @@ public class BadmintonNewAgent : Agent
         _prevDistToShuttle = float.PositiveInfinity; // reset each episode
 
 
-        // Reset previous position for linearVelocity calc
+        // Reset previous position for velocity calc
         _prevShuttlePos = _shuttle.localPosition;
         _shuttleVelocity = Vector3.zero;
     }
@@ -68,8 +68,8 @@ public class BadmintonNewAgent : Agent
         sensor.AddObservation(_gameManager.player2Score);
         sensor.AddObservation(_opponetTransform.localPosition);
         sensor.AddObservation(_shotMarker.localPosition);
-        //sensor.AddObservation(_stamina.GetStamina());
-        //sensor.AddObservation(_finalMoveSpeed);
+        sensor.AddObservation(_stamina.GetStamina());
+        sensor.AddObservation(_finalMoveSpeed);
 
         // --- New useful observations ---
         sensor.AddObservation(_shuttleVelocity); // direction + speed
@@ -162,61 +162,59 @@ public class BadmintonNewAgent : Agent
 
     private void Dash(Vector3 dir)
     {
-        _movement.Dash(dir);
-        AddReward(-0.01f);
-        Debug.Log("Dashed");
-        //if (_stamina.UseStamina(BadmintonStamina.actions.Dash))
-        //{
-        //    _movement.Dash(dir);
-        //}
-        //else
-        //{
-        //    //punish the AI for dashing and wasting stamina;
-        //    AddReward(-0.1f);
-        //}
-        
+
+        if (_stamina.UseStamina(BadmintonStamina.actions.Dash))
+        {
+            _movement.Dash(dir);
+            Debug.Log("Dashed");
+            //punish the AI for dashing and wasting stamina;
+            AddReward(-0.1f);
+        }
+
     }
 
     private void AdjustMovement()
     {
-        //if (_stamina.GetStamina() < _stamina.GetStaminaLimit(1))
-        //{
-        //    _finalMoveSpeed = _moveSpeedSlow;
-        //    AddReward(-0.001f);
-        //    if (_stamina.GetStamina() < _stamina.GetStaminaLimit(2))
-        //    {
-        //        _finalMoveSpeed = _moveSpeedVerySlow;
-        //        AddReward(-0.003f);
-        //    }
-        //}
-        //else
-        //{
-        //    _finalMoveSpeed = _moveSpeed;
-        //}
+        if (_stamina.GetStamina() < _stamina.GetStaminaLimit(1))
+        {
+            _finalMoveSpeed = _moveSpeedSlow;
+            AddReward(-0.03f);
+            if (_stamina.GetStamina() < _stamina.GetStaminaLimit(2))
+            {
+                _finalMoveSpeed = _moveSpeedVerySlow;
+                AddReward(-0.01f);
+            }
+        }
+        else
+        {
+            AddReward(+0.03f);
+            _finalMoveSpeed = _moveSpeed;
+        }
 
-        _finalMoveSpeed = _moveSpeed;
+        //_finalMoveSpeed = _moveSpeed;
     }
 
     private void SetMovement(Vector3 dir)
     {
         if (dir == Vector3.zero)
         {
-            AddReward(0.01f);
-            //_stamina.UseStamina(BadmintonStamina.actions.Rest);
+            //AddReward(0.01f);
+            _stamina.UseStamina(BadmintonStamina.actions.Rest);
             _movement.Walk(false);
             Debug.Log("resting");
         }
-        else {
-            //_stamina.UseStamina(BadmintonStamina.actions.Running);
+        else
+        {
+            _stamina.UseStamina(BadmintonStamina.actions.Running);
             _movement.Walk(true);
-        } 
+        }
 
         transform.localPosition += dir * _finalMoveSpeed * Time.deltaTime;
     }
 
     private void Update()
     {
-        // Compute pseudo-linearVelocity manually
+        // Compute pseudo-velocity manually
         _shuttleVelocity = (_shuttle.localPosition - _prevShuttlePos) / Time.deltaTime;
         _prevShuttlePos = _shuttle.localPosition;
     }
@@ -239,7 +237,23 @@ public class BadmintonNewAgent : Agent
 
     private void StaminaRewards()
     {
-        //AddReward(_stamina.GetStamina() * 0.0001f);
+
+        AddReward(_stamina.GetStamina() * 0.00004f);
+
+
+        if (_stamina.GetStamina() < 8)
+        {
+            AddReward(-0.001f);
+        }
+        if (_stamina.GetStamina() < 4)
+        {
+            AddReward(-0.001f);
+        }
+        if (_stamina.GetStamina() < 2)
+        {
+            AddReward(-0.001f);
+        }
+
 
         //if (_stamina.GetStamina() < _stamina.GetStaminaLimit(1))
         //{
@@ -253,7 +267,7 @@ public class BadmintonNewAgent : Agent
     }
     private void RewardForHiting()
     {
-        AddReward(1.5f);
+        AddReward(2.0f);
     }
     private void PunishForMissing()
     {
