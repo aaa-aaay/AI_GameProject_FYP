@@ -66,7 +66,7 @@ public class BadmintionGameManager : MonoBehaviour
 
     public void PlayerScores(int playerNo)
     {
-        //audioManager.PlaySFX("BMT_Score",Camera.main.transform.position);
+        audioManager.PlaySFX("BMT_Score",Camera.main.transform.position);
         if (playerNo == 1)
         {
             player1Score++;
