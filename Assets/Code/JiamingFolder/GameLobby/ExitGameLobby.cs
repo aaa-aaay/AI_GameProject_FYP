@@ -6,6 +6,7 @@ public class ExitGameLobby : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            other.GetComponent<LobbyPlayerMovement>().enabled = false;
             ServiceLocator.Instance.GetService<MySceneManager>().LoadScene("MainMenu");
         }
     }

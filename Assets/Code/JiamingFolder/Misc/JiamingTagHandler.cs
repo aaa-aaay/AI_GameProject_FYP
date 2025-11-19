@@ -9,7 +9,7 @@ public class JiamingTagHandler : MonoBehaviour
     private bool _stillCatching;
     [SerializeField] private GameObject timerGameObject;
     private TMP_Text timerText;
-
+    [SerializeField] private ExitTrigger exitTrigger;
     private void Start()
     {
         captureTimer = 0;
@@ -19,6 +19,7 @@ public class JiamingTagHandler : MonoBehaviour
     public void HandleCatchFinish()
     {
         ServiceLocator.Instance.GetService<PostProcessingManager>().ShowTagNightEffects(true);
+        exitTrigger.SetTimeTakenToCpature(captureTimer);
         _stillCatching = false;
         timerGameObject.SetActive(false);
     }
