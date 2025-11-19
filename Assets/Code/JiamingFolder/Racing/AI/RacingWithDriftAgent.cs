@@ -9,6 +9,7 @@ public class RacingWithDriftAgent : Agent
     [SerializeField] private GameObject _car;
 
     private Rigidbody _sphere;
+    CarVFXController _vfxController;
     private BetterCarMovement _carMovement;
     private GoalChecker _goalChecker;
     private WallFrictionHandler _wallFrictionHandler;
@@ -20,9 +21,11 @@ public class RacingWithDriftAgent : Agent
 
     private Vector3 _lastPosition;
     private float _lastSpeed;
+    private bool _isdrfting;
 
     public override void Initialize()
     {
+        _vfxController = GetComponent<CarVFXController>();
         _carMovement = GetComponent<BetterCarMovement>();
         _goalChecker = _car.GetComponent<GoalChecker>();
         _sphere = _car.GetComponent<Rigidbody>();
@@ -55,10 +58,10 @@ public class RacingWithDriftAgent : Agent
 
         float dist = Vector3.Distance(_car.transform.position, _goalChecker.GetCurrentCheckPoint().position);
         float progress = _previousDistanceToCheckpoint - dist;
-        AddReward(progress * 0.05f); // reward moving closer
+        AddReward(progress * 0.08f); // reward moving closer
         if (progress < 0)
         {
-            AddReward(progress * 0.04f);
+            AddReward(progress * 0.08f);
             Debug.Log("Driving Backwards");
         }
 
@@ -92,6 +95,7 @@ public class RacingWithDriftAgent : Agent
         sensor.AddObservation(Vector3.Dot(forward, toCheckpoint.normalized)); 
         sensor.AddObservation(_sphere.linearVelocity.magnitude / 30f); 
         sensor.AddObservation(_sphere.linearVelocity.normalized); 
+        sensor.AddObservation(_isdrfting); 
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -130,13 +134,18 @@ public class RacingWithDriftAgent : Agent
         _carMovement.MoveCar(inputDir);
 
 
-        //if (Mathf.Abs(inputDir.x) > 0.01f)
-        //{
-        //    bool toDrift = disAct[0] == 1;
-        //    if (disAct[0] == 0) toDrift = false;
-        //    else if (disAct[0] == 1) toDrift = true;
-        //    _carMovement.ToggleDrifting(toDrift, inputDir.x);
-        //}
+        if (Mathf.Abs(inputDir.x) > 0.01f)
+        {
+            Debug.Log(disAct[0]);
+            if (disAct[0] == 0) _isdrfting = false;
+            else if (disAct[0] == 1) _isdrfting = true;
+            _carMovement.ToggleDrifting(_isdrfting, inputDir.x);
+            _vfxController.PlayDriftEffects(_isdrfting, inputDir.x);
+        }
+        else
+        {
+            _isdrfting = false;
+        }
 
     }
 
@@ -153,22 +162,22 @@ public class RacingWithDriftAgent : Agent
         continuousActions[0] = horizontal;
         continuousActions[1] = Input.GetKey(KeyCode.W) ? 1f : 0f;
 
-        //if(Input.GetKey(KeyCode.LeftShift))
-        //{
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
 
-        //    DiscreteActions[0] = 1;
-        //}
-        //else
-        //{
-        //    DiscreteActions[0] = 0;
-        //}
+            DiscreteActions[0] = 1;
+        }
+        else
+        {
+            DiscreteActions[0] = 0;
+        }
 
     }
 
 
     private void HitWall()
     {
-        AddReward(-0.15f);
+        AddReward(-0.1f);
     }
     private void stayingOnWall()
     {
