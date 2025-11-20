@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.BoolParameter;
 
@@ -91,7 +92,8 @@ public class SettingsManager : MonoBehaviour
     {
         _settingsPage.SetActive(open);
         ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
-        if (open) {
+        if (open)
+        {
             float bgmVol = _audioManager.GetBGMVol();
             float sfxVol = _audioManager.GetSFXVol();
 
@@ -101,11 +103,22 @@ public class SettingsManager : MonoBehaviour
             sfxSlider.value = sfxVol;
 
             leave_minigame.EnableButton();
-
+            Cursor.visible = true;
             Time.timeScale = 0;
             ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("ButtonClick");
         }
-        else Time.timeScale = 1;
+        else {
+            Time.timeScale = 1;
+            if(SceneManager.GetActiveScene().name == "MainMenu")
+            {
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.visible = false;
+            }
+               
+        }
         _isSettingsOpen = open;
     }
 

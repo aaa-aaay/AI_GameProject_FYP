@@ -11,6 +11,10 @@ public class Credits : MonoBehaviour
     {
         ServiceLocator.Instance.GetService<InputManager>().OnClick += EscPressed;
     }
+    private void OnDestroy()
+    {
+        ServiceLocator.Instance.GetService<InputManager>().OnClick -= EscPressed;
+    }
     public void StartCredits(bool start)
     {
         if (start)

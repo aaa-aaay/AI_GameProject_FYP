@@ -37,7 +37,7 @@ public class LoadingBar : MonoBehaviour
         gameObject.SetActive(true);
 
         loading_bg.gameObject.SetActive(true);
-
+        Time.timeScale = 1;
         if (scene_name == "Tutorial")
         {
             for (int i = 0; i < scene_changes.Count; i++)

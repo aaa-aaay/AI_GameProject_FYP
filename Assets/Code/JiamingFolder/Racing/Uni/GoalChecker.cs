@@ -78,6 +78,7 @@ public class GoalChecker : MonoBehaviour
         _raceOver = false;
         currentLap = 0;
         currentCheckPointNo = 0;
+        if(_raceManager.checkPoints[currentCheckPointNo] != null) 
         currentCheckPoint = _raceManager.checkPoints[currentCheckPointNo];
         _timer.StartTimer();
     }

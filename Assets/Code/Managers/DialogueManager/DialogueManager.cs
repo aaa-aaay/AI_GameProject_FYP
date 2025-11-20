@@ -36,7 +36,7 @@ public class DialogueManager : MonoBehaviour, IGameService
         buttonPanel.gameObject.SetActive(false);
         animator.SetBool("isOpen", true);
         haveDialogue = true;
-
+        Cursor.visible = true;
         DisplayNextSentence(-1, speech);
     }
 
@@ -132,6 +132,7 @@ public class DialogueManager : MonoBehaviour, IGameService
 
     public void EndDialogue()
     {
+        Cursor.visible = false;
         haveDialogue = false;
         canvas.gameObject.SetActive(false);
         animator.SetBool("isOpen", false);
