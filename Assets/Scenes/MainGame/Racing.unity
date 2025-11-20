@@ -2999,17 +2999,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 185471456}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &185657425 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7143314457430926688, guid: 618d3a79ef994b748a3761b95c018713, type: 3}
-  m_PrefabInstance: {fileID: 229708276}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dc9ffc55f27a9f44bdbf01cd8a82e0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &190492883
 GameObject:
   m_ObjectHideFlags: 0
@@ -3535,10 +3524,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1944833728784860057, guid: 618d3a79ef994b748a3761b95c018713, type: 3}
-      propertyPath: _countDownTimer
-      value: 
-      objectReference: {fileID: 185657425}
     - target: {fileID: 3319277607809021431, guid: 618d3a79ef994b748a3761b95c018713, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -6381,6 +6366,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8754850376219970305, guid: 0035832001d5a7d4588f2db744168602, type: 3}
+      propertyPath: _name
+      value: yayllow 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8754850376219970305, guid: 0035832001d5a7d4588f2db744168602, type: 3}
       propertyPath: _raceManager
       value: 
       objectReference: {fileID: 831836817}
@@ -8875,7 +8864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 625c14eee3ad46c99df7c7c891ef668a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damping: {x: 0, y: 2, z: 0}
+  Damping: {x: 0, y: 1.8, z: 0}
   ShoulderOffset: {x: 0.05, y: 1.48, z: -1.37}
   VerticalArmLength: 0.4
   CameraSide: 1
@@ -8887,8 +8876,8 @@ MonoBehaviour:
       m_Bits: 1
     IgnoreTag: 
     CameraRadius: 0.182
-    DampingIntoCollision: 0.5
-    DampingFromCollision: 1
+    DampingIntoCollision: 0.2
+    DampingFromCollision: 0.5
 --- !u!114 &495772721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27663,6 +27652,10 @@ PrefabInstance:
     - target: {fileID: 5122196261395891857, guid: 0035832001d5a7d4588f2db744168602, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8754850376219970305, guid: 0035832001d5a7d4588f2db744168602, type: 3}
+      propertyPath: _name
+      value: yayllow 2
       objectReference: {fileID: 0}
     - target: {fileID: 8754850376219970305, guid: 0035832001d5a7d4588f2db744168602, type: 3}
       propertyPath: _raceManager

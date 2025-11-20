@@ -82,7 +82,7 @@ public class PongBall : MonoBehaviour
 
     public void Restart()
     {
-        ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("BMT_Score", Camera.main.transform.position);
+        ServiceLocator.Instance.GetService<AudioManager>().PlaySFX("PongScore", Camera.main.transform.position);
         rigid_body.linearVelocity = Vector3.zero;
         rigid_body.AddForce(new Vector3(Random.Range(-1, 1f), 0, Random.Range(-1, 1f)).normalized * max_speed * start_bounce_multiplier, ForceMode.Impulse);
         trail_vfx.SetBool("Kill Switch", true);

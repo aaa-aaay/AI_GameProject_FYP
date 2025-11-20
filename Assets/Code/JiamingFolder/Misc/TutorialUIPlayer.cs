@@ -31,7 +31,7 @@ public class TutorialUIPlayer : MonoBehaviour
         _minigameSO = uiManager.GetMiniGameForTutorial();
         _clips = _minigameSO.tutorialVideoClips;
         _gameTitleImage.sprite = _minigameSO.levelLogo;
-
+        Cursor.visible = true;
         if (_clips.Count <= 0){
             GoGameScene();
             return;
