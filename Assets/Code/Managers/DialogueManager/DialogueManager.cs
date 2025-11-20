@@ -37,6 +37,7 @@ public class DialogueManager : MonoBehaviour, IGameService
         animator.SetBool("isOpen", true);
         haveDialogue = true;
         Cursor.visible = true;
+        ServiceLocator.Instance.GetService<UIManager>().SetIsUsingCursorForSettings(true);
         DisplayNextSentence(-1, speech);
     }
 

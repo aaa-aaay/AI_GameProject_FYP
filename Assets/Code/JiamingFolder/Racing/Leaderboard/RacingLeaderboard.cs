@@ -52,6 +52,7 @@ public class RacingLeaderboard : MonoBehaviour
     {
         //sort leaderboard based on race time
         Cursor.visible = true;
+        ServiceLocator.Instance.GetService<UIManager>().SetIsUsingCursorForSettings(true);
         leaderboardUI.SetActive(true);
         ServiceLocator.Instance.GetService<AudioManager>().PlayBackgroundMusic("LeaderboardBGM");
         

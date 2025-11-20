@@ -20,6 +20,7 @@ public class SettingsManager : MonoBehaviour
     public bool _isSettingsOpen;
 
 
+
     private enum displayType
     {
         Fullscreen = 0,
@@ -32,7 +33,7 @@ public class SettingsManager : MonoBehaviour
     private void Start()
     {
         _audioManager = ServiceLocator.Instance.GetService<AudioManager>();
-        SetDifficultyText();
+        ChangeDifficulty(DifficultyLevel.Hard);
         SetDisplayType(displayType.WindowedFullScreen);
         UpdateBGMVol(1);
         UpdateSFXVol(1);
@@ -88,7 +89,7 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
-    public void ToggleSettings(bool open)
+    public void ToggleSettings(bool open, bool usingCursor = false)
     {
         _settingsPage.SetActive(open);
         ServiceLocator.Instance.GetService<PostProcessingManager>().ShowUIEffects(open);
@@ -109,7 +110,7 @@ public class SettingsManager : MonoBehaviour
         }
         else {
             Time.timeScale = 1;
-            if(SceneManager.GetActiveScene().name == "MainMenu")
+            if(SceneManager.GetActiveScene().name == "MainMenu" || usingCursor)
             {
                 Cursor.visible = true;
             }
@@ -117,8 +118,9 @@ public class SettingsManager : MonoBehaviour
             {
                 Cursor.visible = false;
             }
-               
+
         }
+        //ServiceLocator.Instance.GetService<UIManager>().SetIsUsingCursorForSettings(false);
         _isSettingsOpen = open;
     }
 
@@ -137,6 +139,14 @@ public class SettingsManager : MonoBehaviour
         }
         PlayerPrefs.SetInt("Difficulty", index);
         _currentDifficultySettings = (DifficultyLevel) index;
+        SetDifficultyText(_currentDifficultySettings);
+
+    }
+
+    public void ChangeDifficulty(DifficultyLevel difficulty)
+    {
+        PlayerPrefs.SetInt("Difficulty", (int) difficulty);
+        _currentDifficultySettings = difficulty;
         SetDifficultyText(_currentDifficultySettings);
 
     }
@@ -164,4 +174,6 @@ public class SettingsManager : MonoBehaviour
                 break;
         }
     }
+
+
 }

@@ -27,6 +27,7 @@ public class TutorialUIPlayer : MonoBehaviour
     private void Start()
     {
         uiManager = ServiceLocator.Instance.GetService<UIManager>();
+        uiManager.SetIsUsingCursorForSettings(true);
         uiManager.DisableSettings(true);
         _minigameSO = uiManager.GetMiniGameForTutorial();
         _clips = _minigameSO.tutorialVideoClips;

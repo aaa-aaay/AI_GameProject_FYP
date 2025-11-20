@@ -29,6 +29,7 @@ public class UIManager : MonoBehaviour, IGameService
     private MiniGameSO _miniGame;
     private bool disableSettings;
     public event Action<bool> OnUIToFocusToggle;
+    private bool _isUsingCursor;
 
 
     private void OnEnable()
@@ -64,6 +65,7 @@ public class UIManager : MonoBehaviour, IGameService
             else image.sprite = _starUnFilledSprite;
             count--;
         }
+
     }
 
     public void HideLevelSelectUI()
@@ -78,6 +80,7 @@ public class UIManager : MonoBehaviour, IGameService
         if (open)
         {
             Cursor.visible = true;
+            _isUsingCursor = true;
             Time.timeScale = 0;
 
         }
@@ -98,11 +101,12 @@ public class UIManager : MonoBehaviour, IGameService
         if (open)
         {
             Cursor.visible = true;
+            _isUsingCursor = true;
             Time.timeScale = 0;
         }
         else
         {
-            Cursor.visible = true;
+            Cursor.visible = false;
             Time.timeScale = 1;
         }
         OnUIToFocusToggle?.Invoke(open);
@@ -152,7 +156,7 @@ public class UIManager : MonoBehaviour, IGameService
         else temp = true;
         
 
-        _settingsManager.ToggleSettings(temp);
+        _settingsManager.ToggleSettings(temp, _isUsingCursor);
         OnUIToFocusToggle?.Invoke(temp);
 
 
@@ -161,6 +165,11 @@ public class UIManager : MonoBehaviour, IGameService
     public void DisableSettings(bool disable)
     {
         disableSettings = disable;
+    }
+
+    public void SetIsUsingCursorForSettings(bool isUsingSettings)
+    {
+        _isUsingCursor = isUsingSettings;
     }
 
 
