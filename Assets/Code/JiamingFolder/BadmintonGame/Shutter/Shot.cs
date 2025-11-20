@@ -63,8 +63,9 @@ public abstract class Shot : MonoBehaviour
         isFlying = false;
     }
 
-    public void ExecuteShot(List<Transform> listOfTargets, int shotDirection)
+    public void ExecuteShot(List<Transform> listOfTargets, int shotDirection, GameObject rackethit = null)
     {
+        if(GetComponent<LastHitChecker>().GetLastHitRacker() == rackethit) return;
         startPos = transform.position;
         targetPos = CalculateWhichTarget(listOfTargets, shotDirection);
         SetLocationMarker(targetPos);

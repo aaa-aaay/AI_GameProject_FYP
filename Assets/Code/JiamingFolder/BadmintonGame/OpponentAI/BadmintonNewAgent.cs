@@ -237,7 +237,7 @@ public class BadmintonNewAgent : Agent
     private void StaminaRewards()
     {
 
-        AddReward(_stamina.GetStamina() * 0.00004f);
+        AddReward(_stamina.GetStamina() * 0.00002f);
 
 
         if (_stamina.GetStamina() < 8)

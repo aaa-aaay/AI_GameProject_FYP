@@ -123,7 +123,7 @@ public class Racket : MonoBehaviour
         //1 for left
         //2 for right
         //3 for random or closest???
-        shot.ExecuteShot(FinalShotTarget, _shotDirection);
+        shot.ExecuteShot(FinalShotTarget, _shotDirection, gameObject);
 
         other.GetComponent<ShotTypeTracker>().setShotType(type);
 

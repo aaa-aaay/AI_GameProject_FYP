@@ -180,7 +180,7 @@ public class BasicBadmintonAI : MonoBehaviour
         }
 
 
-        int choice = Random.Range(0, 4);
+        int choice = Random.Range(0, 6);
 
 
         if(choice == 0)
