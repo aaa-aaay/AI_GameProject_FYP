@@ -81,7 +81,7 @@ public class LoadingBar : MonoBehaviour
         {
             if (operation.progress >= 0.9f)
             {
-                yield return new WaitForSeconds(delay);
+                yield return new WaitForSecondsRealtime(delay);
                 transition_player.PlayEndSceneLoadAnimation();
                 yield return new WaitUntil(() => load_finished);
                 operation.allowSceneActivation = true;

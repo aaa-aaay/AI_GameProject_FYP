@@ -56,6 +56,8 @@ public class PlayerMovement : MonoBehaviour
     public bool isHoldingRunner { get; private set; } = false;
     private Coroutine holdReleaseCoroutine;
 
+    private bool dead = false;
+
     private void Awake()
     {
         currentHealth = maxHealth;
@@ -79,6 +81,7 @@ public class PlayerMovement : MonoBehaviour
             holdPoint = new GameObject("HoldPoint").transform;
             holdPoint.SetParent(playerModel, true);
         }
+        dead = false;
     }
 
     private void Update()
@@ -334,6 +337,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Die()
     {
+        if(dead) return;
+        dead = true;
         _gameOverHandler.HandleGameOver(false);
         enabled = false;
     }

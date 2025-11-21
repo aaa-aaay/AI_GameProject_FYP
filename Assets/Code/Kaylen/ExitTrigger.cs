@@ -104,6 +104,7 @@ public class ExitTrigger : MonoBehaviour
                 perfectEscape = player.HasPerfectRun();
             }
             miniGameOverHandler.HandleGameOver(true, 1, CalculateStars());
+            Destroy(gameObject);
             // Add your win logic here (scene transition, UI, etc.)
         }
     }
